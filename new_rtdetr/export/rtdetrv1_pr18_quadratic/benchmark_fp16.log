@@ -1,0 +1,191 @@
+&&&& RUNNING TensorRT.trtexec [TensorRT v100700] [b23] # trtexec --loadEngine=/home/hslee/EXP/rtdetrv2_pytorch2/export/rtdetrv1_pr18_quadratic/model_fp16.engine --fp16 --warmUp=200 --iterations=1200 --avgRuns=50 --verbose --useCudaGraph --useSpinWait
+[07/20/2025-18:46:34] [I] === Model Options ===
+[07/20/2025-18:46:34] [I] Format: *
+[07/20/2025-18:46:34] [I] Model: 
+[07/20/2025-18:46:34] [I] Output:
+[07/20/2025-18:46:34] [I] 
+[07/20/2025-18:46:34] [I] === System Options ===
+[07/20/2025-18:46:34] [I] Device: 0
+[07/20/2025-18:46:34] [I] DLACore: 
+[07/20/2025-18:46:34] [I] Plugins:
+[07/20/2025-18:46:34] [I] setPluginsToSerialize:
+[07/20/2025-18:46:34] [I] dynamicPlugins:
+[07/20/2025-18:46:34] [I] ignoreParsedPluginLibs: 0
+[07/20/2025-18:46:34] [I] 
+[07/20/2025-18:46:34] [I] === Inference Options ===
+[07/20/2025-18:46:34] [I] Batch: Explicit
+[07/20/2025-18:46:34] [I] Input inference shapes: model
+[07/20/2025-18:46:34] [I] Iterations: 1200
+[07/20/2025-18:46:34] [I] Duration: 3s (+ 200ms warm up)
+[07/20/2025-18:46:34] [I] Sleep time: 0ms
+[07/20/2025-18:46:34] [I] Idle time: 0ms
+[07/20/2025-18:46:34] [I] Inference Streams: 1
+[07/20/2025-18:46:34] [I] ExposeDMA: Disabled
+[07/20/2025-18:46:34] [I] Data transfers: Enabled
+[07/20/2025-18:46:34] [I] Spin-wait: Enabled
+[07/20/2025-18:46:34] [I] Multithreading: Disabled
+[07/20/2025-18:46:34] [I] CUDA Graph: Enabled
+[07/20/2025-18:46:34] [I] Separate profiling: Disabled
+[07/20/2025-18:46:34] [I] Time Deserialize: Disabled
+[07/20/2025-18:46:34] [I] Time Refit: Disabled
+[07/20/2025-18:46:34] [I] NVTX verbosity: 0
+[07/20/2025-18:46:34] [I] Persistent Cache Ratio: 0
+[07/20/2025-18:46:34] [I] Optimization Profile Index: 0
+[07/20/2025-18:46:34] [I] Weight Streaming Budget: 100.000000%
+[07/20/2025-18:46:34] [I] Inputs:
+[07/20/2025-18:46:34] [I] Debug Tensor Save Destinations:
+[07/20/2025-18:46:34] [I] === Reporting Options ===
+[07/20/2025-18:46:34] [I] Verbose: Enabled
+[07/20/2025-18:46:34] [I] Averages: 50 inferences
+[07/20/2025-18:46:34] [I] Percentiles: 90,95,99
+[07/20/2025-18:46:34] [I] Dump refittable layers:Disabled
+[07/20/2025-18:46:34] [I] Dump output: Disabled
+[07/20/2025-18:46:34] [I] Profile: Disabled
+[07/20/2025-18:46:34] [I] Export timing to JSON file: 
+[07/20/2025-18:46:34] [I] Export output to JSON file: 
+[07/20/2025-18:46:34] [I] Export profile to JSON file: 
+[07/20/2025-18:46:34] [I] 
+[07/20/2025-18:46:34] [I] === Device Information ===
+[07/20/2025-18:46:34] [I] Available Devices: 
+[07/20/2025-18:46:34] [I]   Device 0: "Orin" UUID: GPU-61c3cd28-2793-529c-ac29-5c40e3503ba2
+[07/20/2025-18:46:34] [I] Selected Device: Orin
+[07/20/2025-18:46:34] [I] Selected Device ID: 0
+[07/20/2025-18:46:34] [I] Selected Device UUID: GPU-61c3cd28-2793-529c-ac29-5c40e3503ba2
+[07/20/2025-18:46:34] [I] Compute Capability: 8.7
+[07/20/2025-18:46:34] [I] SMs: 8
+[07/20/2025-18:46:34] [I] Device Global Memory: 7619 MiB
+[07/20/2025-18:46:34] [I] Shared Memory per SM: 164 KiB
+[07/20/2025-18:46:34] [I] Memory Bus Width: 128 bits (ECC disabled)
+[07/20/2025-18:46:34] [I] Application Compute Clock Rate: 1.02 GHz
+[07/20/2025-18:46:34] [I] Application Memory Clock Rate: 0.918 GHz
+[07/20/2025-18:46:34] [I] 
+[07/20/2025-18:46:34] [I] Note: The application clock rates do not reflect the actual clock rates that the GPU is currently running at.
+[07/20/2025-18:46:34] [I] 
+[07/20/2025-18:46:34] [I] TensorRT version: 10.7.0
+[07/20/2025-18:46:34] [I] Loading standard plugins
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::ROIAlign_TRT version 2
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::BatchedNMSDynamic_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::BatchedNMS_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::BatchTilePlugin_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::Clip_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::CoordConvAC version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::CropAndResizeDynamic version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::CropAndResize version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::DecodeBbox3DPlugin version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::DetectionLayer_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::EfficientNMS_Explicit_TF_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::EfficientNMS_Implicit_TF_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::EfficientNMS_ONNX_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::EfficientNMS_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::FlattenConcat_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::GenerateDetection_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::GridAnchor_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::GridAnchorRect_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::InstanceNormalization_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::InstanceNormalization_TRT version 2
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::InstanceNormalization_TRT version 3
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::LReLU_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::ModulatedDeformConv2d version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::MultilevelCropAndResize_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::MultilevelProposeROI_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::MultiscaleDeformableAttnPlugin_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::NMSDynamic_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::NMS_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::Normalize_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::PillarScatterPlugin version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::PriorBox_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::ProposalDynamic version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::ProposalLayer_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::Proposal version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::PyramidROIAlign_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::Region_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::Reorg_TRT version 2
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::Reorg_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::ResizeNearest_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::ROIAlign_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::RPROI_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::ScatterElements version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::ScatterElements version 2
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::ScatterND version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::SpecialSlice_TRT version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::Split version 1
+[07/20/2025-18:46:34] [V] [TRT] Registered plugin creator - ::VoxelGeneratorPlugin version 1
+[07/20/2025-18:46:34] [I] [TRT] Loaded engine size: 41 MiB
+[07/20/2025-18:46:35] [V] [TRT] Deserialization required 47373 microseconds.
+[07/20/2025-18:46:35] [I] Engine deserialized in 0.0870836 sec.
+[07/20/2025-18:46:35] [I] [TRT] [MS] Running engine with multi stream info
+[07/20/2025-18:46:35] [I] [TRT] [MS] Number of aux streams is 7
+[07/20/2025-18:46:35] [I] [TRT] [MS] Number of total worker streams is 8
+[07/20/2025-18:46:35] [I] [TRT] [MS] The main stream provided by execute/enqueue calls is the first worker stream
+[07/20/2025-18:46:35] [V] [TRT] Total per-runner device persistent memory is 0
+[07/20/2025-18:46:35] [V] [TRT] Total per-runner host persistent memory is 344496
+[07/20/2025-18:46:35] [V] [TRT] Allocated device scratch memory of size 360654848
+[07/20/2025-18:46:35] [V] [TRT] - Runner scratch: 360654848 bytes
+[07/20/2025-18:46:35] [I] [TRT] [MemUsageChange] TensorRT-managed allocation in IExecutionContext creation: CPU +0, GPU +344, now: CPU 0, GPU 381 (MiB)
+[07/20/2025-18:46:35] [V] [TRT] CUDA lazy loading is enabled.
+[07/20/2025-18:46:35] [I] Setting persistentCacheLimit to 0 bytes.
+[07/20/2025-18:46:35] [I] Created execution context with device memory size: 343.947 MiB
+[07/20/2025-18:46:35] [I] Using random values for input images
+[07/20/2025-18:46:35] [I] Input binding for images with dimensions 1x3x640x640 is created.
+[07/20/2025-18:46:35] [I] Using random values for input orig_target_sizes
+[07/20/2025-18:46:35] [I] Input binding for orig_target_sizes with dimensions 1x2 is created.
+[07/20/2025-18:46:35] [I] Output binding for labels with dimensions 1x300 is created.
+[07/20/2025-18:46:35] [I] Output binding for boxes with dimensions 1x300x4 is created.
+[07/20/2025-18:46:35] [I] Output binding for scores with dimensions 1x300 is created.
+[07/20/2025-18:46:35] [I] Starting inference
+[07/20/2025-18:46:35] [I] Capturing CUDA graph for the current execution context
+[07/20/2025-18:46:35] [I] Successfully captured CUDA graph for the current execution context
+[07/20/2025-18:47:08] [I] Warmup completed 3 queries over 200 ms
+[07/20/2025-18:47:08] [I] Timing trace has 1200 queries over 33.0071 s
+[07/20/2025-18:47:08] [I] 
+[07/20/2025-18:47:08] [I] === Trace details ===
+[07/20/2025-18:47:08] [I] Trace averages of 50 runs:
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4728 ms - Host latency: 27.7987 ms (enqueue 0.00779541 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 28.2074 ms - Host latency: 28.534 ms (enqueue 0.013103 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4364 ms - Host latency: 27.7621 ms (enqueue 0.00894531 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4377 ms - Host latency: 27.7626 ms (enqueue 0.0084668 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4437 ms - Host latency: 27.7702 ms (enqueue 0.00709961 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4455 ms - Host latency: 27.7709 ms (enqueue 0.00707031 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4483 ms - Host latency: 27.7732 ms (enqueue 0.00689453 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4417 ms - Host latency: 27.7677 ms (enqueue 0.00712891 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4418 ms - Host latency: 27.7669 ms (enqueue 0.00722656 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.442 ms - Host latency: 27.7674 ms (enqueue 0.00681641 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4383 ms - Host latency: 27.7632 ms (enqueue 0.00679688 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4441 ms - Host latency: 27.7693 ms (enqueue 0.00666016 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.446 ms - Host latency: 27.7714 ms (enqueue 0.00671875 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4529 ms - Host latency: 27.7786 ms (enqueue 0.00695312 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.45 ms - Host latency: 27.7752 ms (enqueue 0.00683594 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4489 ms - Host latency: 27.7736 ms (enqueue 0.00667969 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4579 ms - Host latency: 27.7833 ms (enqueue 0.00648437 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.5199 ms - Host latency: 27.8478 ms (enqueue 0.00683594 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4493 ms - Host latency: 27.7745 ms (enqueue 0.00699219 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4567 ms - Host latency: 27.7825 ms (enqueue 0.00707031 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4441 ms - Host latency: 27.7689 ms (enqueue 0.00660156 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4426 ms - Host latency: 27.7685 ms (enqueue 0.00648437 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4457 ms - Host latency: 27.7709 ms (enqueue 0.00648437 ms)
+[07/20/2025-18:47:08] [I] Average on 50 runs - GPU latency: 27.4547 ms - Host latency: 27.7801 ms (enqueue 0.0065625 ms)
+[07/20/2025-18:47:08] [I] 
+[07/20/2025-18:47:08] [I] === Performance summary ===
+[07/20/2025-18:47:08] [I] Throughput: 36.3558 qps
+[07/20/2025-18:47:08] [I] Latency: min = 27.6898 ms, max = 40.51 ms, mean = 27.8076 ms, median = 27.7715 ms, percentile(90%) = 27.7949 ms, percentile(95%) = 27.8037 ms, percentile(99%) = 27.9004 ms
+[07/20/2025-18:47:08] [I] Enqueue Time: min = 0.00390625 ms, max = 0.0444336 ms, mean = 0.00727946 ms, median = 0.00683594 ms, percentile(90%) = 0.00878906 ms, percentile(95%) = 0.0107422 ms, percentile(99%) = 0.019043 ms
+[07/20/2025-18:47:08] [I] H2D Latency: min = 0.259521 ms, max = 0.342285 ms, mean = 0.313897 ms, median = 0.313477 ms, percentile(90%) = 0.318359 ms, percentile(95%) = 0.320312 ms, percentile(99%) = 0.328125 ms
+[07/20/2025-18:47:08] [I] GPU Compute Time: min = 27.379 ms, max = 40.1802 ms, mean = 27.482 ms, median = 27.4454 ms, percentile(90%) = 27.4707 ms, percentile(95%) = 27.4766 ms, percentile(99%) = 27.5586 ms
+[07/20/2025-18:47:08] [I] D2H Latency: min = 0.0078125 ms, max = 0.0175781 ms, mean = 0.0116444 ms, median = 0.0117188 ms, percentile(90%) = 0.015625 ms, percentile(95%) = 0.015625 ms, percentile(99%) = 0.0166016 ms
+[07/20/2025-18:47:08] [I] Total Host Walltime: 33.0071 s
+[07/20/2025-18:47:08] [I] Total GPU Compute Time: 32.9784 s
+[07/20/2025-18:47:08] [W] * GPU compute time is unstable, with coefficient of variance = 1.87835%.
+[07/20/2025-18:47:08] [W]   If not already in use, locking GPU clock frequency or adding --useSpinWait may improve the stability.
+[07/20/2025-18:47:08] [I] Explanations of the performance metrics are printed in the verbose logs.
+[07/20/2025-18:47:08] [V] 
+[07/20/2025-18:47:08] [V] === Explanations of the performance metrics ===
+[07/20/2025-18:47:08] [V] Total Host Walltime: the host walltime from when the first query (after warmups) is enqueued to when the last query is completed.
+[07/20/2025-18:47:08] [V] GPU Compute Time: the GPU latency to execute the kernels for a query.
+[07/20/2025-18:47:08] [V] Total GPU Compute Time: the summation of the GPU Compute Time of all the queries. If this is significantly shorter than Total Host Walltime, the GPU may be under-utilized because of host-side overheads or data transfers.
+[07/20/2025-18:47:08] [V] Throughput: the observed throughput computed by dividing the number of queries by the Total Host Walltime. If this is significantly lower than the reciprocal of GPU Compute Time, the GPU may be under-utilized because of host-side overheads or data transfers.
+[07/20/2025-18:47:08] [V] Enqueue Time: the host latency to enqueue a query. If this is longer than GPU Compute Time, the GPU may be under-utilized.
+[07/20/2025-18:47:08] [V] H2D Latency: the latency for host-to-device data transfers for input tensors of a single query.
+[07/20/2025-18:47:08] [V] D2H Latency: the latency for device-to-host data transfers for output tensors of a single query.
+[07/20/2025-18:47:08] [V] Latency: the summation of H2D Latency, GPU Compute Time, and D2H Latency. This is the latency to infer a single query.
+[07/20/2025-18:47:08] [I] 
+&&&& PASSED TensorRT.trtexec [TensorRT v100700] [b23] # trtexec --loadEngine=/home/hslee/EXP/rtdetrv2_pytorch2/export/rtdetrv1_pr18_quadratic/model_fp16.engine --fp16 --warmUp=200 --iterations=1200 --avgRuns=50 --verbose --useCudaGraph --useSpinWait

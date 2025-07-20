@@ -95,3 +95,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     main(args)
+
+
+'''
+
+# torch -> onnx
+python tools/export_onnx.py -c /home/hslee/EXP/rtdetrv2_pytorch2/configs/rtdetr/rtdetr_r18vd_6x_coco.yml \
+    -o /home/hslee/EXP/rtdetrv2_pytorch2/export/rtdetrv1_pr18_FaPN/model.onnx \
+    2>&1 | tee ./export/rtdetrv1_pr18_FaPN/onnx_export.log
+
+'''

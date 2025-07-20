@@ -24,3 +24,7 @@ coco.yaml
 *.pdiparams.info
 
 *.zip
+
+*.engine
+*.onnx
+*.trt

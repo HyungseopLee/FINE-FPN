@@ -79,3 +79,80 @@ if __name__ == "__main__":
         use_fp16=args.fp16,
         verbose=args.verbose
     )
+
+
+'''
+# onnx -> tensorrt engine
+python tools/export_trt.py \
+    --onnx /home/hslee/EXP/rtdetrv2_pytorch2/export/rtdetrv1_pr18_FaPN/model.onnx \
+    --saveEngine /home/hslee/EXP/rtdetrv2_pytorch2/export/rtdetrv1_pr18_FaPN/model_fp16.engine \
+    2>&1 | tee ./export/rtdetrv1_pr18_FaPN/export_trt.log
+
+
+# tensorrt
+## baseline
+trtexec \
+    --loadEngine=/home/hslee/EXP/rtdetrv2_pytorch2/export/rtdetrv1_pr50_baseline/model_fp16.engine \
+    --fp16 \
+    --warmUp=200 \
+    --iterations=1200 \
+    --avgRuns=50 \
+    --verbose \
+    --useCudaGraph \
+    --useSpinWait \
+    2>&1 | tee ./export/rtdetrv1_pr50_baseline/benchmark_fp16.log
+    # --exportProfile=profile.json \
+
+    
+## quadratic
+trtexec \
+    --loadEngine=/home/hslee/EXP/rtdetrv2_pytorch2/export/rtdetrv1_pr18_quadratic/model_fp16.engine \
+    --fp16 \
+    --warmUp=200 \
+    --iterations=1200 \
+    --avgRuns=50 \
+    --verbose \
+    --useCudaGraph \
+    --useSpinWait \
+    2>&1 | tee ./export/rtdetrv1_pr18_quadratic/benchmark_fp16.log
+
+    
+## Linear
+trtexec \
+    --loadEngine=/home/hslee/EXP/rtdetrv2_pytorch2/export/rtdetrv1_pr18_linear/model_fp16.engine \
+    --fp16 \
+    --warmUp=200 \
+    --iterations=1200 \
+    --avgRuns=50 \
+    --verbose \
+    --useCudaGraph \
+    --useSpinWait \
+    2>&1 | tee ./export/rtdetrv1_pr18_linear/benchmark_fp16.log
+
+    
+## ours
+trtexec \
+    --loadEngine=/home/hslee/EXP/rtdetrv2_pytorch2/export/rtdetrv1_pr50_ours/model_fp16.engine \
+    --fp16 \
+    --warmUp=200 \
+    --iterations=1200 \
+    --avgRuns=50 \
+    --verbose \
+    --useCudaGraph \
+    --useSpinWait \
+    2>&1 | tee ./export/rtdetrv1_pr50_ours/benchmark_fp16.log
+    
+
+## Prior works
+trtexec \
+    --loadEngine=/home/hslee/EXP/rtdetrv2_pytorch2/export/rtdetrv1_pr18_FaPN/model_fp16.engine \
+    --fp16 \
+    --warmUp=200 \
+    --iterations=1200 \
+    --avgRuns=50 \
+    --verbose \
+    --useCudaGraph \
+    --useSpinWait \
+    2>&1 | tee ./export/rtdetrv1_pr18_FaPN/benchmark_fp16.log
+
+'''

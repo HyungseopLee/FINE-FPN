@@ -1,0 +1,9 @@
+/home/hslee/EXP/rtdetrv2_pytorch2/tools/../src/zoo/rtdetr/hybrid_encoder.py:560: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  m = max(src_len, tgt_len)
+/home/hslee/EXP/rtdetrv2_pytorch2/tools/../src/zoo/rtdetr/rtdetr_decoder.py:465: TracerWarning: torch.tensor results are registered as constants in the trace. You can safely ignore this warning if you use this function to create tensors out of constant variables that would be the same every time you call this function. In any other case, this might cause the trace to be incorrect.
+  valid_WH = torch.tensor([w, h]).to(dtype)
+/home/hslee/EXP/rtdetrv2_pytorch2/tools/../src/zoo/rtdetr/rtdetr_decoder.py:122: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if reference_points.shape[-1] == 2:
+/home/hslee/EXP/rtdetrv2_pytorch2/tools/../src/zoo/rtdetr/rtdetr_decoder.py:129: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  elif reference_points.shape[-1] == 4:
+not load model.state_dict, use default init state dict...

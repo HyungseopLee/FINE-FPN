@@ -1,0 +1,26 @@
+[07/20/2025-19:09:11] [TRT] [I] [MemUsageChange] Init CUDA: CPU +13, GPU +0, now: CPU 34, GPU 3688 (MiB)
+[07/20/2025-19:09:15] [TRT] [I] [MemUsageChange] Init builder kernel library: CPU +980, GPU +1131, now: CPU 1058, GPU 4865 (MiB)
+[07/20/2025-19:09:15] [TRT] [W] ModelImporter.cpp:459: Make sure input orig_target_sizes has Int64 binding.
+[07/20/2025-19:09:15] [TRT] [W] ModelImporter.cpp:804: Make sure output labels has Int64 binding.
+[07/20/2025-19:09:15] [TRT] [W] DLA requests all profiles have same min, max, and opt value. All dla layers are falling back to GPU
+[07/20/2025-19:09:15] [TRT] [W] Detected layernorm nodes in FP16.
+[07/20/2025-19:09:15] [TRT] [W] Running layernorm after self-attention with FP16 Reduce or Pow may cause overflow. Forcing Reduce or Pow Layers in FP32 precision, or exporting the model to use INormalizationLayer (available with ONNX opset >= 17) can help preserving accuracy.
+[07/20/2025-19:09:16] [TRT] [I] Local timing cache in use. Profiling results in this builder pass will not be stored.
+[07/20/2025-19:19:54] [TRT] [I] Compiler backend is used during engine build.
+[07/20/2025-19:25:43] [TRT] [I] Detected 2 inputs and 3 output network tensors.
+[07/20/2025-19:25:56] [TRT] [I] Total Host Persistent Memory: 627984 bytes
+[07/20/2025-19:25:56] [TRT] [I] Total Device Persistent Memory: 2048 bytes
+[07/20/2025-19:25:56] [TRT] [I] Max Scratch Memory: 95430144 bytes
+[07/20/2025-19:25:56] [TRT] [I] [BlockAssignment] Started assigning block shifts. This will take 270 steps to complete.
+[07/20/2025-19:25:56] [TRT] [I] [BlockAssignment] Algorithm ShiftNTopDown took 213.122ms to assign 73 blocks to 270 nodes requiring 115343360 bytes.
+[07/20/2025-19:25:56] [TRT] [I] Total Activation Memory: 115343360 bytes
+[07/20/2025-19:25:56] [TRT] [I] Total Weights Memory: 77991298 bytes
+[07/20/2025-19:25:56] [TRT] [I] Compiler backend is used during engine execution.
+[07/20/2025-19:25:56] [TRT] [I] Engine generation completed in 1000.7 seconds.
+[07/20/2025-19:25:56] [TRT] [I] [MemUsageStats] Peak memory usage of TRT CPU/GPU memory allocators: CPU 8 MiB, GPU 227 MiB
+[07/20/2025-19:25:57] [TRT] [I] Loaded engine size: 81 MiB
+[INFO] Loading ONNX file from /home/hslee/EXP/rtdetrv2_pytorch2/export/rtdetrv1_pr50_ours/model.onnx
+[INFO] FP16 optimization enabled.
+[INFO] Building TensorRT engine...
+[INFO] Saving engine to /home/hslee/EXP/rtdetrv2_pytorch2/export/rtdetrv1_pr50_ours/model_fp16.engine
+[INFO] Engine export complete.
