@@ -1,0 +1,74 @@
+W0630 15:06:45.871000 721541 site-packages/torch/distributed/run.py:766] 
+W0630 15:06:45.871000 721541 site-packages/torch/distributed/run.py:766] *****************************************
+W0630 15:06:45.871000 721541 site-packages/torch/distributed/run.py:766] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0630 15:06:45.871000 721541 site-packages/torch/distributed/run.py:766] *****************************************
+RANK: 0, LOCAL_RANK: 0, WORLD_SIZE: 2
+Not init distributed mode.
+RANK: 1, LOCAL_RANK: 1, WORLD_SIZE: 2
+Not init distributed mode.
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/home/hslee/SONeck/new_rtdetr/tools/train.py", line 69, in <module>
+    main(args)
+    ~~~~^^^^^^
+  File "/home/hslee/SONeck/new_rtdetr/tools/train.py", line 31, in main
+    cfg = YAMLConfig(args.config, **update_dict)
+  File "/home/hslee/SONeck/new_rtdetr/tools/../src/core/yaml_config.py", line 20, in __init__
+    cfg = load_config(cfg_path)
+  File "/home/hslee/SONeck/new_rtdetr/tools/../src/core/yaml_utils.py", line 28, in load_config
+    with open(file_path) as f:
+         ~~~~^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/hslee/FINE-FPN/new_rtdetr/configs/rtdetr/rtdetr_r50vd_6x_coco.yml'
+  File "/home/hslee/SONeck/new_rtdetr/tools/train.py", line 69, in <module>
+    main(args)
+    ~~~~^^^^^^
+  File "/home/hslee/SONeck/new_rtdetr/tools/train.py", line 31, in main
+    cfg = YAMLConfig(args.config, **update_dict)
+  File "/home/hslee/SONeck/new_rtdetr/tools/../src/core/yaml_config.py", line 20, in __init__
+    cfg = load_config(cfg_path)
+  File "/home/hslee/SONeck/new_rtdetr/tools/../src/core/yaml_utils.py", line 28, in load_config
+    with open(file_path) as f:
+         ~~~~^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/hslee/FINE-FPN/new_rtdetr/configs/rtdetr/rtdetr_r50vd_6x_coco.yml'
+W0630 15:06:47.577000 721541 site-packages/torch/distributed/elastic/multiprocessing/api.py:900] Sending process 721594 closing signal SIGTERM
+E0630 15:06:47.609000 721541 site-packages/torch/distributed/elastic/multiprocessing/api.py:874] failed (exitcode: 1) local_rank: 1 (pid: 721595) of binary: /home/hslee/anaconda3/envs/torch271/bin/python3.13
+Traceback (most recent call last):
+  File "/home/hslee/anaconda3/envs/torch271/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 355, in wrapper
+    return f(*args, **kwargs)
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.13/site-packages/torch/distributed/run.py", line 892, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.13/site-packages/torch/distributed/run.py", line 883, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 139, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 270, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+tools/train.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-06-30_15:06:47
+  host      : pascal
+  rank      : 1 (local_rank: 1)
+  exitcode  : 1 (pid: 721595)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================

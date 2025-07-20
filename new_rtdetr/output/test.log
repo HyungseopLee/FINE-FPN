@@ -1,0 +1,113 @@
+W0626 22:11:04.129000 65868 torch/distributed/run.py:766] 
+W0626 22:11:04.129000 65868 torch/distributed/run.py:766] *****************************************
+W0626 22:11:04.129000 65868 torch/distributed/run.py:766] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0626 22:11:04.129000 65868 torch/distributed/run.py:766] *****************************************
+RANK: 0, LOCAL_RANK: 0, WORLD_SIZE: 4
+RANK: 1, LOCAL_RANK: 1, WORLD_SIZE: 4
+RANK: 3, LOCAL_RANK: 3, WORLD_SIZE: 4
+RANK: 2, LOCAL_RANK: 2, WORLD_SIZE: 4
+/home/hslee/myenv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py:4631: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+/home/hslee/myenv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py:4631: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+/home/hslee/myenv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py:4631: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+/home/hslee/myenv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py:4631: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+[rank0]:[W626 22:11:07.341484381 ProcessGroupNCCL.cpp:4718] [PG ID 0 PG GUID 0 Rank 0]  using GPU 0 as device used by this process is currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. You can pecify device_id in init_process_group() to force use of a particular device.
+[rank3]:[W626 22:11:07.341621324 ProcessGroupNCCL.cpp:4718] [PG ID 0 PG GUID 0 Rank 3]  using GPU 3 as device used by this process is currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. You can pecify device_id in init_process_group() to force use of a particular device.
+[rank1]:[W626 22:11:07.348420066 ProcessGroupNCCL.cpp:4718] [PG ID 0 PG GUID 0 Rank 1]  using GPU 1 as device used by this process is currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. You can pecify device_id in init_process_group() to force use of a particular device.
+[rank2]:[W626 22:11:07.355584616 ProcessGroupNCCL.cpp:4718] [PG ID 0 PG GUID 0 Rank 2]  using GPU 2 as device used by this process is currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. You can pecify device_id in init_process_group() to force use of a particular device.
+Initialized distributed mode...
+Initialized distributed mode...
+Initialized distributed mode...
+Initialized distributed mode...
+cfg:  {'task': 'detection', '_model': None, '_postprocessor': None, '_criterion': None, '_optimizer': None, '_lr_scheduler': None, '_lr_warmup_scheduler': None, '_train_dataloader': None, '_val_dataloader': None, '_ema': None, '_scaler': None, '_train_dataset': None, '_val_dataset': None, '_collate_fn': None, '_evaluator': None, '_writer': None, 'num_workers': 0, 'batch_size': None, '_train_batch_size': None, '_val_batch_size': None, '_train_shuffle': None, '_val_shuffle': None, 'resume': None, 'tuning': None, 'epoches': 72, 'last_epoch': -1, 'use_amp': False, 'use_ema': True, 'ema_decay': 0.9999, 'ema_warmups': 2000, 'sync_bn': True, 'clip_max_norm': 0.1, 'find_unused_parameters': False, 'seed': None, 'print_freq': 100, 'checkpoint_freq': 20, 'output_dir': './output/v1_r18vd_72e_coco_SemanticAlign-Linear', 'summary_dir': None, 'device': '', 'yaml_cfg': {'task': 'detection', 'evaluator': {'type': 'CocoEvaluator', 'iou_types': ['bbox']}, 'num_classes': 80, 'remap_mscoco_category': True, 'train_dataloader': {'type': 'DataLoader', 'dataset': {'type': 'CocoDetection', 'img_folder': '/media/data/coco/train2017', 'ann_file': '/media/data/coco/annotations/instances_train2017.json', 'return_masks': False, 'transforms': {'type': 'Compose', 'ops': [{'type': 'RandomPhotometricDistort', 'p': 0.5}, {'type': 'RandomZoomOut', 'fill': 0}, {'type': 'RandomIoUCrop', 'p': 0.8}, {'type': 'SanitizeBoundingBoxes', 'min_size': 1}, {'type': 'RandomHorizontalFlip'}, {'type': 'Resize', 'size': [640, 640]}, {'type': 'SanitizeBoundingBoxes', 'min_size': 1}, {'type': 'ConvertPILImage', 'dtype': 'float32', 'scale': True}, {'type': 'ConvertBoxes', 'fmt': 'cxcywh', 'normalize': True}]}}, 'shuffle': True, 'num_workers': 4, 'drop_last': True, 'collate_fn': {'type': 'BatchImageCollateFuncion', 'scales': [480, 512, 544, 576, 608, 640, 640, 640, 672, 704, 736, 768, 800]}, 'total_batch_size': 16}, 'val_dataloader': {'type': 'DataLoader', 'dataset': {'type': 'CocoDetection', 'img_folder': '/media/data/coco/val2017/', 'ann_file': '/media/data/coco/annotations/instances_val2017.json', 'return_masks': False, 'transforms': {'type': 'Compose', 'ops': [{'type': 'Resize', 'size': [640, 640]}, {'type': 'ConvertPILImage', 'dtype': 'float32', 'scale': True}]}}, 'shuffle': False, 'num_workers': 8, 'drop_last': False, 'collate_fn': {'type': 'BatchImageCollateFuncion'}, 'total_batch_size': 1}, 'print_freq': 100, 'output_dir': './output/v1_r18vd_72e_coco_SemanticAlign-Linear', 'checkpoint_freq': 20, 'sync_bn': True, 'find_unused_parameters': False, 'use_amp': False, 'scaler': {'type': 'GradScaler', 'enabled': True}, 'use_ema': True, 'ema': {'type': 'ModelEMA', 'decay': 0.9999, 'warmups': 2000}, 'epoches': 72, 'clip_max_norm': 0.1, 'optimizer': {'type': 'AdamW', 'params': [{'params': '^(?=.*backbone)(?=.*norm|bn).*$', 'weight_decay': 0.0, 'lr': 1e-05}, {'params': '^(?=.*backbone)(?!.*norm|bn).*$', 'lr': 1e-05}, {'params': '^(?=.*(?:encoder|decoder))(?=.*(?:norm|bn|bias)).*$', 'weight_decay': 0.0}], 'lr': 0.0001, 'betas': [0.9, 0.999], 'weight_decay': 0.0001}, 'lr_scheduler': {'type': 'MultiStepLR', 'milestones': [1000], 'gamma': 0.1}, 'lr_warmup_scheduler': {'type': 'LinearWarmup', 'warmup_duration': 2000}, 'model': 'RTDETR', 'criterion': 'RTDETRCriterion', 'postprocessor': 'RTDETRPostProcessor', 'use_focal_loss': True, 'eval_spatial_size': [640, 640], 'RTDETR': {'backbone': 'PResNet', 'encoder': 'HybridEncoder', 'decoder': 'RTDETRTransformer'}, 'PResNet': {'depth': 18, 'variant': 'd', 'freeze_at': -1, 'return_idx': [1, 2, 3], 'num_stages': 4, 'freeze_norm': False, 'pretrained': True}, 'HybridEncoder': {'in_channels': [128, 256, 512], 'feat_strides': [8, 16, 32], 'hidden_dim': 256, 'use_encoder_idx': [2], 'num_encoder_layers': 1, 'nhead': 8, 'dim_feedforward': 1024, 'dropout': 0.0, 'enc_act': 'gelu', 'expansion': 0.5, 'depth_mult': 1, 'act': 'silu', 'version': 'v1'}, 'RTDETRTransformer': {'feat_channels': [256, 256, 256], 'feat_strides': [8, 16, 32], 'hidden_dim': 256, 'num_levels': 3, 'num_layers': 3, 'num_queries': 300, 'num_denoising': 100, 'label_noise_ratio': 0.5, 'box_noise_scale': 1.0, 'eval_idx': -1}, 'RTDETRPostProcessor': {'num_top_queries': 300}, 'RTDETRCriterion': {'weight_dict': {'loss_vfl': 1, 'loss_bbox': 5, 'loss_giou': 2}, 'losses': ['vfl', 'boxes'], 'alpha': 0.75, 'gamma': 2.0, 'matcher': {'type': 'HungarianMatcher', 'weight_dict': {'cost_class': 2, 'cost_bbox': 5, 'cost_giou': 2}, 'alpha': 0.25, 'gamma': 2.0}}, '__include__': ['../dataset/coco_detection.yml', '../runtime.yml', './include/dataloader.yml', './include/optimizer.yml', './include/rtdetr_r50vd.yml'], 'config': '/home/hslee/FINE-FPN/rtdetrv2_pytorch2/configs/rtdetr/rtdetr_r18vd_6x_coco.yml', 'test_only': False, 'print_method': 'builtin', 'print_rank': 0}}
+Start training
+Load PResNet18 state_dict
+Initial lr: [1e-05, 1e-05, 0.0001, 0.0001]
+building train_dataloader with batch_size=4...
+loading annotations into memory...
+Done (t=4.97s)
+creating index...
+index created!
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/train.py", line 69, in <module>
+[rank0]:     main(args)
+[rank0]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/train.py", line 39, in main
+[rank0]:     solver.fit()
+[rank0]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/solver/det_solver.py", line 20, in fit
+[rank0]:     self.train()
+[rank0]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/solver/_solver.py", line 75, in train
+[rank0]:     self.val_dataloader = dist_utils.warp_loader(self.cfg.val_dataloader, \
+[rank0]:                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/core/yaml_config.py", line 80, in val_dataloader
+[rank0]:     self._val_dataloader = self.build_dataloader('val_dataloader')
+[rank0]:                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/core/yaml_config.py", line 164, in build_dataloader
+[rank0]:     bs = self.get_rank_batch_size(self.yaml_cfg[name])
+[rank0]:          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/core/yaml_config.py", line 158, in get_rank_batch_size
+[rank0]:     assert total_batch_size % dist_utils.get_world_size() == 0, \
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]: AssertionError: total_batch_size should be divisible by world size
+[rank2]: Traceback (most recent call last):
+[rank2]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/train.py", line 69, in <module>
+[rank2]:     main(args)
+[rank2]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/train.py", line 39, in main
+[rank2]:     solver.fit()
+[rank2]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/solver/det_solver.py", line 20, in fit
+[rank2]:     self.train()
+[rank2]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/solver/_solver.py", line 75, in train
+[rank2]:     self.val_dataloader = dist_utils.warp_loader(self.cfg.val_dataloader, \
+[rank2]:                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/core/yaml_config.py", line 80, in val_dataloader
+[rank2]:     self._val_dataloader = self.build_dataloader('val_dataloader')
+[rank2]:                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/core/yaml_config.py", line 164, in build_dataloader
+[rank2]:     bs = self.get_rank_batch_size(self.yaml_cfg[name])
+[rank2]:          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/core/yaml_config.py", line 158, in get_rank_batch_size
+[rank2]:     assert total_batch_size % dist_utils.get_world_size() == 0, \
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]: AssertionError: total_batch_size should be divisible by world size
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/train.py", line 69, in <module>
+[rank1]:     main(args)
+[rank1]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/train.py", line 39, in main
+[rank1]:     solver.fit()
+[rank1]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/solver/det_solver.py", line 20, in fit
+[rank1]:     self.train()
+[rank1]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/solver/_solver.py", line 75, in train
+[rank1]:     self.val_dataloader = dist_utils.warp_loader(self.cfg.val_dataloader, \
+[rank1]:                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/core/yaml_config.py", line 80, in val_dataloader
+[rank1]:     self._val_dataloader = self.build_dataloader('val_dataloader')
+[rank1]:                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/core/yaml_config.py", line 164, in build_dataloader
+[rank1]:     bs = self.get_rank_batch_size(self.yaml_cfg[name])
+[rank1]:          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/core/yaml_config.py", line 158, in get_rank_batch_size
+[rank1]:     assert total_batch_size % dist_utils.get_world_size() == 0, \
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]: AssertionError: total_batch_size should be divisible by world size
+[rank3]: Traceback (most recent call last):
+[rank3]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/train.py", line 69, in <module>
+[rank3]:     main(args)
+[rank3]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/train.py", line 39, in main
+[rank3]:     solver.fit()
+[rank3]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/solver/det_solver.py", line 20, in fit
+[rank3]:     self.train()
+[rank3]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/solver/_solver.py", line 75, in train
+[rank3]:     self.val_dataloader = dist_utils.warp_loader(self.cfg.val_dataloader, \
+[rank3]:                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/core/yaml_config.py", line 80, in val_dataloader
+[rank3]:     self._val_dataloader = self.build_dataloader('val_dataloader')
+[rank3]:                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/core/yaml_config.py", line 164, in build_dataloader
+[rank3]:     bs = self.get_rank_batch_size(self.yaml_cfg[name])
+[rank3]:          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hslee/FINE-FPN/new_rtdetr/tools/../src/core/yaml_config.py", line 158, in get_rank_batch_size
+[rank3]:     assert total_batch_size % dist_utils.get_world_size() == 0, \
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]: AssertionError: total_batch_size should be divisible by world size

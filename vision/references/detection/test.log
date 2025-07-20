@@ -1,0 +1,16 @@
+/home/hslee/Desktop/Embedded_AI/EXP/vision/references/detection/train.py:659: SyntaxWarning: invalid escape sequence '\ '
+  --lr 0.01 \
+/home/hslee/anaconda3/envs/torch271/lib/python3.13/site-packages/torchvision/__init__.py
+print(torchvision.__file__): None
+/home/hslee/Desktop/Embedded_AI/EXP/vision/references/detection/utils.py
+print(utils.__file__): None
+Not using distributed mode
+Namespace(data_path='/datasets01/COCO/022719/', dataset='coco', model='fasterrcnn_resnet50_fpn', device='cuda', batch_size=2, epochs=26, workers=8, opt='sgd', lr=0.02, momentum=0.9, weight_decay=0.0001, norm_weight_decay=None, lr_scheduler='multisteplr', lr_step_size=8, lr_steps=[16, 22], lr_gamma=0.1, print_freq=20, output_dir='.', resume='', start_epoch=0, aspect_ratio_group_factor=3, rpn_score_thresh=None, trainable_backbone_layers=None, data_augmentation='hflip', sync_bn=False, test_only=True, use_deterministic_algorithms=False, world_size=1, dist_url='env://', weights=None, weights_backbone=None, amp=False, use_copypaste=False, backend='pil', use_v2=False, visualize=False, semantic_gap='baseline', image=False, distributed=False)
+loading annotations into memory...
+Done (t=0.22s)
+creating index...
+index created!
+input_tensor.shape: torch.Size([1, 3, 640, 640])
+level: 3, fused.shape: torch.Size([1, 256, 25, 25]), low_level.shape: torch.Size([1, 256, 25, 25])
+level: 2, fused.shape: torch.Size([1, 256, 50, 50]), low_level.shape: torch.Size([1, 256, 50, 50])
+level: 1, fused.shape: torch.Size([1, 256, 100, 100]), low_level.shape: torch.Size([1, 256, 100, 100])

@@ -1,0 +1,56 @@
+WARNING ⚠️ /home/hslee/Desktop/Embedded_AI/EXP/ultralytics/pretrained/yolov6s.pt appears to require 'yolov6', which is not in Ultralytics requirements.
+AutoInstall will run now for 'yolov6' but this feature will be removed in the future.
+Recommend fixes are to train a new model using the latest 'ultralytics' package or to run a command with an official Ultralytics model, i.e. 'yolo predict model=yolo11n.pt'
+[31m[1mrequirements:[0m Ultralytics requirement ['yolov6'] not found, attempting AutoUpdate...
+[31m[1mrequirements:[0m ❌ AutoUpdate skipped (offline)
+Traceback (most recent call last):
+  File "/home/hslee/Desktop/Embedded_AI/EXP/ultralytics/ultralytics/nn/tasks.py", line 910, in torch_safe_load
+    ckpt = torch.load(file, map_location="cpu")
+  File "/home/hslee/Desktop/Embedded_AI/EXP/ultralytics/ultralytics/utils/patches.py", line 86, in torch_load
+    return _torch_load(*args, **kwargs)
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.13/site-packages/torch/serialization.py", line 1525, in load
+    return _load(
+        opened_zipfile,
+    ...<3 lines>...
+        **pickle_load_args,
+    )
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.13/site-packages/torch/serialization.py", line 2114, in _load
+    result = unpickler.load()
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.13/site-packages/torch/serialization.py", line 2103, in find_class
+    return super().find_class(mod_name, name)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'yolov6'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/hslee/Desktop/Embedded_AI/EXP/ultralytics/eval.py", line 4, in <module>
+    model = YOLO("/home/hslee/Desktop/Embedded_AI/EXP/ultralytics/pretrained/yolov6s.pt")  # load a custom model
+  File "/home/hslee/Desktop/Embedded_AI/EXP/ultralytics/ultralytics/models/yolo/model.py", line 24, in __init__
+    super().__init__(model=model, task=task, verbose=verbose)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hslee/Desktop/Embedded_AI/EXP/ultralytics/ultralytics/engine/model.py", line 148, in __init__
+    self._load(model, task=task)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/hslee/Desktop/Embedded_AI/EXP/ultralytics/ultralytics/engine/model.py", line 291, in _load
+    self.model, self.ckpt = attempt_load_one_weight(weights)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/hslee/Desktop/Embedded_AI/EXP/ultralytics/ultralytics/nn/tasks.py", line 983, in attempt_load_one_weight
+    ckpt, weight = torch_safe_load(weight)  # load ckpt
+                   ~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/hslee/Desktop/Embedded_AI/EXP/ultralytics/ultralytics/nn/tasks.py", line 930, in torch_safe_load
+    ckpt = torch.load(file, map_location="cpu")
+  File "/home/hslee/Desktop/Embedded_AI/EXP/ultralytics/ultralytics/utils/patches.py", line 86, in torch_load
+    return _torch_load(*args, **kwargs)
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.13/site-packages/torch/serialization.py", line 1525, in load
+    return _load(
+        opened_zipfile,
+    ...<3 lines>...
+        **pickle_load_args,
+    )
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.13/site-packages/torch/serialization.py", line 2114, in _load
+    result = unpickler.load()
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.13/site-packages/torch/serialization.py", line 2103, in find_class
+    return super().find_class(mod_name, name)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'yolov6'

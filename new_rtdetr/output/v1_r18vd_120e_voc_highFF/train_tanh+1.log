@@ -1,0 +1,512 @@
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+Initialized distributed mode...
+Initialized distributed mode...
+cfg:  {'task': 'detection', '_model': None, '_postprocessor': None, '_criterion': None, '_optimizer': None, '_lr_scheduler': None, '_lr_warmup_scheduler': None, '_train_dataloader': None, '_val_dataloader': None, '_ema': None, '_scaler': None, '_train_dataset': None, '_val_dataset': None, '_collate_fn': None, '_evaluator': None, '_writer': None, 'num_workers': 0, 'batch_size': None, '_train_batch_size': None, '_val_batch_size': None, '_train_shuffle': None, '_val_shuffle': None, 'resume': None, 'tuning': None, 'epoches': 120, 'last_epoch': -1, 'use_amp': False, 'use_ema': True, 'ema_decay': 0.9999, 'ema_warmups': 2000, 'sync_bn': True, 'clip_max_norm': 0.1, 'find_unused_parameters': False, 'seed': None, 'print_freq': 100, 'checkpoint_freq': 20, 'output_dir': './output/v1_r18vd_120e_voc_highFF/', 'summary_dir': None, 'device': '', 'yaml_cfg': {'task': 'detection', 'evaluator': {'type': 'CocoEvaluator', 'iou_types': ['bbox']}, 'num_classes': 20, 'train_dataloader': {'type': 'DataLoader', 'dataset': {'type': 'VOCDetection', 'root': '/media/data/VOCdevkit/VOC0712/', 'ann_file': 'trainval.txt', 'label_file': 'label_list.txt', 'transforms': {'type': 'Compose', 'ops': [{'type': 'RandomPhotometricDistort', 'p': 0.5}, {'type': 'RandomZoomOut', 'fill': 0}, {'type': 'RandomIoUCrop', 'p': 0.8}, {'type': 'SanitizeBoundingBoxes', 'min_size': 1}, {'type': 'RandomHorizontalFlip'}, {'type': 'Resize', 'size': [640, 640]}, {'type': 'SanitizeBoundingBoxes', 'min_size': 1}, {'type': 'ConvertPILImage', 'dtype': 'float32', 'scale': True}, {'type': 'ConvertBoxes', 'fmt': 'cxcywh', 'normalize': True}]}, 'return_masks': False}, 'shuffle': True, 'num_workers': 4, 'drop_last': True, 'collate_fn': {'type': 'BatchImageCollateFuncion', 'scales': [480, 512, 544, 576, 608, 640, 640, 640, 672, 704, 736, 768, 800]}, 'total_batch_size': 16}, 'val_dataloader': {'type': 'DataLoader', 'dataset': {'type': 'VOCDetection', 'root': '/media/data/VOCdevkit/VOC2007/', 'ann_file': 'test.txt', 'label_file': 'label_list.txt', 'transforms': {'type': 'Compose', 'ops': [{'type': 'Resize', 'size': [640, 640]}, {'type': 'ConvertPILImage', 'dtype': 'float32', 'scale': True}]}}, 'shuffle': False, 'num_workers': 8, 'drop_last': False, 'collate_fn': {'type': 'BatchImageCollateFuncion'}, 'total_batch_size': 16}, 'print_freq': 100, 'output_dir': './output/v1_r18vd_120e_voc_highFF/', 'checkpoint_freq': 20, 'sync_bn': True, 'find_unused_parameters': False, 'use_amp': False, 'scaler': {'type': 'GradScaler', 'enabled': True}, 'use_ema': True, 'ema': {'type': 'ModelEMA', 'decay': 0.9999, 'warmups': 2000}, 'epoches': 120, 'clip_max_norm': 0.1, 'optimizer': {'type': 'AdamW', 'params': [{'params': '^(?=.*backbone)(?=.*norm|bn).*$', 'weight_decay': 0.0, 'lr': 1e-05}, {'params': '^(?=.*backbone)(?!.*norm|bn).*$', 'lr': 1e-05}, {'params': '^(?=.*(?:encoder|decoder))(?=.*(?:norm|bn|bias)).*$', 'weight_decay': 0.0}], 'lr': 0.0001, 'betas': [0.9, 0.999], 'weight_decay': 0.0001}, 'lr_scheduler': {'type': 'MultiStepLR', 'milestones': [1000], 'gamma': 0.1}, 'lr_warmup_scheduler': {'type': 'LinearWarmup', 'warmup_duration': 2000}, 'model': 'RTDETR', 'criterion': 'RTDETRCriterion', 'postprocessor': 'RTDETRPostProcessor', 'use_focal_loss': True, 'eval_spatial_size': [640, 640], 'RTDETR': {'backbone': 'PResNet', 'encoder': 'HybridEncoder', 'decoder': 'RTDETRTransformer'}, 'PResNet': {'depth': 18, 'variant': 'd', 'freeze_at': -1, 'return_idx': [1, 2, 3], 'num_stages': 4, 'freeze_norm': False, 'pretrained': True}, 'HybridEncoder': {'in_channels': [128, 256, 512], 'feat_strides': [8, 16, 32], 'hidden_dim': 256, 'use_encoder_idx': [2], 'num_encoder_layers': 1, 'nhead': 8, 'dim_feedforward': 1024, 'dropout': 0.0, 'enc_act': 'gelu', 'expansion': 0.5, 'depth_mult': 1, 'act': 'silu', 'version': 'v1'}, 'RTDETRTransformer': {'feat_channels': [256, 256, 256], 'feat_strides': [8, 16, 32], 'hidden_dim': 256, 'num_levels': 3, 'num_layers': 3, 'num_queries': 300, 'num_denoising': 100, 'label_noise_ratio': 0.5, 'box_noise_scale': 1.0, 'eval_idx': -1}, 'RTDETRPostProcessor': {'num_top_queries': 300}, 'RTDETRCriterion': {'weight_dict': {'loss_vfl': 1, 'loss_bbox': 5, 'loss_giou': 2}, 'losses': ['vfl', 'boxes'], 'alpha': 0.75, 'gamma': 2.0, 'matcher': {'type': 'HungarianMatcher', 'weight_dict': {'cost_class': 2, 'cost_bbox': 5, 'cost_giou': 2}, 'alpha': 0.25, 'gamma': 2.0}}, '__include__': ['../dataset/voc_detection.yml', '../runtime.yml', './include/dataloader.yml', './include/optimizer_120e.yml', './include/rtdetr_r50vd.yml'], 'config': '/home/hslee/SONeck/rtdetrv2_pytorch2/configs/rtdetr/rtdetr_r18vd_120e_voc.yml', 'test_only': False, 'print_method': 'builtin', 'print_rank': 0}}
+Start training
+Load PResNet18 state_dict
+model: RTDETR(
+  (backbone): PResNet(
+    (conv1): Sequential(
+      (conv1_1): ConvNormLayer(
+        (conv): Conv2d(3, 32, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (norm): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act): ReLU(inplace=True)
+      )
+      (conv1_2): ConvNormLayer(
+        (conv): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (norm): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act): ReLU(inplace=True)
+      )
+      (conv1_3): ConvNormLayer(
+        (conv): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (norm): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act): ReLU(inplace=True)
+      )
+    )
+    (res_layers): ModuleList(
+      (0): Blocks(
+        (blocks): ModuleList(
+          (0): BasicBlock(
+            (short): ConvNormLayer(
+              (conv): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (norm): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (branch2a): ConvNormLayer(
+              (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): ReLU(inplace=True)
+            )
+            (branch2b): ConvNormLayer(
+              (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): ReLU(inplace=True)
+          )
+          (1): BasicBlock(
+            (branch2a): ConvNormLayer(
+              (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): ReLU(inplace=True)
+            )
+            (branch2b): ConvNormLayer(
+              (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): ReLU(inplace=True)
+          )
+        )
+      )
+      (1): Blocks(
+        (blocks): ModuleList(
+          (0): BasicBlock(
+            (short): Sequential(
+              (pool): AvgPool2d(kernel_size=2, stride=2, padding=0)
+              (conv): ConvNormLayer(
+                (conv): Conv2d(64, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+                (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                (act): Identity()
+              )
+            )
+            (branch2a): ConvNormLayer(
+              (conv): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): ReLU(inplace=True)
+            )
+            (branch2b): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): ReLU(inplace=True)
+          )
+          (1): BasicBlock(
+            (branch2a): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): ReLU(inplace=True)
+            )
+            (branch2b): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): ReLU(inplace=True)
+          )
+        )
+      )
+      (2): Blocks(
+        (blocks): ModuleList(
+          (0): BasicBlock(
+            (short): Sequential(
+              (pool): AvgPool2d(kernel_size=2, stride=2, padding=0)
+              (conv): ConvNormLayer(
+                (conv): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+                (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                (act): Identity()
+              )
+            )
+            (branch2a): ConvNormLayer(
+              (conv): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): ReLU(inplace=True)
+            )
+            (branch2b): ConvNormLayer(
+              (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): ReLU(inplace=True)
+          )
+          (1): BasicBlock(
+            (branch2a): ConvNormLayer(
+              (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): ReLU(inplace=True)
+            )
+            (branch2b): ConvNormLayer(
+              (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): ReLU(inplace=True)
+          )
+        )
+      )
+      (3): Blocks(
+        (blocks): ModuleList(
+          (0): BasicBlock(
+            (short): Sequential(
+              (pool): AvgPool2d(kernel_size=2, stride=2, padding=0)
+              (conv): ConvNormLayer(
+                (conv): Conv2d(256, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+                (norm): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                (act): Identity()
+              )
+            )
+            (branch2a): ConvNormLayer(
+              (conv): Conv2d(256, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): ReLU(inplace=True)
+            )
+            (branch2b): ConvNormLayer(
+              (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): ReLU(inplace=True)
+          )
+          (1): BasicBlock(
+            (branch2a): ConvNormLayer(
+              (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): ReLU(inplace=True)
+            )
+            (branch2b): ConvNormLayer(
+              (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): ReLU(inplace=True)
+          )
+        )
+      )
+    )
+  )
+  (decoder): RTDETRTransformer(
+    (input_proj): ModuleList(
+      (0-2): 3 x Sequential(
+        (conv): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (decoder): TransformerDecoder(
+      (layers): ModuleList(
+        (0-2): 3 x TransformerDecoderLayer(
+          (self_attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+          )
+          (dropout1): Dropout(p=0.0, inplace=False)
+          (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+          (cross_attn): MSDeformableAttention(
+            (sampling_offsets): Linear(in_features=256, out_features=192, bias=True)
+            (attention_weights): Linear(in_features=256, out_features=96, bias=True)
+            (value_proj): Linear(in_features=256, out_features=256, bias=True)
+            (output_proj): Linear(in_features=256, out_features=256, bias=True)
+          )
+          (dropout2): Dropout(p=0.0, inplace=False)
+          (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+          (linear1): Linear(in_features=256, out_features=1024, bias=True)
+          (dropout3): Dropout(p=0.0, inplace=False)
+          (linear2): Linear(in_features=1024, out_features=256, bias=True)
+          (dropout4): Dropout(p=0.0, inplace=False)
+          (norm3): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        )
+      )
+    )
+    (denoising_class_embed): Embedding(21, 256, padding_idx=20)
+    (query_pos_head): MLP(
+      (layers): ModuleList(
+        (0): Linear(in_features=4, out_features=512, bias=True)
+        (1): Linear(in_features=512, out_features=256, bias=True)
+      )
+      (act): ReLU(inplace=True)
+    )
+    (enc_output): Sequential(
+      (0): Linear(in_features=256, out_features=256, bias=True)
+      (1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+    )
+    (enc_score_head): Linear(in_features=256, out_features=20, bias=True)
+    (enc_bbox_head): MLP(
+      (layers): ModuleList(
+        (0-1): 2 x Linear(in_features=256, out_features=256, bias=True)
+        (2): Linear(in_features=256, out_features=4, bias=True)
+      )
+      (act): ReLU(inplace=True)
+    )
+    (dec_score_head): ModuleList(
+      (0-2): 3 x Linear(in_features=256, out_features=20, bias=True)
+    )
+    (dec_bbox_head): ModuleList(
+      (0-2): 3 x MLP(
+        (layers): ModuleList(
+          (0-1): 2 x Linear(in_features=256, out_features=256, bias=True)
+          (2): Linear(in_features=256, out_features=4, bias=True)
+        )
+        (act): ReLU(inplace=True)
+      )
+    )
+  )
+  (encoder): HybridEncoder(
+    (input_proj): ModuleList(
+      (0): Sequential(
+        (0): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (1): Sequential(
+        (0): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (2): Sequential(
+        (0): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (encoder): ModuleList(
+      (0): TransformerEncoder(
+        (layers): ModuleList(
+          (0): TransformerEncoderLayer(
+            (self_attn): MultiheadAttention(
+              (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+            )
+            (linear1): Linear(in_features=256, out_features=1024, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear2): Linear(in_features=1024, out_features=256, bias=True)
+            (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+            (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+            (dropout1): Dropout(p=0.0, inplace=False)
+            (dropout2): Dropout(p=0.0, inplace=False)
+            (activation): GELU(approximate='none')
+          )
+        )
+      )
+    )
+    (lateral_convs): ModuleList(
+      (0-1): 2 x ConvNormLayer(
+        (conv): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act): SiLU(inplace=True)
+      )
+    )
+    (fpn_blocks): ModuleList(
+      (0-1): 2 x CSPRepLayer(
+        (conv1): ConvNormLayer(
+          (conv): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+        (conv2): ConvNormLayer(
+          (conv): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+        (bottlenecks): Sequential(
+          (0): RepVggBlock(
+            (conv1): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (conv2): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): SiLU(inplace=True)
+          )
+          (1): RepVggBlock(
+            (conv1): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (conv2): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): SiLU(inplace=True)
+          )
+          (2): RepVggBlock(
+            (conv1): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (conv2): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): SiLU(inplace=True)
+          )
+        )
+        (conv3): ConvNormLayer(
+          (conv): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+    )
+    (downsample_convs): ModuleList(
+      (0-1): 2 x ConvNormLayer(
+        (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act): SiLU(inplace=True)
+      )
+    )
+    (pan_blocks): ModuleList(
+      (0-1): 2 x CSPRepLayer(
+        (conv1): ConvNormLayer(
+          (conv): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+        (conv2): ConvNormLayer(
+          (conv): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+        (bottlenecks): Sequential(
+          (0): RepVggBlock(
+            (conv1): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (conv2): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): SiLU(inplace=True)
+          )
+          (1): RepVggBlock(
+            (conv1): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (conv2): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): SiLU(inplace=True)
+          )
+          (2): RepVggBlock(
+            (conv1): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (conv2): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): SiLU(inplace=True)
+          )
+        )
+        (conv3): ConvNormLayer(
+          (conv): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+    )
+    (sa_cross_attn): ModuleList(
+      (0-1): 2 x SpatialAlignCrossAttention(
+        (high_fusion_factor_head): Sequential(
+          (0): Linear(in_features=256, out_features=64, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=64, out_features=1, bias=True)
+        )
+        (cross_attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+        )
+        (linear1): Linear(in_features=256, out_features=1024, bias=True)
+        (dropout_layer): Dropout(p=0.0, inplace=False)
+        (linear2): Linear(in_features=1024, out_features=256, bias=True)
+        (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (dropout1): Dropout(p=0.0, inplace=False)
+        (dropout2): Dropout(p=0.0, inplace=False)
+        (activation): GELU(approximate='none')
+        (avg_pool_2x): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        (avg_pool_4x): AvgPool2d(kernel_size=4, stride=4, padding=0)
+      )
+    )
+  )
+)
+| module                                  | #parameters or shape   | #flops     |
+|:----------------------------------------|:-----------------------|:-----------|
+| module                                  | 21.72M                 | 31.544G    |
+|  backbone                               |  11.2M                 |  16.923G   |
+|   backbone.conv1                        |   28.768K              |   2.946G   |
+|    backbone.conv1.conv1_1               |    0.928K              |    95.027M |
+|    backbone.conv1.conv1_2               |    9.28K               |    0.95G   |
+|    backbone.conv1.conv1_3               |    18.56K              |    1.901G  |
+|   backbone.res_layers                   |   11.171M              |   13.977G  |
+|    backbone.res_layers.0.blocks         |    0.152M              |    3.896G  |
+|    backbone.res_layers.1.blocks         |    0.526M              |    3.364G  |
+|    backbone.res_layers.2.blocks         |    2.1M                |    3.36G   |
+|    backbone.res_layers.3.blocks         |    8.394M              |    3.357G  |
+|  decoder                                |  3.942M                |  5.146G    |
+|   decoder.input_proj                    |   0.198M               |   0.555G   |
+|    decoder.input_proj.0                 |    66.048K             |    0.423G  |
+|    decoder.input_proj.1                 |    66.048K             |    0.106G  |
+|    decoder.input_proj.2                 |    66.048K             |    26.419M |
+|   decoder.decoder.layers                |   2.988M               |   2.637G   |
+|    decoder.decoder.layers.0             |    0.996M              |    0.879G  |
+|    decoder.decoder.layers.1             |    0.996M              |    0.879G  |
+|    decoder.decoder.layers.2             |    0.996M              |    0.879G  |
+|   decoder.denoising_class_embed         |   5.376K               |            |
+|    decoder.denoising_class_embed.weight |    (21, 256)           |            |
+|   decoder.query_pos_head.layers         |   0.134M               |   0.12G    |
+|    decoder.query_pos_head.layers.0      |    2.56K               |    1.843M  |
+|    decoder.query_pos_head.layers.1      |    0.131M              |    0.118G  |
+|   decoder.enc_output                    |   66.304K              |   0.561G   |
+|    decoder.enc_output.0                 |    65.792K             |    0.551G  |
+|    decoder.enc_output.1                 |    0.512K              |    10.752M |
+|   decoder.enc_score_head                |   5.14K                |   43.008M  |
+|    decoder.enc_score_head.weight        |    (20, 256)           |            |
+|    decoder.enc_score_head.bias          |    (20,)               |            |
+|   decoder.enc_bbox_head.layers          |   0.133M               |   1.11G    |
+|    decoder.enc_bbox_head.layers.0       |    65.792K             |    0.551G  |
+|    decoder.enc_bbox_head.layers.1       |    65.792K             |    0.551G  |
+|    decoder.enc_bbox_head.layers.2       |    1.028K              |    8.602M  |
+|   decoder.dec_score_head                |   15.42K               |   1.536M   |
+|    decoder.dec_score_head.0             |    5.14K               |            |
+|    decoder.dec_score_head.1             |    5.14K               |            |
+|    decoder.dec_score_head.2             |    5.14K               |    1.536M  |
+|   decoder.dec_bbox_head                 |   0.398M               |   0.119G   |
+|    decoder.dec_bbox_head.0.layers       |    0.133M              |    39.629M |
+|    decoder.dec_bbox_head.1.layers       |    0.133M              |    39.629M |
+|    decoder.dec_bbox_head.2.layers       |    0.133M              |    39.629M |
+|  encoder                                |  6.578M                |  9.475G    |
+|   encoder.input_proj                    |   0.231M               |   0.371G   |
+|    encoder.input_proj.0                 |    33.28K              |    0.213G  |
+|    encoder.input_proj.1                 |    66.048K             |    0.106G  |
+|    encoder.input_proj.2                 |    0.132M              |    52.634M |
+|   encoder.encoder.0.layers.0            |   0.79M                |   0.398G   |
+|    encoder.encoder.0.layers.0.self_attn |    0.263M              |    0.187G  |
+|    encoder.encoder.0.layers.0.linear1   |    0.263M              |    0.105G  |
+|    encoder.encoder.0.layers.0.linear2   |    0.262M              |    0.105G  |
+|    encoder.encoder.0.layers.0.norm1     |    0.512K              |    0.512M  |
+|    encoder.encoder.0.layers.0.norm2     |    0.512K              |    0.512M  |
+|   encoder.lateral_convs                 |   0.132M               |   0.132G   |
+|    encoder.lateral_convs.0              |    66.048K             |    26.419M |
+|    encoder.lateral_convs.1              |    66.048K             |    0.106G  |
+|   encoder.fpn_blocks                    |   1.316M               |   5.263G   |
+|    encoder.fpn_blocks.0                 |    0.658M              |    1.053G  |
+|    encoder.fpn_blocks.1                 |    0.658M              |    4.211G  |
+|   encoder.downsample_convs              |   1.181M               |   1.181G   |
+|    encoder.downsample_convs.0           |    0.59M               |    0.945G  |
+|    encoder.downsample_convs.1           |    0.59M               |    0.236G  |
+|   encoder.pan_blocks                    |   1.316M               |   1.316G   |
+|    encoder.pan_blocks.0                 |    0.658M              |    1.053G  |
+|    encoder.pan_blocks.1                 |    0.658M              |    0.263G  |
+|   encoder.sa_cross_attn                 |   1.613M               |   0.806G   |
+|    encoder.sa_cross_attn.0              |    0.807M              |    0.4G    |
+|    encoder.sa_cross_attn.1              |    0.807M              |    0.405G  |
+Initial lr: [1e-05, 1e-05, 0.0001, 0.0001]
+building train_dataloader with batch_size=8...
+building val_dataloader with batch_size=8...
+number of trainable parameters: 21720482
+Epoch: [0]  [   0/1034]  eta: 0:17:30  lr: 0.000000  cos: 0.0000 (0.0000)  loss: 27.6577 (27.6577)  loss_bbox: 2.1748 (2.1748)  loss_bbox_aux_0: 2.1670 (2.1670)  loss_bbox_aux_1: 2.1556 (2.1556)  loss_bbox_aux_2: 2.2900 (2.2900)  loss_bbox_dn_0: 1.3235 (1.3235)  loss_bbox_dn_1: 1.3235 (1.3235)  loss_bbox_dn_2: 1.3235 (1.3235)  loss_giou: 1.6016 (1.6016)  loss_giou_aux_0: 1.5875 (1.5875)  loss_giou_aux_1: 1.5968 (1.5968)  loss_giou_aux_2: 1.6038 (1.6038)  loss_giou_dn_0: 1.3190 (1.3190)  loss_giou_dn_1: 1.3190 (1.3190)  loss_giou_dn_2: 1.3190 (1.3190)  loss_vfl: 0.4924 (0.4924)  loss_vfl_aux_0: 0.4606 (0.4606)  loss_vfl_aux_1: 0.4804 (0.4804)  loss_vfl_aux_2: 0.4743 (0.4743)  loss_vfl_dn_0: 0.8422 (0.8422)  loss_vfl_dn_1: 0.8729 (0.8729)  loss_vfl_dn_2: 0.9303 (0.9303)  time: 1.0161  data: 0.3407  max mem: 4269

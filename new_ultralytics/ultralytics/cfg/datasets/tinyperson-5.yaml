@@ -1,0 +1,14 @@
+path: /media/data/tinyperson-5
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 2
+names: ['dry-person', 'wet-swimmer']
+
+roboflow:
+  workspace: chris-d-dbyby
+  project: tinyperson
+  version: 5
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/chris-d-dbyby/tinyperson/dataset/5

@@ -1,0 +1,558 @@
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+Initialized distributed mode...
+Initialized distributed mode...
+cfg:  {'task': 'detection', '_model': None, '_postprocessor': None, '_criterion': None, '_optimizer': None, '_lr_scheduler': None, '_lr_warmup_scheduler': None, '_train_dataloader': None, '_val_dataloader': None, '_ema': None, '_scaler': None, '_train_dataset': None, '_val_dataset': None, '_collate_fn': None, '_evaluator': None, '_writer': None, 'num_workers': 0, 'batch_size': None, '_train_batch_size': None, '_val_batch_size': None, '_train_shuffle': None, '_val_shuffle': None, 'resume': None, 'tuning': None, 'epoches': 72, 'last_epoch': -1, 'use_amp': False, 'use_ema': True, 'ema_decay': 0.9999, 'ema_warmups': 2000, 'sync_bn': True, 'clip_max_norm': 0.1, 'find_unused_parameters': False, 'seed': None, 'print_freq': 100, 'checkpoint_freq': 20, 'output_dir': './output/v1_r18vd_72e_coco_SA-FF', 'summary_dir': None, 'device': '', 'yaml_cfg': {'task': 'detection', 'evaluator': {'type': 'CocoEvaluator', 'iou_types': ['bbox']}, 'num_classes': 80, 'remap_mscoco_category': True, 'train_dataloader': {'type': 'DataLoader', 'dataset': {'type': 'CocoDetection', 'img_folder': '/media/data/coco/images/train2017', 'ann_file': '/media/data/coco/annotations/instances_train2017.json', 'return_masks': False, 'transforms': {'type': 'Compose', 'ops': [{'type': 'RandomPhotometricDistort', 'p': 0.5}, {'type': 'RandomZoomOut', 'fill': 0}, {'type': 'RandomIoUCrop', 'p': 0.8}, {'type': 'SanitizeBoundingBoxes', 'min_size': 1}, {'type': 'RandomHorizontalFlip'}, {'type': 'Resize', 'size': [640, 640]}, {'type': 'SanitizeBoundingBoxes', 'min_size': 1}, {'type': 'ConvertPILImage', 'dtype': 'float32', 'scale': True}, {'type': 'ConvertBoxes', 'fmt': 'cxcywh', 'normalize': True}]}}, 'shuffle': True, 'num_workers': 4, 'drop_last': True, 'collate_fn': {'type': 'BatchImageCollateFuncion', 'scales': [480, 512, 544, 576, 608, 640, 640, 640, 672, 704, 736, 768, 800]}, 'total_batch_size': 16}, 'val_dataloader': {'type': 'DataLoader', 'dataset': {'type': 'CocoDetection', 'img_folder': '/media/data/coco/images/val2017/', 'ann_file': '/media/data/coco/annotations/instances_val2017.json', 'return_masks': False, 'transforms': {'type': 'Compose', 'ops': [{'type': 'Resize', 'size': [640, 640]}, {'type': 'ConvertPILImage', 'dtype': 'float32', 'scale': True}]}}, 'shuffle': False, 'num_workers': 8, 'drop_last': False, 'collate_fn': {'type': 'BatchImageCollateFuncion'}, 'total_batch_size': 16}, 'print_freq': 100, 'output_dir': './output/v1_r18vd_72e_coco_SA-FF', 'checkpoint_freq': 20, 'sync_bn': True, 'find_unused_parameters': False, 'use_amp': False, 'scaler': {'type': 'GradScaler', 'enabled': True}, 'use_ema': True, 'ema': {'type': 'ModelEMA', 'decay': 0.9999, 'warmups': 2000}, 'epoches': 72, 'clip_max_norm': 0.1, 'optimizer': {'type': 'AdamW', 'params': [{'params': '^(?=.*backbone)(?=.*norm|bn).*$', 'weight_decay': 0.0, 'lr': 1e-05}, {'params': '^(?=.*backbone)(?!.*norm|bn).*$', 'lr': 1e-05}, {'params': '^(?=.*(?:encoder|decoder))(?=.*(?:norm|bn|bias)).*$', 'weight_decay': 0.0}], 'lr': 0.0001, 'betas': [0.9, 0.999], 'weight_decay': 0.0001}, 'lr_scheduler': {'type': 'MultiStepLR', 'milestones': [1000], 'gamma': 0.1}, 'lr_warmup_scheduler': {'type': 'LinearWarmup', 'warmup_duration': 2000}, 'model': 'RTDETR', 'criterion': 'RTDETRCriterion', 'postprocessor': 'RTDETRPostProcessor', 'use_focal_loss': True, 'eval_spatial_size': [640, 640], 'RTDETR': {'backbone': 'PResNet', 'encoder': 'HybridEncoder', 'decoder': 'RTDETRTransformer'}, 'PResNet': {'depth': 18, 'variant': 'd', 'freeze_at': -1, 'return_idx': [1, 2, 3], 'num_stages': 4, 'freeze_norm': False, 'pretrained': True}, 'HybridEncoder': {'in_channels': [128, 256, 512], 'feat_strides': [8, 16, 32], 'hidden_dim': 256, 'use_encoder_idx': [2], 'num_encoder_layers': 1, 'nhead': 8, 'dim_feedforward': 1024, 'dropout': 0.0, 'enc_act': 'gelu', 'expansion': 0.5, 'depth_mult': 1, 'act': 'silu', 'version': 'v1'}, 'RTDETRTransformer': {'feat_channels': [256, 256, 256], 'feat_strides': [8, 16, 32], 'hidden_dim': 256, 'num_levels': 3, 'num_layers': 3, 'num_queries': 300, 'num_denoising': 100, 'label_noise_ratio': 0.5, 'box_noise_scale': 1.0, 'eval_idx': -1}, 'RTDETRPostProcessor': {'num_top_queries': 300}, 'RTDETRCriterion': {'weight_dict': {'loss_vfl': 1, 'loss_bbox': 5, 'loss_giou': 2}, 'losses': ['vfl', 'boxes'], 'alpha': 0.75, 'gamma': 2.0, 'matcher': {'type': 'HungarianMatcher', 'weight_dict': {'cost_class': 2, 'cost_bbox': 5, 'cost_giou': 2}, 'alpha': 0.25, 'gamma': 2.0}}, '__include__': ['../dataset/coco_detection.yml', '../runtime.yml', './include/dataloader.yml', './include/optimizer.yml', './include/rtdetr_r50vd.yml'], 'config': 'configs/rtdetr/rtdetr_r18vd_6x_coco.yml', 'test_only': False, 'print_method': 'builtin', 'print_rank': 0}}
+Start training
+Load PResNet18 state_dict
+model: RTDETR(
+  (backbone): PResNet(
+    (conv1): Sequential(
+      (conv1_1): ConvNormLayer(
+        (conv): Conv2d(3, 32, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (norm): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act): ReLU(inplace=True)
+      )
+      (conv1_2): ConvNormLayer(
+        (conv): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (norm): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act): ReLU(inplace=True)
+      )
+      (conv1_3): ConvNormLayer(
+        (conv): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (norm): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act): ReLU(inplace=True)
+      )
+    )
+    (res_layers): ModuleList(
+      (0): Blocks(
+        (blocks): ModuleList(
+          (0): BasicBlock(
+            (short): ConvNormLayer(
+              (conv): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (norm): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (branch2a): ConvNormLayer(
+              (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): ReLU(inplace=True)
+            )
+            (branch2b): ConvNormLayer(
+              (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): ReLU(inplace=True)
+          )
+          (1): BasicBlock(
+            (branch2a): ConvNormLayer(
+              (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): ReLU(inplace=True)
+            )
+            (branch2b): ConvNormLayer(
+              (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): ReLU(inplace=True)
+          )
+        )
+      )
+      (1): Blocks(
+        (blocks): ModuleList(
+          (0): BasicBlock(
+            (short): Sequential(
+              (pool): AvgPool2d(kernel_size=2, stride=2, padding=0)
+              (conv): ConvNormLayer(
+                (conv): Conv2d(64, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+                (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                (act): Identity()
+              )
+            )
+            (branch2a): ConvNormLayer(
+              (conv): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): ReLU(inplace=True)
+            )
+            (branch2b): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): ReLU(inplace=True)
+          )
+          (1): BasicBlock(
+            (branch2a): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): ReLU(inplace=True)
+            )
+            (branch2b): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): ReLU(inplace=True)
+          )
+        )
+      )
+      (2): Blocks(
+        (blocks): ModuleList(
+          (0): BasicBlock(
+            (short): Sequential(
+              (pool): AvgPool2d(kernel_size=2, stride=2, padding=0)
+              (conv): ConvNormLayer(
+                (conv): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+                (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                (act): Identity()
+              )
+            )
+            (branch2a): ConvNormLayer(
+              (conv): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): ReLU(inplace=True)
+            )
+            (branch2b): ConvNormLayer(
+              (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): ReLU(inplace=True)
+          )
+          (1): BasicBlock(
+            (branch2a): ConvNormLayer(
+              (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): ReLU(inplace=True)
+            )
+            (branch2b): ConvNormLayer(
+              (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): ReLU(inplace=True)
+          )
+        )
+      )
+      (3): Blocks(
+        (blocks): ModuleList(
+          (0): BasicBlock(
+            (short): Sequential(
+              (pool): AvgPool2d(kernel_size=2, stride=2, padding=0)
+              (conv): ConvNormLayer(
+                (conv): Conv2d(256, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+                (norm): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                (act): Identity()
+              )
+            )
+            (branch2a): ConvNormLayer(
+              (conv): Conv2d(256, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): ReLU(inplace=True)
+            )
+            (branch2b): ConvNormLayer(
+              (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): ReLU(inplace=True)
+          )
+          (1): BasicBlock(
+            (branch2a): ConvNormLayer(
+              (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): ReLU(inplace=True)
+            )
+            (branch2b): ConvNormLayer(
+              (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): ReLU(inplace=True)
+          )
+        )
+      )
+    )
+  )
+  (decoder): RTDETRTransformer(
+    (input_proj): ModuleList(
+      (0-2): 3 x Sequential(
+        (conv): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (decoder): TransformerDecoder(
+      (layers): ModuleList(
+        (0-2): 3 x TransformerDecoderLayer(
+          (self_attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+          )
+          (dropout1): Dropout(p=0.0, inplace=False)
+          (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+          (cross_attn): MSDeformableAttention(
+            (sampling_offsets): Linear(in_features=256, out_features=192, bias=True)
+            (attention_weights): Linear(in_features=256, out_features=96, bias=True)
+            (value_proj): Linear(in_features=256, out_features=256, bias=True)
+            (output_proj): Linear(in_features=256, out_features=256, bias=True)
+          )
+          (dropout2): Dropout(p=0.0, inplace=False)
+          (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+          (linear1): Linear(in_features=256, out_features=1024, bias=True)
+          (dropout3): Dropout(p=0.0, inplace=False)
+          (linear2): Linear(in_features=1024, out_features=256, bias=True)
+          (dropout4): Dropout(p=0.0, inplace=False)
+          (norm3): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        )
+      )
+    )
+    (denoising_class_embed): Embedding(81, 256, padding_idx=80)
+    (query_pos_head): MLP(
+      (layers): ModuleList(
+        (0): Linear(in_features=4, out_features=512, bias=True)
+        (1): Linear(in_features=512, out_features=256, bias=True)
+      )
+      (act): ReLU(inplace=True)
+    )
+    (enc_output): Sequential(
+      (0): Linear(in_features=256, out_features=256, bias=True)
+      (1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+    )
+    (enc_score_head): Linear(in_features=256, out_features=80, bias=True)
+    (enc_bbox_head): MLP(
+      (layers): ModuleList(
+        (0-1): 2 x Linear(in_features=256, out_features=256, bias=True)
+        (2): Linear(in_features=256, out_features=4, bias=True)
+      )
+      (act): ReLU(inplace=True)
+    )
+    (dec_score_head): ModuleList(
+      (0-2): 3 x Linear(in_features=256, out_features=80, bias=True)
+    )
+    (dec_bbox_head): ModuleList(
+      (0-2): 3 x MLP(
+        (layers): ModuleList(
+          (0-1): 2 x Linear(in_features=256, out_features=256, bias=True)
+          (2): Linear(in_features=256, out_features=4, bias=True)
+        )
+        (act): ReLU(inplace=True)
+      )
+    )
+  )
+  (encoder): HybridEncoder(
+    (input_proj): ModuleList(
+      (0): Sequential(
+        (0): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (1): Sequential(
+        (0): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (2): Sequential(
+        (0): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (encoder): ModuleList(
+      (0): TransformerEncoder(
+        (layers): ModuleList(
+          (0): TransformerEncoderLayer(
+            (self_attn): MultiheadAttention(
+              (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+            )
+            (linear1): Linear(in_features=256, out_features=1024, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear2): Linear(in_features=1024, out_features=256, bias=True)
+            (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+            (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+            (dropout1): Dropout(p=0.0, inplace=False)
+            (dropout2): Dropout(p=0.0, inplace=False)
+            (activation): GELU(approximate='none')
+          )
+        )
+      )
+    )
+    (lateral_convs): ModuleList(
+      (0-1): 2 x ConvNormLayer(
+        (conv): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act): SiLU(inplace=True)
+      )
+    )
+    (fpn_blocks): ModuleList(
+      (0-1): 2 x CSPRepLayer(
+        (conv1): ConvNormLayer(
+          (conv): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+        (conv2): ConvNormLayer(
+          (conv): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+        (bottlenecks): Sequential(
+          (0): RepVggBlock(
+            (conv1): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (conv2): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): SiLU(inplace=True)
+          )
+          (1): RepVggBlock(
+            (conv1): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (conv2): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): SiLU(inplace=True)
+          )
+          (2): RepVggBlock(
+            (conv1): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (conv2): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): SiLU(inplace=True)
+          )
+        )
+        (conv3): ConvNormLayer(
+          (conv): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+    )
+    (downsample_convs): ModuleList(
+      (0-1): 2 x ConvNormLayer(
+        (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act): SiLU(inplace=True)
+      )
+    )
+    (pan_blocks): ModuleList(
+      (0-1): 2 x CSPRepLayer(
+        (conv1): ConvNormLayer(
+          (conv): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+        (conv2): ConvNormLayer(
+          (conv): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+        (bottlenecks): Sequential(
+          (0): RepVggBlock(
+            (conv1): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (conv2): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): SiLU(inplace=True)
+          )
+          (1): RepVggBlock(
+            (conv1): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (conv2): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): SiLU(inplace=True)
+          )
+          (2): RepVggBlock(
+            (conv1): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (conv2): ConvNormLayer(
+              (conv): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (act): Identity()
+            )
+            (act): SiLU(inplace=True)
+          )
+        )
+        (conv3): ConvNormLayer(
+          (conv): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+    )
+    (sa_cross_attn): ModuleList(
+      (0-1): 2 x SpatialAlignCrossAttention(
+        (cross_attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+        )
+        (linear1): Linear(in_features=256, out_features=1024, bias=True)
+        (dropout_layer): Dropout(p=0.0, inplace=False)
+        (linear2): Linear(in_features=1024, out_features=256, bias=True)
+        (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (dropout1): Dropout(p=0.0, inplace=False)
+        (dropout2): Dropout(p=0.0, inplace=False)
+        (activation): GELU(approximate='none')
+        (avg_pool_2x): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        (avg_pool_4x): AvgPool2d(kernel_size=4, stride=4, padding=0)
+        (fusion_factor_head): Linear(in_features=256, out_features=256, bias=True)
+      )
+    )
+  )
+)
+| module                                  | #parameters or shape   | #flops     |
+|:----------------------------------------|:-----------------------|:-----------|
+| module                                  | 21.896M                | 31.677G    |
+|  backbone                               |  11.2M                 |  16.923G   |
+|   backbone.conv1                        |   28.768K              |   2.946G   |
+|    backbone.conv1.conv1_1               |    0.928K              |    95.027M |
+|    backbone.conv1.conv1_2               |    9.28K               |    0.95G   |
+|    backbone.conv1.conv1_3               |    18.56K              |    1.901G  |
+|   backbone.res_layers                   |   11.171M              |   13.977G  |
+|    backbone.res_layers.0.blocks         |    0.152M              |    3.896G  |
+|    backbone.res_layers.1.blocks         |    0.526M              |    3.364G  |
+|    backbone.res_layers.2.blocks         |    2.1M                |    3.36G   |
+|    backbone.res_layers.3.blocks         |    8.394M              |    3.357G  |
+|  decoder                                |  4.019M                |  5.28G     |
+|   decoder.input_proj                    |   0.198M               |   0.555G   |
+|    decoder.input_proj.0                 |    66.048K             |    0.423G  |
+|    decoder.input_proj.1                 |    66.048K             |    0.106G  |
+|    decoder.input_proj.2                 |    66.048K             |    26.419M |
+|   decoder.decoder.layers                |   2.988M               |   2.637G   |
+|    decoder.decoder.layers.0             |    0.996M              |    0.879G  |
+|    decoder.decoder.layers.1             |    0.996M              |    0.879G  |
+|    decoder.decoder.layers.2             |    0.996M              |    0.879G  |
+|   decoder.denoising_class_embed         |   20.736K              |            |
+|    decoder.denoising_class_embed.weight |    (81, 256)           |            |
+|   decoder.query_pos_head.layers         |   0.134M               |   0.12G    |
+|    decoder.query_pos_head.layers.0      |    2.56K               |    1.843M  |
+|    decoder.query_pos_head.layers.1      |    0.131M              |    0.118G  |
+|   decoder.enc_output                    |   66.304K              |   0.561G   |
+|    decoder.enc_output.0                 |    65.792K             |    0.551G  |
+|    decoder.enc_output.1                 |    0.512K              |    10.752M |
+|   decoder.enc_score_head                |   20.56K               |   0.172G   |
+|    decoder.enc_score_head.weight        |    (80, 256)           |            |
+|    decoder.enc_score_head.bias          |    (80,)               |            |
+|   decoder.enc_bbox_head.layers          |   0.133M               |   1.11G    |
+|    decoder.enc_bbox_head.layers.0       |    65.792K             |    0.551G  |
+|    decoder.enc_bbox_head.layers.1       |    65.792K             |    0.551G  |
+|    decoder.enc_bbox_head.layers.2       |    1.028K              |    8.602M  |
+|   decoder.dec_score_head                |   61.68K               |   6.144M   |
+|    decoder.dec_score_head.0             |    20.56K              |            |
+|    decoder.dec_score_head.1             |    20.56K              |            |
+|    decoder.dec_score_head.2             |    20.56K              |    6.144M  |
+|   decoder.dec_bbox_head                 |   0.398M               |   0.119G   |
+|    decoder.dec_bbox_head.0.layers       |    0.133M              |    39.629M |
+|    decoder.dec_bbox_head.1.layers       |    0.133M              |    39.629M |
+|    decoder.dec_bbox_head.2.layers       |    0.133M              |    39.629M |
+|  encoder                                |  6.677M                |  9.475G    |
+|   encoder.input_proj                    |   0.231M               |   0.371G   |
+|    encoder.input_proj.0                 |    33.28K              |    0.213G  |
+|    encoder.input_proj.1                 |    66.048K             |    0.106G  |
+|    encoder.input_proj.2                 |    0.132M              |    52.634M |
+|   encoder.encoder.0.layers.0            |   0.79M                |   0.398G   |
+|    encoder.encoder.0.layers.0.self_attn |    0.263M              |    0.187G  |
+|    encoder.encoder.0.layers.0.linear1   |    0.263M              |    0.105G  |
+|    encoder.encoder.0.layers.0.linear2   |    0.262M              |    0.105G  |
+|    encoder.encoder.0.layers.0.norm1     |    0.512K              |    0.512M  |
+|    encoder.encoder.0.layers.0.norm2     |    0.512K              |    0.512M  |
+|   encoder.lateral_convs                 |   0.132M               |   0.132G   |
+|    encoder.lateral_convs.0              |    66.048K             |    26.419M |
+|    encoder.lateral_convs.1              |    66.048K             |    0.106G  |
+|   encoder.fpn_blocks                    |   1.316M               |   5.263G   |
+|    encoder.fpn_blocks.0                 |    0.658M              |    1.053G  |
+|    encoder.fpn_blocks.1                 |    0.658M              |    4.211G  |
+|   encoder.downsample_convs              |   1.181M               |   1.181G   |
+|    encoder.downsample_convs.0           |    0.59M               |    0.945G  |
+|    encoder.downsample_convs.1           |    0.59M               |    0.236G  |
+|   encoder.pan_blocks                    |   1.316M               |   1.316G   |
+|    encoder.pan_blocks.0                 |    0.658M              |    1.053G  |
+|    encoder.pan_blocks.1                 |    0.658M              |    0.263G  |
+|   encoder.sa_cross_attn                 |   1.712M               |   0.806G   |
+|    encoder.sa_cross_attn.0              |    0.856M              |    0.4G    |
+|    encoder.sa_cross_attn.1              |    0.856M              |    0.405G  |
+Initial lr: [1e-05, 1e-05, 0.0001, 0.0001]
+building train_dataloader with batch_size=8...
+loading annotations into memory...
+Done (t=7.91s)
+creating index...
+index created!
+building val_dataloader with batch_size=8...
+loading annotations into memory...
+Done (t=1.38s)
+creating index...
+index created!
+number of trainable parameters: 21896080
+Epoch: [0]  [   0/7393]  eta: 2:14:46  lr: 0.000000  cos: 0.0000 (0.0000)  loss: 22.7061 (22.7061)  loss_bbox: 1.3919 (1.3919)  loss_bbox_aux_0: 1.3923 (1.3923)  loss_bbox_aux_1: 1.3866 (1.3866)  loss_bbox_aux_2: 1.4188 (1.4188)  loss_bbox_dn_0: 0.7723 (0.7723)  loss_bbox_dn_1: 0.7723 (0.7723)  loss_bbox_dn_2: 0.7723 (0.7723)  loss_giou: 1.7750 (1.7750)  loss_giou_aux_0: 1.7904 (1.7904)  loss_giou_aux_1: 1.7960 (1.7960)  loss_giou_aux_2: 1.7985 (1.7985)  loss_giou_dn_0: 1.3679 (1.3679)  loss_giou_dn_1: 1.3679 (1.3679)  loss_giou_dn_2: 1.3679 (1.3679)  loss_vfl: 0.3212 (0.3212)  loss_vfl_aux_0: 0.2996 (0.2996)  loss_vfl_aux_1: 0.2947 (0.2947)  loss_vfl_aux_2: 0.3055 (0.3055)  loss_vfl_dn_0: 0.7509 (0.7509)  loss_vfl_dn_1: 0.7461 (0.7461)  loss_vfl_dn_2: 0.8183 (0.8183)  time: 1.0939  data: 0.7901  max mem: 7266
+Epoch: [0]  [ 100/7393]  eta: 0:25:40  lr: 0.000001  cos: 0.0000 (0.0000)  loss: 22.7514 (23.4859)  loss_bbox: 1.4139 (1.5084)  loss_bbox_aux_0: 1.4072 (1.5179)  loss_bbox_aux_1: 1.4084 (1.5127)  loss_bbox_aux_2: 1.4227 (1.5319)  loss_bbox_dn_0: 0.7353 (0.8201)  loss_bbox_dn_1: 0.7361 (0.8202)  loss_bbox_dn_2: 0.7369 (0.8203)  loss_giou: 1.8259 (1.8408)  loss_giou_aux_0: 1.8372 (1.8505)  loss_giou_aux_1: 1.8364 (1.8492)  loss_giou_aux_2: 1.8414 (1.8626)  loss_giou_dn_0: 1.3414 (1.3445)  loss_giou_dn_1: 1.3409 (1.3444)  loss_giou_dn_2: 1.3406 (1.3442)  loss_vfl: 0.2823 (0.2807)  loss_vfl_aux_0: 0.2740 (0.2735)  loss_vfl_aux_1: 0.2876 (0.2736)  loss_vfl_aux_2: 0.2847 (0.2825)  loss_vfl_dn_0: 0.7690 (0.7927)  loss_vfl_dn_1: 0.7579 (0.7921)  loss_vfl_dn_2: 0.7781 (0.8231)  time: 0.2037  data: 0.0064  max mem: 8721
+Epoch: [0]  [ 200/7393]  eta: 0:24:45  lr: 0.000001  cos: 0.0000 (0.0000)  loss: 21.6568 (23.2885)  loss_bbox: 1.2471 (1.5005)  loss_bbox_aux_0: 1.2621 (1.5154)  loss_bbox_aux_1: 1.2624 (1.5086)  loss_bbox_aux_2: 1.3053 (1.5342)  loss_bbox_dn_0: 0.7847 (0.8422)  loss_bbox_dn_1: 0.7870 (0.8430)  loss_bbox_dn_2: 0.7901 (0.8440)  loss_giou: 1.6633 (1.7825)  loss_giou_aux_0: 1.7070 (1.7973)  loss_giou_aux_1: 1.6849 (1.7926)  loss_giou_aux_2: 1.7270 (1.8120)  loss_giou_dn_0: 1.3507 (1.3426)  loss_giou_dn_1: 1.3490 (1.3418)  loss_giou_dn_2: 1.3489 (1.3412)  loss_vfl: 0.3806 (0.3105)  loss_vfl_aux_0: 0.3374 (0.2959)  loss_vfl_aux_1: 0.3593 (0.3002)  loss_vfl_aux_2: 0.3482 (0.3080)  loss_vfl_dn_0: 0.6676 (0.7584)  loss_vfl_dn_1: 0.6702 (0.7554)  loss_vfl_dn_2: 0.6621 (0.7623)  time: 0.2051  data: 0.0060  max mem: 8721
+Epoch: [0]  [ 300/7393]  eta: 0:24:12  lr: 0.000002  cos: 0.0000 (0.0000)  loss: 20.8705 (22.8652)  loss_bbox: 1.1956 (1.4411)  loss_bbox_aux_0: 1.2118 (1.4637)  loss_bbox_aux_1: 1.1908 (1.4519)  loss_bbox_aux_2: 1.2463 (1.4930)  loss_bbox_dn_0: 0.7284 (0.8303)  loss_bbox_dn_1: 0.7425 (0.8340)  loss_bbox_dn_2: 0.7579 (0.8384)  loss_giou: 1.5622 (1.7290)  loss_giou_aux_0: 1.6072 (1.7510)  loss_giou_aux_1: 1.5851 (1.7409)  loss_giou_aux_2: 1.6363 (1.7719)  loss_giou_dn_0: 1.3474 (1.3419)  loss_giou_dn_1: 1.3456 (1.3407)  loss_giou_dn_2: 1.3525 (1.3406)  loss_vfl: 0.4506 (0.3468)  loss_vfl_aux_0: 0.4183 (0.3229)  loss_vfl_aux_1: 0.4333 (0.3323)  loss_vfl_aux_2: 0.3951 (0.3262)  loss_vfl_dn_0: 0.6265 (0.7255)  loss_vfl_dn_1: 0.6299 (0.7254)  loss_vfl_dn_2: 0.5996 (0.7176)  time: 0.2051  data: 0.0062  max mem: 8723
+Epoch: [0]  [ 400/7393]  eta: 0:23:44  lr: 0.000002  cos: 0.0000 (0.0000)  loss: 21.0406 (22.5877)  loss_bbox: 1.1335 (1.3986)  loss_bbox_aux_0: 1.1696 (1.4288)  loss_bbox_aux_1: 1.1413 (1.4112)  loss_bbox_aux_2: 1.2350 (1.4691)  loss_bbox_dn_0: 0.8047 (0.8336)  loss_bbox_dn_1: 0.8211 (0.8390)  loss_bbox_dn_2: 0.8340 (0.8450)  loss_giou: 1.4489 (1.6730)  loss_giou_aux_0: 1.4867 (1.6966)  loss_giou_aux_1: 1.4663 (1.6851)  loss_giou_aux_2: 1.5174 (1.7201)  loss_giou_dn_0: 1.3271 (1.3393)  loss_giou_dn_1: 1.3250 (1.3379)  loss_giou_dn_2: 1.3221 (1.3382)  loss_vfl: 0.5643 (0.3924)  loss_vfl_aux_0: 0.5118 (0.3613)  loss_vfl_aux_1: 0.5237 (0.3728)  loss_vfl_aux_2: 0.4697 (0.3558)  loss_vfl_dn_0: 0.6069 (0.7008)  loss_vfl_dn_1: 0.6070 (0.7019)  loss_vfl_dn_2: 0.5788 (0.6872)  time: 0.2002  data: 0.0064  max mem: 8723
+Epoch: [0]  [ 500/7393]  eta: 0:23:26  lr: 0.000003  cos: 0.0000 (0.0000)  loss: 19.9841 (22.1720)  loss_bbox: 0.8181 (1.3090)  loss_bbox_aux_0: 0.8662 (1.3427)  loss_bbox_aux_1: 0.8323 (1.3231)  loss_bbox_aux_2: 0.9248 (1.3876)  loss_bbox_dn_0: 0.7977 (0.8337)  loss_bbox_dn_1: 0.7894 (0.8385)  loss_bbox_dn_2: 0.7811 (0.8430)  loss_giou: 1.3581 (1.6165)  loss_giou_aux_0: 1.3753 (1.6407)  loss_giou_aux_1: 1.3653 (1.6287)  loss_giou_aux_2: 1.4128 (1.6644)  loss_giou_dn_0: 1.3436 (1.3387)  loss_giou_dn_1: 1.3380 (1.3364)  loss_giou_dn_2: 1.3416 (1.3370)  loss_vfl: 0.6961 (0.4532)  loss_vfl_aux_0: 0.6551 (0.4183)  loss_vfl_aux_1: 0.6829 (0.4305)  loss_vfl_aux_2: 0.6270 (0.4062)  loss_vfl_dn_0: 0.5541 (0.6790)  loss_vfl_dn_1: 0.5579 (0.6804)  loss_vfl_dn_2: 0.5392 (0.6646)  time: 0.2042  data: 0.0065  max mem: 8723
+Epoch: [0]  [ 600/7393]  eta: 0:22:57  lr: 0.000003  cos: 0.0000 (0.0000)  loss: 19.7544 (21.7880)  loss_bbox: 0.7754 (1.2221)  loss_bbox_aux_0: 0.8037 (1.2571)  loss_bbox_aux_1: 0.7824 (1.2369)  loss_bbox_aux_2: 0.8668 (1.3018)  loss_bbox_dn_0: 0.8285 (0.8340)  loss_bbox_dn_1: 0.8193 (0.8369)  loss_bbox_dn_2: 0.8089 (0.8397)  loss_giou: 1.3054 (1.5671)  loss_giou_aux_0: 1.3352 (1.5922)  loss_giou_aux_1: 1.3047 (1.5793)  loss_giou_aux_2: 1.3490 (1.6162)  loss_giou_dn_0: 1.3210 (1.3375)  loss_giou_dn_1: 1.3268 (1.3354)  loss_giou_dn_2: 1.3453 (1.3381)  loss_vfl: 0.8273 (0.5135)  loss_vfl_aux_0: 0.7397 (0.4727)  loss_vfl_aux_1: 0.7751 (0.4875)  loss_vfl_aux_2: 0.6898 (0.4567)  loss_vfl_dn_0: 0.5412 (0.6587)  loss_vfl_dn_1: 0.5408 (0.6604)  loss_vfl_dn_2: 0.5286 (0.6442)  time: 0.2025  data: 0.0063  max mem: 8723
+Epoch: [0]  [ 700/7393]  eta: 0:22:35  lr: 0.000004  cos: 0.0000 (0.0000)  loss: 19.0108 (21.4620)  loss_bbox: 0.6539 (1.1472)  loss_bbox_aux_0: 0.7081 (1.1855)  loss_bbox_aux_1: 0.6796 (1.1630)  loss_bbox_aux_2: 0.7838 (1.2308)  loss_bbox_dn_0: 0.7936 (0.8319)  loss_bbox_dn_1: 0.7731 (0.8329)  loss_bbox_dn_2: 0.7630 (0.8346)  loss_giou: 1.2199 (1.5213)  loss_giou_aux_0: 1.3029 (1.5502)  loss_giou_aux_1: 1.2425 (1.5349)  loss_giou_aux_2: 1.3465 (1.5765)  loss_giou_dn_0: 1.3096 (1.3354)  loss_giou_dn_1: 1.3017 (1.3327)  loss_giou_dn_2: 1.3031 (1.3361)  loss_vfl: 0.8988 (0.5706)  loss_vfl_aux_0: 0.8193 (0.5217)  loss_vfl_aux_1: 0.8598 (0.5415)  loss_vfl_aux_2: 0.7244 (0.4989)  loss_vfl_dn_0: 0.5339 (0.6414)  loss_vfl_dn_1: 0.5522 (0.6447)  loss_vfl_dn_2: 0.5468 (0.6298)  time: 0.1983  data: 0.0063  max mem: 8723
+Epoch: [0]  [ 800/7393]  eta: 0:22:15  lr: 0.000004  cos: 0.0000 (0.0000)  loss: 18.6721 (21.2051)  loss_bbox: 0.6465 (1.0878)  loss_bbox_aux_0: 0.6956 (1.1305)  loss_bbox_aux_1: 0.6588 (1.1040)  loss_bbox_aux_2: 0.7655 (1.1785)  loss_bbox_dn_0: 0.7681 (0.8298)  loss_bbox_dn_1: 0.7605 (0.8294)  loss_bbox_dn_2: 0.7597 (0.8308)  loss_giou: 1.2179 (1.4853)  loss_giou_aux_0: 1.2440 (1.5181)  loss_giou_aux_1: 1.2186 (1.4992)  loss_giou_aux_2: 1.3441 (1.5489)  loss_giou_dn_0: 1.3095 (1.3327)  loss_giou_dn_1: 1.2796 (1.3299)  loss_giou_dn_2: 1.2854 (1.3344)  loss_vfl: 0.9034 (0.6160)  loss_vfl_aux_0: 0.8452 (0.5595)  loss_vfl_aux_1: 0.9065 (0.5856)  loss_vfl_aux_2: 0.7401 (0.5283)  loss_vfl_dn_0: 0.5110 (0.6268)  loss_vfl_dn_1: 0.5355 (0.6317)  loss_vfl_dn_2: 0.5307 (0.6178)  time: 0.2040  data: 0.0066  max mem: 8723
+Epoch: [0]  [ 900/7393]  eta: 0:21:53  lr: 0.000005  cos: 0.0000 (0.0000)  loss: 18.6952 (20.9784)  loss_bbox: 0.6134 (1.0370)  loss_bbox_aux_0: 0.6417 (1.0805)  loss_bbox_aux_1: 0.6225 (1.0528)  loss_bbox_aux_2: 0.7544 (1.1339)  loss_bbox_dn_0: 0.7286 (0.8268)  loss_bbox_dn_1: 0.7138 (0.8245)  loss_bbox_dn_2: 0.7117 (0.8256)  loss_giou: 1.1599 (1.4519)  loss_giou_aux_0: 1.1839 (1.4850)  loss_giou_aux_1: 1.1688 (1.4650)  loss_giou_aux_2: 1.3211 (1.5228)  loss_giou_dn_0: 1.2889 (1.3291)  loss_giou_dn_1: 1.2700 (1.3254)  loss_giou_dn_2: 1.2692 (1.3300)  loss_vfl: 0.9522 (0.6584)  loss_vfl_aux_0: 0.8804 (0.5988)  loss_vfl_aux_1: 0.9203 (0.6287)  loss_vfl_aux_2: 0.7391 (0.5565)  loss_vfl_dn_0: 0.5055 (0.6145)  loss_vfl_dn_1: 0.5266 (0.6216)  loss_vfl_dn_2: 0.5246 (0.6096)  time: 0.2076  data: 0.0064  max mem: 8723
+Epoch: [0]  [1000/7393]  eta: 0:21:30  lr: 0.000005  cos: 0.0000 (0.0000)  loss: 18.4476 (20.7743)  loss_bbox: 0.5854 (0.9946)  loss_bbox_aux_0: 0.6209 (1.0371)  loss_bbox_aux_1: 0.5929 (1.0097)  loss_bbox_aux_2: 0.7117 (1.0948)  loss_bbox_dn_0: 0.7059 (0.8214)  loss_bbox_dn_1: 0.6887 (0.8177)  loss_bbox_dn_2: 0.6814 (0.8186)  loss_giou: 1.2246 (1.4256)  loss_giou_aux_0: 1.2468 (1.4582)  loss_giou_aux_1: 1.2404 (1.4381)  loss_giou_aux_2: 1.3260 (1.5014)  loss_giou_dn_0: 1.2871 (1.3249)  loss_giou_dn_1: 1.2787 (1.3203)  loss_giou_dn_2: 1.2727 (1.3248)  loss_vfl: 0.8932 (0.6911)  loss_vfl_aux_0: 0.8667 (0.6311)  loss_vfl_aux_1: 0.8643 (0.6627)  loss_vfl_aux_2: 0.7356 (0.5801)  loss_vfl_dn_0: 0.4949 (0.6045)  loss_vfl_dn_1: 0.5234 (0.6142)  loss_vfl_dn_2: 0.5354 (0.6034)  time: 0.2032  data: 0.0065  max mem: 8723
+Epoch: [0]  [1100/7393]  eta: 0:21:08  lr: 0.000006  cos: 0.0000 (0.0000)  loss: 18.3446 (20.6028)  loss_bbox: 0.5660 (0.9585)  loss_bbox_aux_0: 0.5837 (1.0002)  loss_bbox_aux_1: 0.5595 (0.9731)  loss_bbox_aux_2: 0.6628 (1.0605)  loss_bbox_dn_0: 0.6944 (0.8181)  loss_bbox_dn_1: 0.6763 (0.8128)  loss_bbox_dn_2: 0.6772 (0.8134)  loss_giou: 1.1872 (1.4011)  loss_giou_aux_0: 1.2044 (1.4337)  loss_giou_aux_1: 1.1986 (1.4132)  loss_giou_aux_2: 1.3438 (1.4812)  loss_giou_dn_0: 1.2567 (1.3191)  loss_giou_dn_1: 1.2372 (1.3128)  loss_giou_dn_2: 1.2379 (1.3170)  loss_vfl: 0.9235 (0.7230)  loss_vfl_aux_0: 0.8620 (0.6619)  loss_vfl_aux_1: 0.9138 (0.6953)  loss_vfl_aux_2: 0.7618 (0.6034)  loss_vfl_dn_0: 0.4895 (0.5962)  loss_vfl_dn_1: 0.5368 (0.6087)  loss_vfl_dn_2: 0.5373 (0.5995)  time: 0.2023  data: 0.0064  max mem: 8724
+Epoch: [0]  [1200/7393]  eta: 0:20:49  lr: 0.000006  cos: 0.0000 (0.0000)  loss: 18.9485 (20.4523)  loss_bbox: 0.5530 (0.9270)  loss_bbox_aux_0: 0.5970 (0.9679)  loss_bbox_aux_1: 0.5595 (0.9410)  loss_bbox_aux_2: 0.7009 (1.0301)  loss_bbox_dn_0: 0.7996 (0.8150)  loss_bbox_dn_1: 0.7553 (0.8082)  loss_bbox_dn_2: 0.7460 (0.8086)  loss_giou: 1.1099 (1.3785)  loss_giou_aux_0: 1.1426 (1.4112)  loss_giou_aux_1: 1.1095 (1.3903)  loss_giou_aux_2: 1.2315 (1.4619)  loss_giou_dn_0: 1.2335 (1.3136)  loss_giou_dn_1: 1.1979 (1.3054)  loss_giou_dn_2: 1.1921 (1.3091)  loss_vfl: 1.1116 (0.7531)  loss_vfl_aux_0: 1.0076 (0.6904)  loss_vfl_aux_1: 1.0698 (0.7259)  loss_vfl_aux_2: 0.8475 (0.6256)  loss_vfl_dn_0: 0.4988 (0.5886)  loss_vfl_dn_1: 0.5608 (0.6042)  loss_vfl_dn_2: 0.5679 (0.5966)  time: 0.2188  data: 0.0066  max mem: 8724
+Epoch: [0]  [1300/7393]  eta: 0:20:34  lr: 0.000007  cos: 0.0000 (0.0000)  loss: 18.1819 (20.2967)  loss_bbox: 0.5397 (0.8984)  loss_bbox_aux_0: 0.5920 (0.9384)  loss_bbox_aux_1: 0.5435 (0.9117)  loss_bbox_aux_2: 0.7034 (1.0023)  loss_bbox_dn_0: 0.6912 (0.8091)  loss_bbox_dn_1: 0.6569 (0.8007)  loss_bbox_dn_2: 0.6486 (0.8009)  loss_giou: 1.1348 (1.3589)  loss_giou_aux_0: 1.1679 (1.3923)  loss_giou_aux_1: 1.1424 (1.3706)  loss_giou_aux_2: 1.2607 (1.4460)  loss_giou_dn_0: 1.2451 (1.3085)  loss_giou_dn_1: 1.1990 (1.2983)  loss_giou_dn_2: 1.1921 (1.3016)  loss_vfl: 0.9978 (0.7768)  loss_vfl_aux_0: 0.9282 (0.7135)  loss_vfl_aux_1: 0.9757 (0.7508)  loss_vfl_aux_2: 0.8039 (0.6434)  loss_vfl_dn_0: 0.4907 (0.5815)  loss_vfl_dn_1: 0.5359 (0.5997)  loss_vfl_dn_2: 0.5576 (0.5936)  time: 0.2699  data: 0.0065  max mem: 8724
+Epoch: [0]  [1400/7393]  eta: 0:20:13  lr: 0.000007  cos: 0.0000 (0.0000)  loss: 17.7936 (20.1533)  loss_bbox: 0.4638 (0.8712)  loss_bbox_aux_0: 0.5052 (0.9111)  loss_bbox_aux_1: 0.4911 (0.8841)  loss_bbox_aux_2: 0.6131 (0.9771)  loss_bbox_dn_0: 0.7114 (0.8056)  loss_bbox_dn_1: 0.6839 (0.7956)  loss_bbox_dn_2: 0.6870 (0.7956)  loss_giou: 1.0532 (1.3368)  loss_giou_aux_0: 1.0931 (1.3712)  loss_giou_aux_1: 1.0755 (1.3482)  loss_giou_aux_2: 1.2052 (1.4282)  loss_giou_dn_0: 1.2072 (1.3020)  loss_giou_dn_1: 1.1521 (1.2894)  loss_giou_dn_2: 1.1484 (1.2921)  loss_vfl: 1.1106 (0.8027)  loss_vfl_aux_0: 1.0440 (0.7379)  loss_vfl_aux_1: 1.0868 (0.7771)  loss_vfl_aux_2: 0.8975 (0.6642)  loss_vfl_dn_0: 0.4702 (0.5754)  loss_vfl_dn_1: 0.5146 (0.5962)  loss_vfl_dn_2: 0.5366 (0.5914)  time: 0.1897  data: 0.0064  max mem: 8724
+Epoch: [0]  [1500/7393]  eta: 0:19:55  lr: 0.000008  cos: 0.0000 (0.0000)  loss: 18.2117 (20.0246)  loss_bbox: 0.5345 (0.8468)  loss_bbox_aux_0: 0.5588 (0.8868)  loss_bbox_aux_1: 0.5433 (0.8594)  loss_bbox_aux_2: 0.6755 (0.9551)  loss_bbox_dn_0: 0.8074 (0.8024)  loss_bbox_dn_1: 0.7722 (0.7909)  loss_bbox_dn_2: 0.7643 (0.7907)  loss_giou: 1.0217 (1.3174)  loss_giou_aux_0: 1.0672 (1.3530)  loss_giou_aux_1: 1.0312 (1.3288)  loss_giou_aux_2: 1.1829 (1.4130)  loss_giou_dn_0: 1.2018 (1.2957)  loss_giou_dn_1: 1.1539 (1.2809)  loss_giou_dn_2: 1.1475 (1.2832)  loss_vfl: 1.1564 (0.8258)  loss_vfl_aux_0: 1.0525 (0.7598)  loss_vfl_aux_1: 1.0917 (0.8005)  loss_vfl_aux_2: 0.9418 (0.6826)  loss_vfl_dn_0: 0.4846 (0.5698)  loss_vfl_dn_1: 0.5373 (0.5927)  loss_vfl_dn_2: 0.5463 (0.5893)  time: 0.2059  data: 0.0068  max mem: 8724
+Epoch: [0]  [1600/7393]  eta: 0:19:34  lr: 0.000008  cos: 0.0000 (0.0000)  loss: 18.0948 (19.8962)  loss_bbox: 0.4204 (0.8250)  loss_bbox_aux_0: 0.4710 (0.8650)  loss_bbox_aux_1: 0.4354 (0.8373)  loss_bbox_aux_2: 0.5836 (0.9348)  loss_bbox_dn_0: 0.7171 (0.7982)  loss_bbox_dn_1: 0.6704 (0.7853)  loss_bbox_dn_2: 0.6606 (0.7848)  loss_giou: 1.0236 (1.2998)  loss_giou_aux_0: 1.0612 (1.3363)  loss_giou_aux_1: 1.0383 (1.3112)  loss_giou_aux_2: 1.1687 (1.3991)  loss_giou_dn_0: 1.2019 (1.2899)  loss_giou_dn_1: 1.1570 (1.2732)  loss_giou_dn_2: 1.1492 (1.2748)  loss_vfl: 1.1248 (0.8444)  loss_vfl_aux_0: 1.0879 (0.7785)  loss_vfl_aux_1: 1.1077 (0.8198)  loss_vfl_aux_2: 0.9418 (0.6989)  loss_vfl_dn_0: 0.4818 (0.5643)  loss_vfl_dn_1: 0.5226 (0.5887)  loss_vfl_dn_2: 0.5487 (0.5868)  time: 0.2077  data: 0.0065  max mem: 8724
+Epoch: [0]  [1700/7393]  eta: 0:19:15  lr: 0.000009  cos: 0.0000 (0.0000)  loss: 17.6416 (19.7529)  loss_bbox: 0.4467 (0.8037)  loss_bbox_aux_0: 0.4818 (0.8438)  loss_bbox_aux_1: 0.4542 (0.8158)  loss_bbox_aux_2: 0.5765 (0.9146)  loss_bbox_dn_0: 0.7008 (0.7911)  loss_bbox_dn_1: 0.6452 (0.7771)  loss_bbox_dn_2: 0.6349 (0.7765)  loss_giou: 0.9243 (1.2836)  loss_giou_aux_0: 0.9771 (1.3211)  loss_giou_aux_1: 0.9472 (1.2950)  loss_giou_aux_2: 1.0781 (1.3865)  loss_giou_dn_0: 1.1736 (1.2842)  loss_giou_dn_1: 1.1230 (1.2655)  loss_giou_dn_2: 1.1094 (1.2665)  loss_vfl: 1.0933 (0.8593)  loss_vfl_aux_0: 1.0170 (0.7930)  loss_vfl_aux_1: 1.0596 (0.8352)  loss_vfl_aux_2: 0.9052 (0.7120)  loss_vfl_dn_0: 0.4850 (0.5592)  loss_vfl_dn_1: 0.5240 (0.5848)  loss_vfl_dn_2: 0.5391 (0.5842)  time: 0.2049  data: 0.0064  max mem: 8724
+Epoch: [0]  [1800/7393]  eta: 0:18:54  lr: 0.000009  cos: 0.0000 (0.0000)  loss: 16.9369 (19.6194)  loss_bbox: 0.3574 (0.7835)  loss_bbox_aux_0: 0.3921 (0.8236)  loss_bbox_aux_1: 0.3645 (0.7954)  loss_bbox_aux_2: 0.4623 (0.8956)  loss_bbox_dn_0: 0.6101 (0.7849)  loss_bbox_dn_1: 0.5749 (0.7697)  loss_bbox_dn_2: 0.5751 (0.7689)  loss_giou: 0.9465 (1.2659)  loss_giou_aux_0: 1.0113 (1.3047)  loss_giou_aux_1: 0.9585 (1.2774)  loss_giou_aux_2: 1.1231 (1.3725)  loss_giou_dn_0: 1.1717 (1.2781)  loss_giou_dn_1: 1.1105 (1.2572)  loss_giou_dn_2: 1.0937 (1.2575)  loss_vfl: 1.1509 (0.8761)  loss_vfl_aux_0: 1.0515 (0.8091)  loss_vfl_aux_1: 1.1285 (0.8524)  loss_vfl_aux_2: 0.9511 (0.7281)  loss_vfl_dn_0: 0.4689 (0.5549)  loss_vfl_dn_1: 0.5148 (0.5815)  loss_vfl_dn_2: 0.5391 (0.5824)  time: 0.2037  data: 0.0064  max mem: 8724
+Epoch: [0]  [1900/7393]  eta: 0:18:33  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 16.7710 (19.4843)  loss_bbox: 0.3915 (0.7639)  loss_bbox_aux_0: 0.4204 (0.8041)  loss_bbox_aux_1: 0.4016 (0.7758)  loss_bbox_aux_2: 0.5048 (0.8770)  loss_bbox_dn_0: 0.6060 (0.7779)  loss_bbox_dn_1: 0.5812 (0.7617)  loss_bbox_dn_2: 0.5690 (0.7606)  loss_giou: 0.9407 (1.2503)  loss_giou_aux_0: 1.0086 (1.2898)  loss_giou_aux_1: 0.9602 (1.2617)  loss_giou_aux_2: 1.1162 (1.3597)  loss_giou_dn_0: 1.1711 (1.2722)  loss_giou_dn_1: 1.1231 (1.2494)  loss_giou_dn_2: 1.1097 (1.2490)  loss_vfl: 1.0975 (0.8903)  loss_vfl_aux_0: 1.0023 (0.8224)  loss_vfl_aux_1: 1.0837 (0.8671)  loss_vfl_aux_2: 0.9392 (0.7415)  loss_vfl_dn_0: 0.4688 (0.5510)  loss_vfl_dn_1: 0.4986 (0.5783)  loss_vfl_dn_2: 0.5240 (0.5806)  time: 0.2031  data: 0.0066  max mem: 8724
+Epoch: [0]  [2000/7393]  eta: 0:18:11  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 16.9703 (19.3689)  loss_bbox: 0.4033 (0.7472)  loss_bbox_aux_0: 0.4446 (0.7873)  loss_bbox_aux_1: 0.4200 (0.7588)  loss_bbox_aux_2: 0.5397 (0.8610)  loss_bbox_dn_0: 0.6623 (0.7726)  loss_bbox_dn_1: 0.6291 (0.7554)  loss_bbox_dn_2: 0.6311 (0.7542)  loss_giou: 0.8935 (1.2358)  loss_giou_aux_0: 0.9586 (1.2760)  loss_giou_aux_1: 0.9071 (1.2473)  loss_giou_aux_2: 1.0576 (1.3477)  loss_giou_dn_0: 1.1646 (1.2666)  loss_giou_dn_1: 1.0876 (1.2417)  loss_giou_dn_2: 1.0808 (1.2407)  loss_vfl: 1.1521 (0.9035)  loss_vfl_aux_0: 1.0869 (0.8352)  loss_vfl_aux_1: 1.1381 (0.8807)  loss_vfl_aux_2: 1.0064 (0.7552)  loss_vfl_dn_0: 0.4716 (0.5476)  loss_vfl_dn_1: 0.5107 (0.5753)  loss_vfl_dn_2: 0.5370 (0.5790)  time: 0.1994  data: 0.0066  max mem: 8724
+Epoch: [0]  [2100/7393]  eta: 0:17:52  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 16.7570 (19.2501)  loss_bbox: 0.4029 (0.7306)  loss_bbox_aux_0: 0.4364 (0.7709)  loss_bbox_aux_1: 0.4124 (0.7421)  loss_bbox_aux_2: 0.5276 (0.8457)  loss_bbox_dn_0: 0.6152 (0.7669)  loss_bbox_dn_1: 0.5829 (0.7486)  loss_bbox_dn_2: 0.5752 (0.7471)  loss_giou: 0.8767 (1.2216)  loss_giou_aux_0: 0.9302 (1.2627)  loss_giou_aux_1: 0.8859 (1.2332)  loss_giou_aux_2: 1.0835 (1.3364)  loss_giou_dn_0: 1.1361 (1.2612)  loss_giou_dn_1: 1.0571 (1.2344)  loss_giou_dn_2: 1.0391 (1.2326)  loss_vfl: 1.1302 (0.9155)  loss_vfl_aux_0: 1.0753 (0.8465)  loss_vfl_aux_1: 1.1316 (0.8928)  loss_vfl_aux_2: 1.0139 (0.7671)  loss_vfl_dn_0: 0.4881 (0.5444)  loss_vfl_dn_1: 0.5194 (0.5725)  loss_vfl_dn_2: 0.5481 (0.5773)  time: 0.2051  data: 0.0063  max mem: 8724
+Epoch: [0]  [2200/7393]  eta: 0:17:29  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 16.2942 (19.1483)  loss_bbox: 0.3628 (0.7159)  loss_bbox_aux_0: 0.3965 (0.7566)  loss_bbox_aux_1: 0.3754 (0.7274)  loss_bbox_aux_2: 0.4879 (0.8322)  loss_bbox_dn_0: 0.5746 (0.7627)  loss_bbox_dn_1: 0.5396 (0.7431)  loss_bbox_dn_2: 0.5358 (0.7414)  loss_giou: 0.9507 (1.2074)  loss_giou_aux_0: 1.0124 (1.2494)  loss_giou_aux_1: 0.9669 (1.2192)  loss_giou_aux_2: 1.1082 (1.3246)  loss_giou_dn_0: 1.1449 (1.2558)  loss_giou_dn_1: 1.0758 (1.2270)  loss_giou_dn_2: 1.0532 (1.2245)  loss_vfl: 1.0567 (0.9287)  loss_vfl_aux_0: 0.9958 (0.8585)  loss_vfl_aux_1: 1.0315 (0.9059)  loss_vfl_aux_2: 0.9332 (0.7802)  loss_vfl_dn_0: 0.4725 (0.5416)  loss_vfl_dn_1: 0.5052 (0.5700)  loss_vfl_dn_2: 0.5314 (0.5760)  time: 0.1842  data: 0.0064  max mem: 8724
+Epoch: [0]  [2300/7393]  eta: 0:17:10  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 16.5393 (19.0450)  loss_bbox: 0.4096 (0.7020)  loss_bbox_aux_0: 0.4309 (0.7429)  loss_bbox_aux_1: 0.4151 (0.7134)  loss_bbox_aux_2: 0.5423 (0.8192)  loss_bbox_dn_0: 0.6509 (0.7576)  loss_bbox_dn_1: 0.5977 (0.7370)  loss_bbox_dn_2: 0.5926 (0.7351)  loss_giou: 0.8911 (1.1943)  loss_giou_aux_0: 0.9385 (1.2371)  loss_giou_aux_1: 0.9064 (1.2063)  loss_giou_aux_2: 1.0418 (1.3137)  loss_giou_dn_0: 1.1252 (1.2504)  loss_giou_dn_1: 1.0456 (1.2195)  loss_giou_dn_2: 1.0223 (1.2162)  loss_vfl: 1.1192 (0.9401)  loss_vfl_aux_0: 1.0125 (0.8693)  loss_vfl_aux_1: 1.0820 (0.9171)  loss_vfl_aux_2: 0.9927 (0.7923)  loss_vfl_dn_0: 0.4856 (0.5392)  loss_vfl_dn_1: 0.5122 (0.5677)  loss_vfl_dn_2: 0.5407 (0.5747)  time: 0.1932  data: 0.0066  max mem: 8724
+Epoch: [0]  [2400/7393]  eta: 0:16:50  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 16.2727 (18.9464)  loss_bbox: 0.3482 (0.6885)  loss_bbox_aux_0: 0.3948 (0.7297)  loss_bbox_aux_1: 0.3684 (0.7000)  loss_bbox_aux_2: 0.4973 (0.8068)  loss_bbox_dn_0: 0.6184 (0.7533)  loss_bbox_dn_1: 0.5770 (0.7316)  loss_bbox_dn_2: 0.5708 (0.7294)  loss_giou: 0.8647 (1.1815)  loss_giou_aux_0: 0.9239 (1.2248)  loss_giou_aux_1: 0.8645 (1.1935)  loss_giou_aux_2: 1.0383 (1.3029)  loss_giou_dn_0: 1.1189 (1.2451)  loss_giou_dn_1: 1.0533 (1.2124)  loss_giou_dn_2: 1.0265 (1.2085)  loss_vfl: 1.1984 (0.9508)  loss_vfl_aux_0: 1.1283 (0.8801)  loss_vfl_aux_1: 1.1729 (0.9279)  loss_vfl_aux_2: 1.0362 (0.8039)  loss_vfl_dn_0: 0.4839 (0.5369)  loss_vfl_dn_1: 0.5043 (0.5654)  loss_vfl_dn_2: 0.5304 (0.5732)  time: 0.1905  data: 0.0066  max mem: 8724
+Epoch: [0]  [2500/7393]  eta: 0:16:29  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 16.4121 (18.8542)  loss_bbox: 0.3451 (0.6759)  loss_bbox_aux_0: 0.3829 (0.7173)  loss_bbox_aux_1: 0.3478 (0.6874)  loss_bbox_aux_2: 0.4852 (0.7953)  loss_bbox_dn_0: 0.6004 (0.7497)  loss_bbox_dn_1: 0.5575 (0.7269)  loss_bbox_dn_2: 0.5498 (0.7245)  loss_giou: 0.8499 (1.1691)  loss_giou_aux_0: 0.9025 (1.2131)  loss_giou_aux_1: 0.8584 (1.1812)  loss_giou_aux_2: 1.0202 (1.2929)  loss_giou_dn_0: 1.1242 (1.2400)  loss_giou_dn_1: 1.0391 (1.2054)  loss_giou_dn_2: 1.0114 (1.2008)  loss_vfl: 1.2449 (0.9614)  loss_vfl_aux_0: 1.1250 (0.8900)  loss_vfl_aux_1: 1.2096 (0.9385)  loss_vfl_aux_2: 1.0284 (0.8143)  loss_vfl_dn_0: 0.4838 (0.5348)  loss_vfl_dn_1: 0.5219 (0.5635)  loss_vfl_dn_2: 0.5569 (0.5721)  time: 0.2001  data: 0.0064  max mem: 8724
+Epoch: [0]  [2600/7393]  eta: 0:16:08  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 16.1149 (18.7625)  loss_bbox: 0.3632 (0.6636)  loss_bbox_aux_0: 0.4053 (0.7053)  loss_bbox_aux_1: 0.3675 (0.6752)  loss_bbox_aux_2: 0.4817 (0.7840)  loss_bbox_dn_0: 0.6263 (0.7461)  loss_bbox_dn_1: 0.5847 (0.7223)  loss_bbox_dn_2: 0.5825 (0.7196)  loss_giou: 0.8640 (1.1567)  loss_giou_aux_0: 0.9295 (1.2015)  loss_giou_aux_1: 0.8895 (1.1689)  loss_giou_aux_2: 1.0356 (1.2825)  loss_giou_dn_0: 1.1211 (1.2351)  loss_giou_dn_1: 1.0475 (1.1988)  loss_giou_dn_2: 1.0226 (1.1935)  loss_vfl: 1.1556 (0.9713)  loss_vfl_aux_0: 1.0949 (0.8993)  loss_vfl_aux_1: 1.1109 (0.9483)  loss_vfl_aux_2: 0.9884 (0.8247)  loss_vfl_dn_0: 0.4768 (0.5330)  loss_vfl_dn_1: 0.5024 (0.5617)  loss_vfl_dn_2: 0.5232 (0.5710)  time: 0.1879  data: 0.0066  max mem: 8725
+Epoch: [0]  [2700/7393]  eta: 0:15:47  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 15.9630 (18.6677)  loss_bbox: 0.3417 (0.6519)  loss_bbox_aux_0: 0.3848 (0.6937)  loss_bbox_aux_1: 0.3623 (0.6635)  loss_bbox_aux_2: 0.4846 (0.7729)  loss_bbox_dn_0: 0.5627 (0.7416)  loss_bbox_dn_1: 0.5150 (0.7170)  loss_bbox_dn_2: 0.5078 (0.7140)  loss_giou: 0.8443 (1.1450)  loss_giou_aux_0: 0.8879 (1.1902)  loss_giou_aux_1: 0.8417 (1.1573)  loss_giou_aux_2: 0.9983 (1.2725)  loss_giou_dn_0: 1.1008 (1.2301)  loss_giou_dn_1: 1.0227 (1.1921)  loss_giou_dn_2: 1.0018 (1.1862)  loss_vfl: 1.1489 (0.9796)  loss_vfl_aux_0: 1.1018 (0.9081)  loss_vfl_aux_1: 1.1260 (0.9569)  loss_vfl_aux_2: 1.0530 (0.8340)  loss_vfl_dn_0: 0.4872 (0.5313)  loss_vfl_dn_1: 0.5163 (0.5600)  loss_vfl_dn_2: 0.5352 (0.5698)  time: 0.2012  data: 0.0063  max mem: 8725
+Epoch: [0]  [2800/7393]  eta: 0:15:26  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 16.4923 (18.5821)  loss_bbox: 0.3626 (0.6417)  loss_bbox_aux_0: 0.4182 (0.6835)  loss_bbox_aux_1: 0.3905 (0.6532)  loss_bbox_aux_2: 0.5433 (0.7632)  loss_bbox_dn_0: 0.6808 (0.7377)  loss_bbox_dn_1: 0.6263 (0.7122)  loss_bbox_dn_2: 0.6186 (0.7090)  loss_giou: 0.7999 (1.1350)  loss_giou_aux_0: 0.8937 (1.1806)  loss_giou_aux_1: 0.8160 (1.1474)  loss_giou_aux_2: 0.9886 (1.2639)  loss_giou_dn_0: 1.0966 (1.2257)  loss_giou_dn_1: 1.0067 (1.1861)  loss_giou_dn_2: 0.9773 (1.1796)  loss_vfl: 1.1678 (0.9867)  loss_vfl_aux_0: 1.1205 (0.9150)  loss_vfl_aux_1: 1.1374 (0.9639)  loss_vfl_aux_2: 1.1179 (0.8416)  loss_vfl_dn_0: 0.4845 (0.5295)  loss_vfl_dn_1: 0.5109 (0.5581)  loss_vfl_dn_2: 0.5433 (0.5684)  time: 0.1880  data: 0.0064  max mem: 8725
+Epoch: [0]  [2900/7393]  eta: 0:15:06  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 15.7510 (18.4984)  loss_bbox: 0.3140 (0.6315)  loss_bbox_aux_0: 0.3685 (0.6735)  loss_bbox_aux_1: 0.3367 (0.6430)  loss_bbox_aux_2: 0.4457 (0.7536)  loss_bbox_dn_0: 0.5887 (0.7338)  loss_bbox_dn_1: 0.5276 (0.7074)  loss_bbox_dn_2: 0.5123 (0.7041)  loss_giou: 0.8531 (1.1252)  loss_giou_aux_0: 0.9137 (1.1713)  loss_giou_aux_1: 0.8541 (1.1376)  loss_giou_aux_2: 1.0188 (1.2556)  loss_giou_dn_0: 1.1259 (1.2213)  loss_giou_dn_1: 1.0465 (1.1802)  loss_giou_dn_2: 1.0248 (1.1731)  loss_vfl: 1.1450 (0.9936)  loss_vfl_aux_0: 1.0732 (0.9219)  loss_vfl_aux_1: 1.1417 (0.9710)  loss_vfl_aux_2: 1.0324 (0.8490)  loss_vfl_dn_0: 0.4726 (0.5280)  loss_vfl_dn_1: 0.4982 (0.5565)  loss_vfl_dn_2: 0.5298 (0.5671)  time: 0.1972  data: 0.0063  max mem: 8725
+Epoch: [0]  [3000/7393]  eta: 0:14:45  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 15.7857 (18.4181)  loss_bbox: 0.3170 (0.6220)  loss_bbox_aux_0: 0.3603 (0.6640)  loss_bbox_aux_1: 0.3261 (0.6335)  loss_bbox_aux_2: 0.4507 (0.7444)  loss_bbox_dn_0: 0.5823 (0.7302)  loss_bbox_dn_1: 0.5229 (0.7029)  loss_bbox_dn_2: 0.5055 (0.6994)  loss_giou: 0.7887 (1.1158)  loss_giou_aux_0: 0.8580 (1.1623)  loss_giou_aux_1: 0.7985 (1.1283)  loss_giou_aux_2: 1.0040 (1.2475)  loss_giou_dn_0: 1.0885 (1.2172)  loss_giou_dn_1: 0.9922 (1.1746)  loss_giou_dn_2: 0.9661 (1.1669)  loss_vfl: 1.2335 (1.0001)  loss_vfl_aux_0: 1.1680 (0.9281)  loss_vfl_aux_1: 1.2132 (0.9775)  loss_vfl_aux_2: 1.0530 (0.8560)  loss_vfl_dn_0: 0.4834 (0.5265)  loss_vfl_dn_1: 0.5115 (0.5549)  loss_vfl_dn_2: 0.5249 (0.5660)  time: 0.1960  data: 0.0061  max mem: 8725
+Epoch: [0]  [3100/7393]  eta: 0:14:25  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 15.9070 (18.3460)  loss_bbox: 0.3180 (0.6132)  loss_bbox_aux_0: 0.3737 (0.6553)  loss_bbox_aux_1: 0.3367 (0.6246)  loss_bbox_aux_2: 0.4636 (0.7361)  loss_bbox_dn_0: 0.5949 (0.7276)  loss_bbox_dn_1: 0.5369 (0.6994)  loss_bbox_dn_2: 0.5244 (0.6956)  loss_giou: 0.7827 (1.1058)  loss_giou_aux_0: 0.8400 (1.1529)  loss_giou_aux_1: 0.7938 (1.1184)  loss_giou_aux_2: 0.9504 (1.2389)  loss_giou_dn_0: 1.0584 (1.2126)  loss_giou_dn_1: 0.9738 (1.1684)  loss_giou_dn_2: 0.9490 (1.1600)  loss_vfl: 1.2377 (1.0077)  loss_vfl_aux_0: 1.1888 (0.9356)  loss_vfl_aux_1: 1.2058 (0.9852)  loss_vfl_aux_2: 1.1262 (0.8642)  loss_vfl_dn_0: 0.4871 (0.5254)  loss_vfl_dn_1: 0.5127 (0.5538)  loss_vfl_dn_2: 0.5350 (0.5652)  time: 0.2030  data: 0.0061  max mem: 8725
+Epoch: [0]  [3200/7393]  eta: 0:14:05  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 15.6683 (18.2704)  loss_bbox: 0.3364 (0.6046)  loss_bbox_aux_0: 0.3860 (0.6468)  loss_bbox_aux_1: 0.3637 (0.6160)  loss_bbox_aux_2: 0.4612 (0.7278)  loss_bbox_dn_0: 0.6079 (0.7240)  loss_bbox_dn_1: 0.5654 (0.6949)  loss_bbox_dn_2: 0.5516 (0.6909)  loss_giou: 0.8351 (1.0968)  loss_giou_aux_0: 0.8803 (1.1442)  loss_giou_aux_1: 0.8334 (1.1094)  loss_giou_aux_2: 0.9746 (1.2310)  loss_giou_dn_0: 1.0472 (1.2084)  loss_giou_dn_1: 0.9614 (1.1627)  loss_giou_dn_2: 0.9356 (1.1537)  loss_vfl: 1.1559 (1.0137)  loss_vfl_aux_0: 1.0651 (0.9417)  loss_vfl_aux_1: 1.1565 (0.9914)  loss_vfl_aux_2: 0.9876 (0.8708)  loss_vfl_dn_0: 0.4865 (0.5243)  loss_vfl_dn_1: 0.5141 (0.5526)  loss_vfl_dn_2: 0.5304 (0.5644)  time: 0.2058  data: 0.0062  max mem: 8725
+Epoch: [0]  [3300/7393]  eta: 0:13:45  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 15.7268 (18.1976)  loss_bbox: 0.3087 (0.5965)  loss_bbox_aux_0: 0.3514 (0.6387)  loss_bbox_aux_1: 0.3175 (0.6079)  loss_bbox_aux_2: 0.4340 (0.7200)  loss_bbox_dn_0: 0.6219 (0.7210)  loss_bbox_dn_1: 0.5686 (0.6911)  loss_bbox_dn_2: 0.5603 (0.6869)  loss_giou: 0.7040 (1.0883)  loss_giou_aux_0: 0.7558 (1.1359)  loss_giou_aux_1: 0.7098 (1.1009)  loss_giou_aux_2: 0.8874 (1.2235)  loss_giou_dn_0: 1.0407 (1.2043)  loss_giou_dn_1: 0.9474 (1.1572)  loss_giou_dn_2: 0.9176 (1.1477)  loss_vfl: 1.2341 (1.0188)  loss_vfl_aux_0: 1.1708 (0.9472)  loss_vfl_aux_1: 1.2893 (0.9968)  loss_vfl_aux_2: 1.1263 (0.8769)  loss_vfl_dn_0: 0.4854 (0.5232)  loss_vfl_dn_1: 0.5145 (0.5514)  loss_vfl_dn_2: 0.5311 (0.5634)  time: 0.1938  data: 0.0064  max mem: 8725
+Epoch: [0]  [3400/7393]  eta: 0:13:24  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 15.4919 (18.1250)  loss_bbox: 0.3196 (0.5888)  loss_bbox_aux_0: 0.3684 (0.6309)  loss_bbox_aux_1: 0.3376 (0.6001)  loss_bbox_aux_2: 0.4494 (0.7124)  loss_bbox_dn_0: 0.6088 (0.7176)  loss_bbox_dn_1: 0.5469 (0.6868)  loss_bbox_dn_2: 0.5359 (0.6824)  loss_giou: 0.8254 (1.0802)  loss_giou_aux_0: 0.8666 (1.1281)  loss_giou_aux_1: 0.8303 (1.0929)  loss_giou_aux_2: 0.9767 (1.2164)  loss_giou_dn_0: 1.0561 (1.2003)  loss_giou_dn_1: 0.9653 (1.1517)  loss_giou_dn_2: 0.9297 (1.1416)  loss_vfl: 1.1801 (1.0237)  loss_vfl_aux_0: 1.1105 (0.9522)  loss_vfl_aux_1: 1.1377 (1.0015)  loss_vfl_aux_2: 1.0571 (0.8823)  loss_vfl_dn_0: 0.4907 (0.5222)  loss_vfl_dn_1: 0.5107 (0.5504)  loss_vfl_dn_2: 0.5337 (0.5625)  time: 0.1917  data: 0.0065  max mem: 8725
+Epoch: [0]  [3500/7393]  eta: 0:13:05  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 15.5165 (18.0587)  loss_bbox: 0.3321 (0.5817)  loss_bbox_aux_0: 0.3461 (0.6239)  loss_bbox_aux_1: 0.3461 (0.5930)  loss_bbox_aux_2: 0.4280 (0.7056)  loss_bbox_dn_0: 0.5731 (0.7147)  loss_bbox_dn_1: 0.5117 (0.6832)  loss_bbox_dn_2: 0.5109 (0.6785)  loss_giou: 0.9032 (1.0726)  loss_giou_aux_0: 0.9524 (1.1208)  loss_giou_aux_1: 0.9116 (1.0853)  loss_giou_aux_2: 1.0458 (1.2098)  loss_giou_dn_0: 1.0852 (1.1963)  loss_giou_dn_1: 0.9829 (1.1465)  loss_giou_dn_2: 0.9445 (1.1359)  loss_vfl: 1.0644 (1.0283)  loss_vfl_aux_0: 0.9833 (0.9570)  loss_vfl_aux_1: 1.0809 (1.0063)  loss_vfl_aux_2: 0.9655 (0.8874)  loss_vfl_dn_0: 0.4636 (0.5213)  loss_vfl_dn_1: 0.4929 (0.5493)  loss_vfl_dn_2: 0.5006 (0.5615)  time: 0.2091  data: 0.0066  max mem: 8725
+Epoch: [0]  [3600/7393]  eta: 0:12:44  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 15.2432 (17.9911)  loss_bbox: 0.2756 (0.5746)  loss_bbox_aux_0: 0.3153 (0.6168)  loss_bbox_aux_1: 0.2910 (0.5859)  loss_bbox_aux_2: 0.4267 (0.6988)  loss_bbox_dn_0: 0.5124 (0.7116)  loss_bbox_dn_1: 0.4661 (0.6794)  loss_bbox_dn_2: 0.4570 (0.6745)  loss_giou: 0.7958 (1.0650)  loss_giou_aux_0: 0.8615 (1.1134)  loss_giou_aux_1: 0.8207 (1.0777)  loss_giou_aux_2: 0.9863 (1.2031)  loss_giou_dn_0: 1.0545 (1.1924)  loss_giou_dn_1: 0.9569 (1.1413)  loss_giou_dn_2: 0.9221 (1.1301)  loss_vfl: 1.1488 (1.0325)  loss_vfl_aux_0: 1.1134 (0.9616)  loss_vfl_aux_1: 1.1496 (1.0108)  loss_vfl_aux_2: 1.0683 (0.8921)  loss_vfl_dn_0: 0.4927 (0.5205)  loss_vfl_dn_1: 0.5235 (0.5484)  loss_vfl_dn_2: 0.5402 (0.5607)  time: 0.2057  data: 0.0063  max mem: 8725
+Epoch: [0]  [3700/7393]  eta: 0:12:24  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 15.7014 (17.9277)  loss_bbox: 0.3525 (0.5680)  loss_bbox_aux_0: 0.4010 (0.6101)  loss_bbox_aux_1: 0.3644 (0.5792)  loss_bbox_aux_2: 0.4954 (0.6924)  loss_bbox_dn_0: 0.5919 (0.7084)  loss_bbox_dn_1: 0.5214 (0.6754)  loss_bbox_dn_2: 0.5055 (0.6703)  loss_giou: 0.7755 (1.0583)  loss_giou_aux_0: 0.8709 (1.1069)  loss_giou_aux_1: 0.8037 (1.0711)  loss_giou_aux_2: 0.9541 (1.1973)  loss_giou_dn_0: 1.0397 (1.1886)  loss_giou_dn_1: 0.9412 (1.1362)  loss_giou_dn_2: 0.9155 (1.1246)  loss_vfl: 1.1641 (1.0364)  loss_vfl_aux_0: 1.0702 (0.9659)  loss_vfl_aux_1: 1.1304 (1.0148)  loss_vfl_aux_2: 0.9731 (0.8963)  loss_vfl_dn_0: 0.4943 (0.5198)  loss_vfl_dn_1: 0.5209 (0.5476)  loss_vfl_dn_2: 0.5310 (0.5601)  time: 0.1985  data: 0.0064  max mem: 8725
+Epoch: [0]  [3800/7393]  eta: 0:12:05  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 15.4153 (17.8652)  loss_bbox: 0.3235 (0.5615)  loss_bbox_aux_0: 0.3681 (0.6036)  loss_bbox_aux_1: 0.3353 (0.5726)  loss_bbox_aux_2: 0.4496 (0.6861)  loss_bbox_dn_0: 0.5715 (0.7054)  loss_bbox_dn_1: 0.5266 (0.6717)  loss_bbox_dn_2: 0.5290 (0.6665)  loss_giou: 0.7996 (1.0516)  loss_giou_aux_0: 0.8377 (1.1005)  loss_giou_aux_1: 0.8115 (1.0644)  loss_giou_aux_2: 0.9687 (1.1915)  loss_giou_dn_0: 1.0298 (1.1849)  loss_giou_dn_1: 0.9282 (1.1314)  loss_giou_dn_2: 0.8953 (1.1193)  loss_vfl: 1.1641 (1.0401)  loss_vfl_aux_0: 1.1278 (0.9699)  loss_vfl_aux_1: 1.1409 (1.0187)  loss_vfl_aux_2: 1.0428 (0.9002)  loss_vfl_dn_0: 0.4961 (0.5191)  loss_vfl_dn_1: 0.5257 (0.5468)  loss_vfl_dn_2: 0.5372 (0.5594)  time: 0.1933  data: 0.0064  max mem: 8725
+Epoch: [0]  [3900/7393]  eta: 0:11:44  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 15.4591 (17.8016)  loss_bbox: 0.3283 (0.5555)  loss_bbox_aux_0: 0.3782 (0.5975)  loss_bbox_aux_1: 0.3442 (0.5666)  loss_bbox_aux_2: 0.4696 (0.6801)  loss_bbox_dn_0: 0.5456 (0.7018)  loss_bbox_dn_1: 0.4860 (0.6676)  loss_bbox_dn_2: 0.4759 (0.6622)  loss_giou: 0.8578 (1.0456)  loss_giou_aux_0: 0.9339 (1.0947)  loss_giou_aux_1: 0.8822 (1.0585)  loss_giou_aux_2: 1.0349 (1.1863)  loss_giou_dn_0: 1.0603 (1.1813)  loss_giou_dn_1: 0.9638 (1.1267)  loss_giou_dn_2: 0.9331 (1.1142)  loss_vfl: 1.1063 (1.0426)  loss_vfl_aux_0: 1.0377 (0.9729)  loss_vfl_aux_1: 1.0430 (1.0214)  loss_vfl_aux_2: 1.0082 (0.9034)  loss_vfl_dn_0: 0.4895 (0.5184)  loss_vfl_dn_1: 0.5039 (0.5459)  loss_vfl_dn_2: 0.5099 (0.5585)  time: 0.1973  data: 0.0068  max mem: 8725
+Epoch: [0]  [4000/7393]  eta: 0:11:24  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 15.1265 (17.7335)  loss_bbox: 0.3066 (0.5490)  loss_bbox_aux_0: 0.3518 (0.5909)  loss_bbox_aux_1: 0.3240 (0.5602)  loss_bbox_aux_2: 0.4557 (0.6737)  loss_bbox_dn_0: 0.5657 (0.6980)  loss_bbox_dn_1: 0.5222 (0.6631)  loss_bbox_dn_2: 0.5173 (0.6575)  loss_giou: 0.7615 (1.0393)  loss_giou_aux_0: 0.8195 (1.0885)  loss_giou_aux_1: 0.7717 (1.0522)  loss_giou_aux_2: 0.9540 (1.1808)  loss_giou_dn_0: 1.0357 (1.1777)  loss_giou_dn_1: 0.9385 (1.1220)  loss_giou_dn_2: 0.9105 (1.1090)  loss_vfl: 1.1489 (1.0450)  loss_vfl_aux_0: 1.0995 (0.9759)  loss_vfl_aux_1: 1.1486 (1.0240)  loss_vfl_aux_2: 1.0114 (0.9064)  loss_vfl_dn_0: 0.4909 (0.5177)  loss_vfl_dn_1: 0.5091 (0.5451)  loss_vfl_dn_2: 0.5305 (0.5577)  time: 0.1952  data: 0.0066  max mem: 8725
+Epoch: [0]  [4100/7393]  eta: 0:11:03  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 15.2242 (17.6764)  loss_bbox: 0.2933 (0.5433)  loss_bbox_aux_0: 0.3226 (0.5850)  loss_bbox_aux_1: 0.2960 (0.5544)  loss_bbox_aux_2: 0.4141 (0.6680)  loss_bbox_dn_0: 0.5850 (0.6952)  loss_bbox_dn_1: 0.5349 (0.6597)  loss_bbox_dn_2: 0.5220 (0.6540)  loss_giou: 0.7986 (1.0328)  loss_giou_aux_0: 0.8772 (1.0822)  loss_giou_aux_1: 0.8211 (1.0458)  loss_giou_aux_2: 0.9658 (1.1751)  loss_giou_dn_0: 1.0255 (1.1740)  loss_giou_dn_1: 0.9256 (1.1171)  loss_giou_dn_2: 0.8910 (1.1037)  loss_vfl: 1.1174 (1.0487)  loss_vfl_aux_0: 1.0663 (0.9801)  loss_vfl_aux_1: 1.1062 (1.0279)  loss_vfl_aux_2: 1.0096 (0.9103)  loss_vfl_dn_0: 0.4963 (0.5172)  loss_vfl_dn_1: 0.5249 (0.5446)  loss_vfl_dn_2: 0.5379 (0.5572)  time: 0.2015  data: 0.0065  max mem: 8725
+Epoch: [0]  [4200/7393]  eta: 0:10:43  lr: 0.000010  cos: 0.0000 (0.0000)  loss: 14.9050 (17.6193)  loss_bbox: 0.2848 (0.5376)  loss_bbox_aux_0: 0.3199 (0.5794)  loss_bbox_aux_1: 0.2921 (0.5487)  loss_bbox_aux_2: 0.4116 (0.6626)  loss_bbox_dn_0: 0.5662 (0.6928)  loss_bbox_dn_1: 0.4879 (0.6566)  loss_bbox_dn_2: 0.4786 (0.6507)  loss_giou: 0.7815 (1.0265)  loss_giou_aux_0: 0.8380 (1.0760)  loss_giou_aux_1: 0.7939 (1.0395)  loss_giou_aux_2: 0.9491 (1.1695)  loss_giou_dn_0: 1.0126 (1.1704)  loss_giou_dn_1: 0.9122 (1.1125)  loss_giou_dn_2: 0.8926 (1.0987)  loss_vfl: 1.1617 (1.0518)  loss_vfl_aux_0: 1.1109 (0.9838)  loss_vfl_aux_1: 1.1395 (1.0313)  loss_vfl_aux_2: 1.0411 (0.9139)  loss_vfl_dn_0: 0.4853 (0.5167)  loss_vfl_dn_1: 0.5151 (0.5440)  loss_vfl_dn_2: 0.5194 (0.5565)  time: 0.1909  data: 0.0064  max mem: 8725

@@ -1,0 +1,589 @@
+W0715 01:22:17.682000 1331664 site-packages/torch/distributed/run.py:766] 
+W0715 01:22:17.682000 1331664 site-packages/torch/distributed/run.py:766] *****************************************
+W0715 01:22:17.682000 1331664 site-packages/torch/distributed/run.py:766] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0715 01:22:17.682000 1331664 site-packages/torch/distributed/run.py:766] *****************************************
+/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/__init__.py
+print(torchvision.__file__): None
+/home/hslee/FINE-FPN/vision/references/detection/utils.py
+print(utils.__file__): None
+/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/__init__.py
+print(torchvision.__file__): None
+/home/hslee/FINE-FPN/vision/references/detection/utils.py
+print(utils.__file__): None
+/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/__init__.py
+print(torchvision.__file__): None
+/home/hslee/FINE-FPN/vision/references/detection/utils.py
+print(utils.__file__): None
+/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/__init__.py
+print(torchvision.__file__): None
+/home/hslee/FINE-FPN/vision/references/detection/utils.py
+print(utils.__file__): None
+| distributed init (rank 0): env://
+/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4631: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+| distributed init (rank 1): env://
+[rank0]:[W715 01:22:20.484147229 ProcessGroupNCCL.cpp:4718] [PG ID 0 PG GUID 0 Rank 0]  using GPU 0 as device used by this process is currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. You can pecify device_id in init_process_group() to force use of a particular device.
+| distributed init (rank 2): env://
+/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4631: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+[rank1]:[W715 01:22:20.502348977 ProcessGroupNCCL.cpp:4718] [PG ID 0 PG GUID 0 Rank 1]  using GPU 1 as device used by this process is currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. You can pecify device_id in init_process_group() to force use of a particular device.
+| distributed init (rank 3): env://
+/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4631: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+[rank2]:[W715 01:22:20.510549274 ProcessGroupNCCL.cpp:4718] [PG ID 0 PG GUID 0 Rank 2]  using GPU 2 as device used by this process is currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. You can pecify device_id in init_process_group() to force use of a particular device.
+/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4631: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+[rank3]:[W715 01:22:20.533522724 ProcessGroupNCCL.cpp:4718] [PG ID 0 PG GUID 0 Rank 3]  using GPU 3 as device used by this process is currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. You can pecify device_id in init_process_group() to force use of a particular device.
+Namespace(data_path='/home/hslee/FINE-FPN/data/coco', dataset='coco', model='fasterrcnn_resnet50_fpn', device='cuda', batch_size=2, epochs=26, workers=8, opt='sgd', lr=0.01, momentum=0.9, weight_decay=0.0001, norm_weight_decay=None, lr_scheduler='multisteplr', lr_step_size=8, lr_steps=[16, 22], lr_gamma=0.1, print_freq=100, output_dir='./outputs/fasterrcnn-r50/SNI', resume='', start_epoch=0, aspect_ratio_group_factor=3, rpn_score_thresh=None, trainable_backbone_layers=None, data_augmentation='hflip', sync_bn=False, test_only=False, use_deterministic_algorithms=False, world_size=4, dist_url='env://', weights=None, weights_backbone='ResNet50_Weights.IMAGENET1K_V1', amp=False, use_copypaste=False, backend='pil', use_v2=False, visualize=False, semantic_gap=False, image=False, rank=0, gpu=0, distributed=True, dist_backend='nccl')
+Loading data
+loading annotations into memory...
+Done (t=8.33s)
+creating index...
+index created!
+loading annotations into memory...
+Done (t=0.21s)
+creating index...
+index created!
+Creating data loaders
+Using [0, 0.5, 0.6299605249474366, 0.7937005259840997, 1.0, 1.2599210498948732, 1.5874010519681994, 2.0, inf] as bins for aspect ratio quantization
+Count of instances per bin: [  104   982 24236  2332  8225 74466  5763  1158]
+Creating model
+model: DistributedDataParallel(
+  (module): FasterRCNN(
+    (transform): GeneralizedRCNNTransform(
+        Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        Resize(min_size=(800,), max_size=1333, mode='bilinear')
+    )
+    (backbone): BackboneWithFPN(
+      (body): IntermediateLayerGetter(
+        (conv1): Conv2d(3, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+        (bn1): FrozenBatchNorm2d(64, eps=1e-05)
+        (relu): ReLU(inplace=True)
+        (maxpool): MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
+        (layer1): Sequential(
+          (0): Bottleneck(
+            (conv1): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn1): FrozenBatchNorm2d(64, eps=1e-05)
+            (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (bn2): FrozenBatchNorm2d(64, eps=1e-05)
+            (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn3): FrozenBatchNorm2d(256, eps=1e-05)
+            (relu): ReLU(inplace=True)
+            (downsample): Sequential(
+              (0): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): FrozenBatchNorm2d(256, eps=1e-05)
+            )
+          )
+          (1): Bottleneck(
+            (conv1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn1): FrozenBatchNorm2d(64, eps=1e-05)
+            (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (bn2): FrozenBatchNorm2d(64, eps=1e-05)
+            (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn3): FrozenBatchNorm2d(256, eps=1e-05)
+            (relu): ReLU(inplace=True)
+          )
+          (2): Bottleneck(
+            (conv1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn1): FrozenBatchNorm2d(64, eps=1e-05)
+            (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (bn2): FrozenBatchNorm2d(64, eps=1e-05)
+            (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn3): FrozenBatchNorm2d(256, eps=1e-05)
+            (relu): ReLU(inplace=True)
+          )
+        )
+        (layer2): Sequential(
+          (0): Bottleneck(
+            (conv1): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn1): FrozenBatchNorm2d(128, eps=1e-05)
+            (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+            (bn2): FrozenBatchNorm2d(128, eps=1e-05)
+            (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn3): FrozenBatchNorm2d(512, eps=1e-05)
+            (relu): ReLU(inplace=True)
+            (downsample): Sequential(
+              (0): Conv2d(256, 512, kernel_size=(1, 1), stride=(2, 2), bias=False)
+              (1): FrozenBatchNorm2d(512, eps=1e-05)
+            )
+          )
+          (1): Bottleneck(
+            (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn1): FrozenBatchNorm2d(128, eps=1e-05)
+            (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (bn2): FrozenBatchNorm2d(128, eps=1e-05)
+            (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn3): FrozenBatchNorm2d(512, eps=1e-05)
+            (relu): ReLU(inplace=True)
+          )
+          (2): Bottleneck(
+            (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn1): FrozenBatchNorm2d(128, eps=1e-05)
+            (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (bn2): FrozenBatchNorm2d(128, eps=1e-05)
+            (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn3): FrozenBatchNorm2d(512, eps=1e-05)
+            (relu): ReLU(inplace=True)
+          )
+          (3): Bottleneck(
+            (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn1): FrozenBatchNorm2d(128, eps=1e-05)
+            (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (bn2): FrozenBatchNorm2d(128, eps=1e-05)
+            (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn3): FrozenBatchNorm2d(512, eps=1e-05)
+            (relu): ReLU(inplace=True)
+          )
+        )
+        (layer3): Sequential(
+          (0): Bottleneck(
+            (conv1): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn1): FrozenBatchNorm2d(256, eps=1e-05)
+            (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+            (bn2): FrozenBatchNorm2d(256, eps=1e-05)
+            (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn3): FrozenBatchNorm2d(1024, eps=1e-05)
+            (relu): ReLU(inplace=True)
+            (downsample): Sequential(
+              (0): Conv2d(512, 1024, kernel_size=(1, 1), stride=(2, 2), bias=False)
+              (1): FrozenBatchNorm2d(1024, eps=1e-05)
+            )
+          )
+          (1): Bottleneck(
+            (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn1): FrozenBatchNorm2d(256, eps=1e-05)
+            (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (bn2): FrozenBatchNorm2d(256, eps=1e-05)
+            (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn3): FrozenBatchNorm2d(1024, eps=1e-05)
+            (relu): ReLU(inplace=True)
+          )
+          (2): Bottleneck(
+            (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn1): FrozenBatchNorm2d(256, eps=1e-05)
+            (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (bn2): FrozenBatchNorm2d(256, eps=1e-05)
+            (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn3): FrozenBatchNorm2d(1024, eps=1e-05)
+            (relu): ReLU(inplace=True)
+          )
+          (3): Bottleneck(
+            (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn1): FrozenBatchNorm2d(256, eps=1e-05)
+            (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (bn2): FrozenBatchNorm2d(256, eps=1e-05)
+            (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn3): FrozenBatchNorm2d(1024, eps=1e-05)
+            (relu): ReLU(inplace=True)
+          )
+          (4): Bottleneck(
+            (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn1): FrozenBatchNorm2d(256, eps=1e-05)
+            (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (bn2): FrozenBatchNorm2d(256, eps=1e-05)
+            (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn3): FrozenBatchNorm2d(1024, eps=1e-05)
+            (relu): ReLU(inplace=True)
+          )
+          (5): Bottleneck(
+            (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn1): FrozenBatchNorm2d(256, eps=1e-05)
+            (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (bn2): FrozenBatchNorm2d(256, eps=1e-05)
+            (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn3): FrozenBatchNorm2d(1024, eps=1e-05)
+            (relu): ReLU(inplace=True)
+          )
+        )
+        (layer4): Sequential(
+          (0): Bottleneck(
+            (conv1): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn1): FrozenBatchNorm2d(512, eps=1e-05)
+            (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+            (bn2): FrozenBatchNorm2d(512, eps=1e-05)
+            (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn3): FrozenBatchNorm2d(2048, eps=1e-05)
+            (relu): ReLU(inplace=True)
+            (downsample): Sequential(
+              (0): Conv2d(1024, 2048, kernel_size=(1, 1), stride=(2, 2), bias=False)
+              (1): FrozenBatchNorm2d(2048, eps=1e-05)
+            )
+          )
+          (1): Bottleneck(
+            (conv1): Conv2d(2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn1): FrozenBatchNorm2d(512, eps=1e-05)
+            (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (bn2): FrozenBatchNorm2d(512, eps=1e-05)
+            (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn3): FrozenBatchNorm2d(2048, eps=1e-05)
+            (relu): ReLU(inplace=True)
+          )
+          (2): Bottleneck(
+            (conv1): Conv2d(2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn1): FrozenBatchNorm2d(512, eps=1e-05)
+            (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (bn2): FrozenBatchNorm2d(512, eps=1e-05)
+            (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn3): FrozenBatchNorm2d(2048, eps=1e-05)
+            (relu): ReLU(inplace=True)
+          )
+        )
+      )
+      (fpn): FeaturePyramidNetwork(
+        (inner_blocks): ModuleList(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1))
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1))
+          )
+          (2): Conv2dNormActivation(
+            (0): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1))
+          )
+          (3): Conv2dNormActivation(
+            (0): Conv2d(2048, 256, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+        (layer_blocks): ModuleList(
+          (0-3): 4 x Conv2dNormActivation(
+            (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+        )
+        (sni): SNI(
+          (us): Upsample(scale_factor=2.0, mode='nearest')
+        )
+        (extra_blocks): LastLevelMaxPool()
+      )
+    )
+    (rpn): RegionProposalNetwork(
+      (anchor_generator): AnchorGenerator()
+      (head): RPNHead(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): ReLU(inplace=True)
+          )
+        )
+        (cls_logits): Conv2d(256, 3, kernel_size=(1, 1), stride=(1, 1))
+        (bbox_pred): Conv2d(256, 12, kernel_size=(1, 1), stride=(1, 1))
+      )
+    )
+    (roi_heads): RoIHeads(
+      (box_roi_pool): MultiScaleRoIAlign(featmap_names=['0', '1', '2', '3'], output_size=(7, 7), sampling_ratio=2)
+      (box_head): TwoMLPHead(
+        (fc6): Linear(in_features=12544, out_features=1024, bias=True)
+        (fc7): Linear(in_features=1024, out_features=1024, bias=True)
+      )
+      (box_predictor): FastRCNNPredictor(
+        (cls_score): Linear(in_features=1024, out_features=91, bias=True)
+        (bbox_pred): Linear(in_features=1024, out_features=364, bias=True)
+      )
+    )
+  )
+)
+Warning: module GeneralizedRCNNTransform is treated as a zero-op.
+Warning: module FrozenBatchNorm2d is treated as a zero-op.
+Warning: module Bottleneck is treated as a zero-op.
+Warning: module IntermediateLayerGetter is treated as a zero-op.
+Warning: module Conv2dNormActivation is treated as a zero-op.
+Warning: module SNI is treated as a zero-op.
+Warning: module LastLevelMaxPool is treated as a zero-op.
+Warning: module FeaturePyramidNetwork is treated as a zero-op.
+Warning: module BackboneWithFPN is treated as a zero-op.
+Warning: module AnchorGenerator is treated as a zero-op.
+Warning: module RPNHead is treated as a zero-op.
+Warning: module RegionProposalNetwork is treated as a zero-op.
+Warning: module MultiScaleRoIAlign is treated as a zero-op.
+Warning: module TwoMLPHead is treated as a zero-op.
+Warning: module FastRCNNPredictor is treated as a zero-op.
+Warning: module RoIHeads is treated as a zero-op.
+Warning: module FasterRCNN is treated as a zero-op.
+Warning: module DistributedDataParallel is treated as a zero-op.
+Flops estimation was not finished successfully because of the following exception:
+<class 'RuntimeError'> : The size of tensor a (50) must match the size of tensor b (100) at non-singleton dimension 3
+Traceback (most recent call last):
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/ptflops/pytorch_engine.py", line 68, in get_flops_pytorch
+    _ = flops_model(batch)
+        ^^^^^^^^^^^^^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1857, in _call_impl
+    return inner()
+           ^^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1805, in inner
+    result = forward_call(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 1637, in forward
+    else self._run_ddp_forward(*inputs, **kwargs)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 1464, in _run_ddp_forward
+    return self.module(*inputs, **kwargs)  # type: ignore[index]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/models/detection/generalized_rcnn.py", line 101, in forward
+    features = self.backbone(images.tensors)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/models/detection/backbone_utils.py", line 58, in forward
+    x = self.fpn(x)
+        ^^^^^^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/ops/feature_pyramid_network.py", line 495, in forward
+    last_inner = inner_lateral + inner_top_down
+                 ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+RuntimeError: The size of tensor a (50) must match the size of tensor b (100) at non-singleton dimension 3
+FLOPs: None, Params: None
+Start training
+/home/hslee/FINE-FPN/vision/references/detection/engine.py:41: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=scaler is not None):
+/home/hslee/FINE-FPN/vision/references/detection/engine.py:41: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=scaler is not None):
+/home/hslee/FINE-FPN/vision/references/detection/engine.py:41: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=scaler is not None):
+/home/hslee/FINE-FPN/vision/references/detection/engine.py:41: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=scaler is not None):
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/hslee/FINE-FPN/vision/references/detection/train.py", line 557, in <module>
+[rank0]:     main(args)
+[rank0]:   File "/home/hslee/FINE-FPN/vision/references/detection/train.py", line 529, in main
+[rank0]:     train_one_epoch(model, optimizer, data_loader, device, epoch, args.print_freq, scaler)
+[rank0]:   File "/home/hslee/FINE-FPN/vision/references/detection/engine.py", line 42, in train_one_epoch
+[rank0]:     loss_dict = model(images, targets)
+[rank0]:                 ^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 1637, in forward
+[rank0]:     else self._run_ddp_forward(*inputs, **kwargs)
+[rank0]:          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 1464, in _run_ddp_forward
+[rank0]:     return self.module(*inputs, **kwargs)  # type: ignore[index]
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/models/detection/generalized_rcnn.py", line 101, in forward
+[rank0]:     features = self.backbone(images.tensors)
+[rank0]:                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/models/detection/backbone_utils.py", line 58, in forward
+[rank0]:     x = self.fpn(x)
+[rank0]:         ^^^^^^^^^^^
+[rank0]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/ops/feature_pyramid_network.py", line 495, in forward
+[rank0]:     last_inner = inner_lateral + inner_top_down
+[rank0]:                  ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+[rank0]: RuntimeError: The size of tensor a (76) must match the size of tensor b (152) at non-singleton dimension 3
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/home/hslee/FINE-FPN/vision/references/detection/train.py", line 557, in <module>
+[rank1]:     main(args)
+[rank1]:   File "/home/hslee/FINE-FPN/vision/references/detection/train.py", line 529, in main
+[rank1]:     train_one_epoch(model, optimizer, data_loader, device, epoch, args.print_freq, scaler)
+[rank1]:   File "/home/hslee/FINE-FPN/vision/references/detection/engine.py", line 42, in train_one_epoch
+[rank1]:     loss_dict = model(images, targets)
+[rank1]:                 ^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank1]:     return self._call_impl(*args, **kwargs)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank1]:     return forward_call(*args, **kwargs)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 1637, in forward
+[rank1]:     else self._run_ddp_forward(*inputs, **kwargs)
+[rank1]:          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 1464, in _run_ddp_forward
+[rank1]:     return self.module(*inputs, **kwargs)  # type: ignore[index]
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank1]:     return self._call_impl(*args, **kwargs)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank1]:     return forward_call(*args, **kwargs)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/models/detection/generalized_rcnn.py", line 101, in forward
+[rank1]:     features = self.backbone(images.tensors)
+[rank1]:                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank1]:     return self._call_impl(*args, **kwargs)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank1]:     return forward_call(*args, **kwargs)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/models/detection/backbone_utils.py", line 58, in forward
+[rank1]:     x = self.fpn(x)
+[rank1]:         ^^^^^^^^^^^
+[rank1]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank1]:     return self._call_impl(*args, **kwargs)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank1]:     return forward_call(*args, **kwargs)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/ops/feature_pyramid_network.py", line 495, in forward
+[rank1]:     last_inner = inner_lateral + inner_top_down
+[rank1]:                  ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+[rank1]: RuntimeError: The size of tensor a (76) must match the size of tensor b (152) at non-singleton dimension 3
+[rank3]: Traceback (most recent call last):
+[rank3]:   File "/home/hslee/FINE-FPN/vision/references/detection/train.py", line 557, in <module>
+[rank3]:     main(args)
+[rank3]:   File "/home/hslee/FINE-FPN/vision/references/detection/train.py", line 529, in main
+[rank3]:     train_one_epoch(model, optimizer, data_loader, device, epoch, args.print_freq, scaler)
+[rank3]:   File "/home/hslee/FINE-FPN/vision/references/detection/engine.py", line 42, in train_one_epoch
+[rank3]:     loss_dict = model(images, targets)
+[rank3]:                 ^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank3]:     return self._call_impl(*args, **kwargs)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank3]:     return forward_call(*args, **kwargs)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 1637, in forward
+[rank3]:     else self._run_ddp_forward(*inputs, **kwargs)
+[rank3]:          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 1464, in _run_ddp_forward
+[rank3]:     return self.module(*inputs, **kwargs)  # type: ignore[index]
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank3]:     return self._call_impl(*args, **kwargs)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank3]:     return forward_call(*args, **kwargs)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/models/detection/generalized_rcnn.py", line 101, in forward
+[rank3]:     features = self.backbone(images.tensors)
+[rank3]:                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank3]:     return self._call_impl(*args, **kwargs)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank3]:     return forward_call(*args, **kwargs)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/models/detection/backbone_utils.py", line 58, in forward
+[rank3]:     x = self.fpn(x)
+[rank3]:         ^^^^^^^^^^^
+[rank3]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank3]:     return self._call_impl(*args, **kwargs)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank3]:     return forward_call(*args, **kwargs)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/ops/feature_pyramid_network.py", line 495, in forward
+[rank3]:     last_inner = inner_lateral + inner_top_down
+[rank3]:                  ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+[rank3]: RuntimeError: The size of tensor a (74) must match the size of tensor b (148) at non-singleton dimension 3
+[rank2]: Traceback (most recent call last):
+[rank2]:   File "/home/hslee/FINE-FPN/vision/references/detection/train.py", line 557, in <module>
+[rank2]:     main(args)
+[rank2]:   File "/home/hslee/FINE-FPN/vision/references/detection/train.py", line 529, in main
+[rank2]:     train_one_epoch(model, optimizer, data_loader, device, epoch, args.print_freq, scaler)
+[rank2]:   File "/home/hslee/FINE-FPN/vision/references/detection/engine.py", line 42, in train_one_epoch
+[rank2]:     loss_dict = model(images, targets)
+[rank2]:                 ^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank2]:     return self._call_impl(*args, **kwargs)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank2]:     return forward_call(*args, **kwargs)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 1637, in forward
+[rank2]:     else self._run_ddp_forward(*inputs, **kwargs)
+[rank2]:          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 1464, in _run_ddp_forward
+[rank2]:     return self.module(*inputs, **kwargs)  # type: ignore[index]
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank2]:     return self._call_impl(*args, **kwargs)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank2]:     return forward_call(*args, **kwargs)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/models/detection/generalized_rcnn.py", line 101, in forward
+[rank2]:     features = self.backbone(images.tensors)
+[rank2]:                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank2]:     return self._call_impl(*args, **kwargs)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank2]:     return forward_call(*args, **kwargs)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/models/detection/backbone_utils.py", line 58, in forward
+[rank2]:     x = self.fpn(x)
+[rank2]:         ^^^^^^^^^^^
+[rank2]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank2]:     return self._call_impl(*args, **kwargs)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank2]:     return forward_call(*args, **kwargs)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torchvision/ops/feature_pyramid_network.py", line 495, in forward
+[rank2]:     last_inner = inner_lateral + inner_top_down
+[rank2]:                  ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+[rank2]: RuntimeError: The size of tensor a (76) must match the size of tensor b (152) at non-singleton dimension 3
+[rank0]:[W715 01:22:36.400240316 ProcessGroupNCCL.cpp:1479] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+W0715 01:22:37.825000 1331664 site-packages/torch/distributed/elastic/multiprocessing/api.py:900] Sending process 1331733 closing signal SIGTERM
+W0715 01:22:37.825000 1331664 site-packages/torch/distributed/elastic/multiprocessing/api.py:900] Sending process 1331734 closing signal SIGTERM
+W0715 01:22:37.825000 1331664 site-packages/torch/distributed/elastic/multiprocessing/api.py:900] Sending process 1331735 closing signal SIGTERM
+E0715 01:22:38.053000 1331664 site-packages/torch/distributed/elastic/multiprocessing/api.py:874] failed (exitcode: 1) local_rank: 0 (pid: 1331732) of binary: /home/hslee/anaconda3/envs/torch271/bin/python3.11
+Traceback (most recent call last):
+  File "/home/hslee/anaconda3/envs/torch271/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 355, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/distributed/run.py", line 892, in main
+    run(args)
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/distributed/run.py", line 883, in run
+    elastic_launch(
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 139, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hslee/anaconda3/envs/torch271/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 270, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+train.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-07-15_01:22:37
+  host      : black
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 1331732)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================

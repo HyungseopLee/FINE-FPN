@@ -1,0 +1,26 @@
+*.pth
+*.pt
+predictions.json
+pretrained/
+events*
+summary/
+
+rethinking-fpn/
+*.png
+*.jpg
+
+# dataset download
+TinyPerson-v5-Down.ipynb
+data/coco/
+
+coco.yaml
+
+# paddle
+*.pdema
+*.pdopt
+*.pdparams
+*.pdmodel
+*.pdiparams
+*.pdiparams.info
+
+*.zip

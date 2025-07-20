@@ -1,0 +1,64 @@
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+| distributed init (rank 1): env://
+| distributed init (rank 0): env://
+Namespace(data_path='/media/data/coco', dataset='coco', model='fcn_resnet50', aux_loss=True, device='cuda', batch_size=16, epochs=30, workers=16, lr=0.02, momentum=0.9, weight_decay=0.0001, lr_warmup_epochs=0, lr_warmup_method='linear', lr_warmup_decay=0.01, print_freq=200, output_dir='./outputs/fcn_resnet50/baseline', resume='', start_epoch=0, test_only=False, use_deterministic_algorithms=False, world_size=2, dist_url='env://', weights=None, weights_backbone='ResNet50_Weights.IMAGENET1K_V1', amp=False, backend='pil', use_v2=False, rank=0, gpu=0, distributed=True, dist_backend='nccl')
+loading annotations into memory...
+Done (t=7.67s)
+creating index...
+index created!
+loading annotations into memory...
+Done (t=0.21s)
+creating index...
+index created!
+| module                     | #parameters or shape   | #flops     |
+|:---------------------------|:-----------------------|:-----------|
+| module                     | 35.322M                | 0.153T     |
+|  backbone                  |  23.508M               |  0.103T    |
+|   backbone.conv1           |   9.408K               |   0.636G   |
+|    backbone.conv1.weight   |    (64, 3, 7, 7)       |            |
+|   backbone.bn1             |   0.128K               |   8.653M   |
+|    backbone.bn1.weight     |    (64,)               |            |
+|    backbone.bn1.bias       |    (64,)               |            |
+|   backbone.layer1          |   0.216M               |   3.647G   |
+|    backbone.layer1.0       |    75.008K             |    1.268G  |
+|    backbone.layer1.1       |    70.4K               |    1.19G   |
+|    backbone.layer1.2       |    70.4K               |    1.19G   |
+|   backbone.layer2          |   1.22M                |   5.571G   |
+|    backbone.layer2.0       |    0.379M              |    2.022G  |
+|    backbone.layer2.1       |    0.28M               |    1.183G  |
+|    backbone.layer2.2       |    0.28M               |    1.183G  |
+|    backbone.layer2.3       |    0.28M               |    1.183G  |
+|   backbone.layer3          |   7.098M               |   29.991G  |
+|    backbone.layer3.0       |    1.512M              |    6.39G   |
+|    backbone.layer3.1       |    1.117M              |    4.72G   |
+|    backbone.layer3.2       |    1.117M              |    4.72G   |
+|    backbone.layer3.3       |    1.117M              |    4.72G   |
+|    backbone.layer3.4       |    1.117M              |    4.72G   |
+|    backbone.layer3.5       |    1.117M              |    4.72G   |
+|   backbone.layer4          |   14.965M              |   63.226G  |
+|    backbone.layer4.0       |    6.04M               |    25.517G |
+|    backbone.layer4.1       |    4.463M              |    18.854G |
+|    backbone.layer4.2       |    4.463M              |    18.854G |
+|  classifier                |  9.449M                |  39.922G   |
+|   classifier.0             |   9.437M               |   39.872G  |
+|    classifier.0.weight     |    (512, 2048, 3, 3)   |            |
+|   classifier.1             |   1.024K               |   4.326M   |
+|    classifier.1.weight     |    (512,)              |            |
+|    classifier.1.bias       |    (512,)              |            |
+|   classifier.4             |   10.773K              |   45.427M  |
+|    classifier.4.weight     |    (21, 512, 1, 1)     |            |
+|    classifier.4.bias       |    (21,)               |            |
+|  aux_classifier            |  2.365M                |  9.993G    |
+|   aux_classifier.0         |   2.359M               |   9.968G   |
+|    aux_classifier.0.weight |    (256, 1024, 3, 3)   |            |
+|   aux_classifier.1         |   0.512K               |   2.163M   |
+|    aux_classifier.1.weight |    (256,)              |            |
+|    aux_classifier.1.bias   |    (256,)              |            |
+|   aux_classifier.4         |   5.397K               |   22.714M  |
+|    aux_classifier.4.weight |    (21, 256, 1, 1)     |            |
+|    aux_classifier.4.bias   |    (21,)               |            |
+GFLOPS: 153.04
+Start training

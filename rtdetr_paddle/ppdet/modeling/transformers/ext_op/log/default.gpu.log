@@ -1,0 +1,7 @@
+index,uuid,driver_version,name,gpu_serial,display_active,display_mode
+0,GPU-4031abc4-022f-d9ed-da41-ce585bae0396,575.57.08,NVIDIA RTX 6000 Ada Generation,1715223014754,Disabled,[Requested functionality has been deprecated]
+1,GPU-ad04baeb-e93a-9bef-a66d-8c77b8bf14ae,575.57.08,NVIDIA RTX 6000 Ada Generation,1715223014635,Disabled,[Requested functionality has been deprecated]
+
+pid,process_name,gpu_uuid,gpu_name,used_memory
+
+index,utilization_gpu,memory_total,memory_used,memory_free,timestamp

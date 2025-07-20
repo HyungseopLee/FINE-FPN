@@ -1,0 +1,33 @@
+{
+    "define_macros": [],
+    "deformable_detr_ops.so": "fd4a708ac0ffa93ca3df11969cb9297b",
+    "extra_compile_args": [
+        "-w",
+        "-DPADDLE_WITH_CUSTOM_KERNEL"
+    ],
+    "extra_link_args": [
+        "-l:libpaddle.so",
+        "-lcudart"
+    ],
+    "include_dirs": [
+        "/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/include",
+        "/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/include/third_party",
+        "/usr/local/cuda/include",
+        "/home2/hslee/anaconda3/envs/paddle/include/python3.13"
+    ],
+    "library_dirs": [
+        "/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/libs",
+        "/usr/local/cuda/lib64",
+        "/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/base"
+    ],
+    "runtime_library_dirs": [
+        "/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/libs",
+        "/usr/local/cuda/lib64",
+        "/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/base"
+    ],
+    "sources": [
+        "ms_deformable_attn_op.cc",
+        "ms_deformable_attn_op.cu"
+    ],
+    "undef_macros": []
+}
