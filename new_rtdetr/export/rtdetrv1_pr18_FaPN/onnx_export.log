@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/home/hslee/.local/lib/python3.10/site-packages/torch/__init__.py", line 295, in _load_global_deps
+    ctypes.CDLL(global_deps_lib_path, mode=ctypes.RTLD_GLOBAL)
+  File "/usr/lib/python3.10/ctypes/__init__.py", line 374, in __init__
+    self._handle = _dlopen(self._name, mode)
+OSError: libnvToolsExt.so.1: cannot open shared object file: No such file or directory
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/hslee/CLASS-FPN/new_rtdetr/tools/export_onnx.py", line 8, in <module>
+    import torch
+  File "/home/hslee/.local/lib/python3.10/site-packages/torch/__init__.py", line 360, in <module>
+    _load_global_deps()
+  File "/home/hslee/.local/lib/python3.10/site-packages/torch/__init__.py", line 318, in _load_global_deps
+    _preload_cuda_deps(lib_folder, lib_name)
+  File "/home/hslee/.local/lib/python3.10/site-packages/torch/__init__.py", line 279, in _preload_cuda_deps
+    raise ValueError(f"{lib_name} not found in the system path {sys.path}")
+ValueError: libcublas.so.*[0-9] not found in the system path ['/home/hslee/CLASS-FPN/new_rtdetr/tools/..', '/home/hslee/CLASS-FPN/new_rtdetr/tools', '/usr/lib/python310.zip', '/usr/lib/python3.10', '/usr/lib/python3.10/lib-dynload', '/home/hslee/.local/lib/python3.10/site-packages', '__editable__.ultralytics-8.3.94.finder.__path_hook__', '/usr/local/lib/python3.10/dist-packages', '/usr/lib/python3/dist-packages', '/usr/lib/python3.10/dist-packages']

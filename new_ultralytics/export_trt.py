@@ -16,12 +16,15 @@ print(f"args.model_config: {args.model_config}")
 model = YOLO(args.model_config)
 model.info()
 
-tensorrt_model = model.export(
-    format="onnx",
+trt_model = model.export(
+    format="engine",
     half=True,
+    device=0,
     imgsz=640,
     batch=1
 )
+
+results = trt_model("https://ultralytics.com/images/bus.jpg")
 
 # trtexec
 
@@ -36,8 +39,7 @@ python export_trt.py \
 
 # benchmarking with trtexec
 trtexec \
-    --loadEngine=/home/hslee/CLASS-FPN/new_ultralytics/yolov5s.onnx \
-    --saveEngine=/home/hslee/CLASS-FPN/new_ultralytics/yolov5s.engine \
+    --loadEngine=/home/hslee/CLASS-FPN/new_ultralytics/yolov5s.engine \
     --fp16 \
     --warmUp=200 \
     --iterations=1200 \
