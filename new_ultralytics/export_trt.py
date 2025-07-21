@@ -16,19 +16,33 @@ print(f"args.model_config: {args.model_config}")
 model = YOLO(args.model_config)
 model.info()
 
-tensorrt_model = model.export(format="engine", half=True)
+tensorrt_model = model.export(
+    format="engine",
+    half=True,
+
+)
 
 # trtexec
 
 
 '''
 
-
+# export
 python export_trt.py \
-    --model-config /home/hslee/Desktop/Embedded_AI/CLASS-FPN/new_ultralytics/ultralytics/cfg/models/v5/yolov5s.yaml \
+    --model-config /home/hslee/CLASS-FPN/new_ultralytics/ultralytics/cfg/models/v5/yolov5s.yaml \
     --project runs/export/yolov5s_baseline \
     2>&1 | tee ./runs/export/yolov5s_baseline/export_trt.log
 
+# benchmarking with trtexec
+trtexec \
+    --loadEngine=/home/hslee/CLASS-FPN/new_ultralytics/yolov5s.engine \
+    --fp16 \
+    --warmUp=200 \
+    --iterations=1200 \
+    --avgRuns=50 \
+    --verbose \
+    --useCudaGraph \
+    --useSpinWait \
+    2>&1 | tee ./runs/export/yolov5s_baseline/benchmark_fp16.log
 
-    
 '''

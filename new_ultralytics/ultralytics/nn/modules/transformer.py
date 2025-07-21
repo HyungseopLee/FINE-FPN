@@ -907,9 +907,11 @@ class SpatialAlignTransnormer(nn.Module):
 
         self.avg_pool_high = nn.Identity()
         self.avg_pool_low = nn.Identity()
+        self.scale_factor=2.0
         if is_first:
             self.avg_pool_low = nn.AvgPool2d(kernel_size=2, stride=2)
         else:
+            self.scale_factor = 4.0
             self.avg_pool_high = nn.AvgPool2d(kernel_size=2, stride=2)
             self.avg_pool_low = nn.AvgPool2d(kernel_size=4, stride=4)
         
@@ -1040,7 +1042,8 @@ class SpatialAlignTransnormer(nn.Module):
         
         # 5. Reshape to spatial map [B, HW, C] -> [B, C, H, W]
         a3_sa = out.permute(0, 2, 1).contiguous().view(bs, c_a3, h, w)  # [B, C, H, W]
-        a3_sa = F.interpolate(a3_sa, size=original_a3.shape[2:], mode='bilinear', align_corners=False)
+        # a3_sa = F.interpolate(a3_sa, size=original_a3.shape[2:], mode='bilinear', align_corners=False)
+        a3_sa = F.interpolate(a3_sa, scale_factor=self.scale_factor, mode='nearest', align_corners=False)
         a3_sa = a3_sa * original_a3
         
         a4_up = self.upsample(original_a4)  # [B, C, H, W]
