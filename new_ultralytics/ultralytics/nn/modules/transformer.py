@@ -872,7 +872,7 @@ class SpatialAlignTransnormer(nn.Module):
         self.is_yolov6 = is_yolov6
         
         # bilinear interpolation upsample
-        self.upsample = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=False)
+        self.upsample = nn.Upsample(scale_factor=2, mode='nearest', align_corners=False)
         if self.is_yolov6:
             self.upsample = nn.ConvTranspose2d(c2, c2, kernel_size=2, stride=2)
         
