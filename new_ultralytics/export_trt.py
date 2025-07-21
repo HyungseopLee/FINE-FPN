@@ -19,7 +19,9 @@ model.info()
 tensorrt_model = model.export(
     format="engine",
     half=True,
-
+    imgsz=640,
+    simplify=True,
+    batch=1
 )
 
 # trtexec
