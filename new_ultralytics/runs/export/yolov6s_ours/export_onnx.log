@@ -1,0 +1,16 @@
+args.model_config: /home/hslee/CLASS-FPN/new_ultralytics/ultralytics/cfg/models/v6/yolov6s_FINE.yaml
+YOLOv6s_FINE summary: 153 layers, 17,482,432 parameters, 17,482,416 gradients, 45.7 GFLOPs
+Ultralytics 8.3.159 🚀 Python-3.10.12 torch-2.5.0a0+872d972e41.nv24.08 CUDA:0 (Orin, 7620MiB)
+YOLOv6s_FINE summary (fused): 100 layers, 17,473,920 parameters, 0 gradients, 45.5 GFLOPs
+
+[34m[1mPyTorch:[0m starting from 'yolov6s_FINE.yaml' with input shape (1, 3, 640, 640) BCHW and output shape(s) (1, 84, 8400) (0.0 MB)
+
+[34m[1mONNX:[0m starting export with onnx 1.17.0 opset 19...
+[34m[1mONNX:[0m slimming with onnxslim 0.1.60...
+[34m[1mONNX:[0m export success ✅ 7.0s, saved as 'yolov6s_FINE.onnx' (33.4 MB)
+
+Export complete (13.1s)
+Results saved to [1m/home/hslee/CLASS-FPN/new_ultralytics[0m
+Predict:         yolo predict task=detect model=yolov6s_FINE.onnx imgsz=640 half 
+Validate:        yolo val task=detect model=yolov6s_FINE.onnx imgsz=640 data=None half 
+Visualize:       https://netron.app
