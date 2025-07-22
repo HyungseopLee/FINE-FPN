@@ -645,9 +645,9 @@ torchrun --nproc_per_node=2 train.py \
     --epochs 26 --lr-steps 16 22 --aspect-ratio-group-factor 3 \
     --weights-backbone ResNet50_Weights.IMAGENET1K_V1 \
     --batch-size 2 --lr 0.005 \
-    --output-dir ./outputs/fasterrcnn-r50/Deconv \
+    --output-dir ./outputs/fasterrcnn-r50/SNI \
     --print-freq 100 \
-    2>&1 | tee ./outputs/fasterrcnn-r50/Deconv/train.log
+    2>&1 | tee ./outputs/fasterrcnn-r50/SNI/train_2GPU.log
     
 torchrun --nproc_per_node=4 train.py \
     --dataset coco --data-path /home/hslee/FINE-FPN/data/coco \
