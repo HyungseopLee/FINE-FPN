@@ -639,15 +639,15 @@ torchrun --nproc_per_node=8 train.py\
     --dataset coco --model fasterrcnn_resnet50_fpn --epochs 26\
     --lr-steps 16 22 --aspect-ratio-group-factor 3 --weights-backbone ResNet50_Weights.IMAGENET1K_V1
  
-torchrun --nproc_per_node=2 train.py \
+python train.py \
     --dataset coco --data-path /media/data/coco \
     --model fasterrcnn_resnet50_fpn \
     --epochs 26 --lr-steps 16 22 --aspect-ratio-group-factor 3 \
     --weights-backbone ResNet50_Weights.IMAGENET1K_V1 \
     --batch-size 2 --lr 0.005 \
-    --output-dir ./outputs/fasterrcnn-r50/SNI \
+    --output-dir ./outputs/fasterrcnn-r50/AdaFPN \
     --print-freq 100 \
-    2>&1 | tee ./outputs/fasterrcnn-r50/SNI/train_2GPU.log
+    2>&1 | tee ./outputs/fasterrcnn-r50/AdaFPN/flops.log
     
 torchrun --nproc_per_node=4 train.py \
     --dataset coco --data-path /home/hslee/FINE-FPN/data/coco \

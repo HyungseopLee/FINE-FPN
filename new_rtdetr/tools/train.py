@@ -96,8 +96,9 @@ torchrun --nproc_per_node=2 \
     --use-amp --seed=0 2>&1 | tee ./output/*v1_r50vd_72e_coco_ours/train_noPosEmbed_nhead-16_L2H.log
     
     
-python \
-    tools/train.py -c /home/hslee/FINE-FPN/new_rtdetr/configs/rtdetr/rtdetr_r50vd_6x_coco.yml \
-    --use-amp --seed=0 2>&1 | tee log.txt
+python tools/train.py \
+    -c /home/hslee/Desktop/Embedded_AI/CLASS-FPN/new_rtdetr/configs/rtdetr/rtdetr_r18vd_6x_coco.yml \
+    --output-dir=./output/v1_18vd_72e_coco_MGC \
+    --use-amp --seed=0 2>&1 | tee ./output/v1_18vd_72e_coco_MGC/train.log
 
 '''

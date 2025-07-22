@@ -6,7 +6,7 @@ import torchvision.ops
 import math
 
 __all__ = ['DCNv2', 'DCN', 'FeatureSelectionModule', 'FaPN', 'DWConv',
-           'TConvNormLayer', 'TConvFromDownsample', 'AdaUp', 'AFF', 'AdaFPNBlock']
+           'TConvNormLayer', 'TConvFromDownsample', 'AdaUp', 'AFF', 'AdaFPNBlock', 'MGC']
 
 def _pair(x):
     """Convert scalar or tuple to tuple of length 2."""
@@ -507,3 +507,176 @@ class AdaFPNBlock(nn.Module):
         fused_feat = self.aff(upsampled_feat, low_feat)
         
         return fused_feat    
+    
+
+# https://openaccess.thecvf.com/content/CVPR2021/papers/Hu_A2-FPN_Attention_Aggregation_Based_Feature_Pyramid_Network_for_Instance_Segmentation_CVPR_2021_paper.pdf
+class MultiLevelGlobalContext(nn.Module):
+    def __init__(self, in_channels_list: list, out_channels: int, lambda_o: float = 0.0001):
+        super().__init__()
+        self.num_levels = len(in_channels_list)
+        self.out_channels = out_channels
+        self.lambda_o = lambda_o
+        
+        self.context_counts = [64 * (6 - i) for i in range(2, 2 + len(in_channels_list))]
+        
+        # Context Collector
+        self.semantic_entities = nn.ModuleList()
+        self.feature_embeddings = nn.ModuleList()
+        
+        for i, (in_ch, ni) in enumerate(zip(in_channels_list, self.context_counts)):
+            self.semantic_entities.append(nn.Conv2d(in_ch, ni, 1, bias=False))
+            self.feature_embeddings.append(nn.Conv2d(in_ch, out_channels, 1, bias=False))
+        
+        self.single_level_gcns = nn.ModuleList()
+        for _ in self.context_counts:
+            self.single_level_gcns.append(self._build_gcn_module(out_channels))
+        
+        self.multi_level_gcn = self._build_gcn_module(out_channels)
+        
+        self.context_query = nn.ModuleList()      
+        self.context_output = nn.ModuleList()     
+        self.residual_proj = nn.ModuleList()      
+        
+        for in_ch in in_channels_list:
+            self.context_query.append(nn.Conv2d(in_ch, out_channels, 1, bias=False))
+            self.context_output.append(nn.Conv2d(out_channels, out_channels, 1, bias=False))
+            self.residual_proj.append(nn.Conv2d(in_ch, out_channels, 1, bias=False))
+            
+        self.orthogonal_loss = 0.0
+
+    def _build_gcn_module(self, channels: int):
+        return nn.Sequential(
+            nn.Conv1d(channels, channels // 4, 1),
+            nn.ReLU(inplace=True), 
+            nn.Conv1d(channels // 4, channels // 4, 1),
+            nn.ReLU(inplace=True),
+            nn.Conv1d(channels // 4, channels, 1)
+        )
+    
+    def scaled_cosine_similarity_attention(self, features: torch.Tensor, 
+                                         semantic_entities: torch.Tensor, 
+                                         scale_factor: float) -> torch.Tensor:
+        B, ci, H, W = features.shape
+        _, ni, _, _ = semantic_entities.shape
+        
+        features_norm = F.normalize(features, p=2, dim=1)        # [B, ci, H, W]
+        entities_norm = F.normalize(semantic_entities, p=2, dim=1)  # [B, ni, H, W]
+
+        features_flat = features_norm.view(B, ci, H * W)         # [B, ci, HW]
+        entities_flat = entities_norm.view(B, ni, H * W)         # [B, ni, HW]
+        
+        similarity = torch.einsum('bni,bci->bni', entities_flat, features_flat)  # [B, ni, HW]
+        
+        similarity = similarity * scale_factor  # [B, ni, HW]
+        
+        attention_weights = F.softmax(similarity, dim=2)  # [B, ni, HW]
+        
+        attention_weights = attention_weights.view(B, ni, H, W)  # [B, ni, H, W]
+        
+        return attention_weights
+    
+    def context_collector(self, features: list) -> tuple:
+        """Context Collector: Equation 1"""
+        context_features = []
+        total_orthogonal_loss = 0.0
+        
+        for i, (feat, semantic_conv, embed_conv) in enumerate(
+            zip(features, self.semantic_entities, self.feature_embeddings)
+        ):
+            B, ci, H, W = feat.shape
+            ni = self.context_counts[i]
+            
+            # W(F_bb_i): semantic entities
+            semantic_entities = semantic_conv(feat)  # [B, ni, H, W]
+            
+            # (Equation 2)
+            W_psi = semantic_conv.weight.view(ni, ci)
+            identity = torch.eye(ni, device=W_psi.device, dtype=W_psi.dtype)
+            ortho_loss = torch.norm(torch.mm(W_psi, W_psi.t()) - identity, p='fro') ** 2
+            total_orthogonal_loss += ortho_loss
+            
+            # W(Fbb_i): feature embeddings  
+            embedded_features = embed_conv(feat)  # [B, c, H, W]
+            
+            # Scaled Cosine-Similarity Attention
+            scale_factor = (ci ** 0.5) 
+            attention_weights = self.scaled_cosine_similarity_attention(
+                feat, semantic_entities, scale_factor
+            )
+            
+            embedded_flat = embedded_features.view(B, self.out_channels, H * W)
+            attention_flat = attention_weights.view(B, ni, H * W)
+            
+            context_feat = torch.bmm(embedded_flat, attention_flat.transpose(1, 2))  # [B, c, ni]
+            context_features.append(context_feat)
+        
+        self.orthogonal_loss = self.lambda_o * total_orthogonal_loss
+        return context_features, self.orthogonal_loss
+    
+    def graph_reasoning(self, context_features: list) -> torch.Tensor:
+        """Graph Reasoning: Equations 4, 5"""
+        # GCN (Equation 4)
+        refined_contexts = []
+        
+        for context_feat, gcn in zip(context_features, self.single_level_gcns):
+            gcn_output = gcn(context_feat)  # [B, c, ni] -> [B, c, ni]
+            refined_context = gcn_output + context_feat
+            refined_contexts.append(refined_context)
+        
+        # GCN (Equation 5)
+        concatenated = torch.cat(refined_contexts, dim=2)  # [B, c, total_ni]
+        multi_output = self.multi_level_gcn(concatenated)  # [B, c, total_ni]
+        global_context = multi_output + concatenated  # �붿감 �곌껐
+        
+        return global_context
+    
+    def context_distributor(self, features: list, 
+                          global_context: torch.Tensor) -> list:
+        """Context Distributor: Equation 6"""
+        enhanced_features = []
+        pointer = 0
+        
+        for i, (feat, query_conv, output_conv, residual_conv) in enumerate(
+            zip(features, self.context_query, self.context_output, self.residual_proj)
+        ):
+            B, ci, H, W = feat.shape
+            ni = self.context_counts[i]
+            
+            level_context = global_context[:, :, pointer:pointer + ni]  # [B, c, ni]
+            pointer += ni
+            
+            queries = query_conv(feat)  # [B, c, H, W]
+            queries_flat = queries.view(B, self.out_channels, H * W)  # [B, c, HW]
+            
+            # Scaled Cosine-Similarity Attention
+            queries_norm = F.normalize(queries_flat, p=2, dim=1)     # [B, c, HW] 
+            context_norm = F.normalize(level_context, p=2, dim=1)    # [B, c, ni]
+            
+            # CF
+            attention_scores = torch.bmm(queries_norm.transpose(1, 2), context_norm)  # [B, HW, ni]
+            attention_weights = F.softmax(attention_scores, dim=2)  # [B, HW, ni]
+            
+            weighted_context = torch.bmm(level_context, attention_weights.transpose(1, 2))  # [B, c, HW]
+            weighted_context = weighted_context.view(B, self.out_channels, H, W)  # [B, c, H, W]
+            
+            # (Equation 6)
+            context_output = output_conv(weighted_context)  # [B, c, H, W]
+            residual_feat = residual_conv(feat)            # [B, c, H, W]
+            
+            enhanced_feat = context_output + residual_feat  # [B, c, H, W]
+            enhanced_features.append(enhanced_feat)
+        
+        return enhanced_features
+    
+    def forward(self, features: list) -> list:
+        """MGC"""
+        # Step 1: Context Collector (Equation 1)
+        context_features, ortho_loss = self.context_collector(features)
+        
+        # Step 2: Graph Reasoning (Equations 4, 5)
+        global_context = self.graph_reasoning(context_features)
+        
+        # Step 3: Context Distributor (Equation 6)
+        enhanced_features = self.context_distributor(features, global_context)
+        
+        return enhanced_features
