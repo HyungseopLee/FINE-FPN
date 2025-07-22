@@ -14,7 +14,7 @@ from .utils import get_activation
 from ...core import register
 from typing import Optional
 from torch import Tensor
-from .prior_works import AdaFPNBlock
+from .prior_works import AdaFPNBlock, MultiLevelGlobalContext
 
 
 __all__ = ['HybridEncoder']
@@ -380,22 +380,22 @@ class HybridEncoder(nn.Module):
         self.out_channels = [hidden_dim for _ in range(len(in_channels))]
         self.out_strides = feat_strides
         
-        # channel projection
-        self.input_proj = nn.ModuleList()
-        for in_channel in in_channels:
-            if version == 'v1':
-                proj = nn.Sequential(
-                    nn.Conv2d(in_channel, hidden_dim, kernel_size=1, bias=False),
-                    nn.BatchNorm2d(hidden_dim))
-            elif version == 'v2':
-                proj = nn.Sequential(OrderedDict([
-                    ('conv', nn.Conv2d(in_channel, hidden_dim, kernel_size=1, bias=False)),
-                    ('norm', nn.BatchNorm2d(hidden_dim))
-                ]))
-            else:
-                raise AttributeError()
+        # # channel projection
+        # self.input_proj = nn.ModuleList()
+        # for in_channel in in_channels:
+        #     if version == 'v1':
+        #         proj = nn.Sequential(
+        #             nn.Conv2d(in_channel, hidden_dim, kernel_size=1, bias=False),
+        #             nn.BatchNorm2d(hidden_dim))
+        #     elif version == 'v2':
+        #         proj = nn.Sequential(OrderedDict([
+        #             ('conv', nn.Conv2d(in_channel, hidden_dim, kernel_size=1, bias=False)),
+        #             ('norm', nn.BatchNorm2d(hidden_dim))
+        #         ]))
+        #     else:
+        #         raise AttributeError()
                 
-            self.input_proj.append(proj)
+        #     self.input_proj.append(proj)
             
         
         # # 2025.04.16 @HyungseopLee: FaPN
@@ -425,16 +425,17 @@ class HybridEncoder(nn.Module):
         #     )
         #     self.offset.append(offset)
 
-        # 2025.07.18 @HyungseopLee 
-        # AdaFPN https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9497077
-        self.ada_fpn_blocks = nn.ModuleList()
-        for i in range(len(self.in_channels) - 1):
-            high_ch = self.hidden_dim
-            low_ch = self.hidden_dim   
-            out_ch = self.hidden_dim 
-            self.ada_fpn_blocks.append(AdaFPNBlock(high_ch, low_ch, out_ch))
+        # # 2025.07.18 @HyungseopLee 
+        # # AdaFPN https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9497077
+        # self.ada_fpn_blocks = nn.ModuleList()
+        # for i in range(len(self.in_channels) - 1):
+        #     high_ch = self.hidden_dim
+        #     low_ch = self.hidden_dim   
+        #     out_ch = self.hidden_dim 
+        #     self.ada_fpn_blocks.append(AdaFPNBlock(high_ch, low_ch, out_ch))
         
-
+        # MGC
+        self.mgc = MultiLevelGlobalContext(in_channels, hidden_dim)
 
         # encoder transformer
         encoder_layer = TransformerEncoderLayer(
@@ -450,12 +451,12 @@ class HybridEncoder(nn.Module):
 
         # top-down fpn
         self.lateral_convs = nn.ModuleList()
-        # self.fpn_blocks = nn.ModuleList()
+        self.fpn_blocks = nn.ModuleList()
         for _ in range(len(in_channels) - 1, 0, -1):
             self.lateral_convs.append(ConvNormLayer(hidden_dim, hidden_dim, 1, 1, act=act))
-            # self.fpn_blocks.append(
-            #     CSPRepLayer(hidden_dim * 2, hidden_dim, round(3 * depth_mult), act=act, expansion=expansion)
-            # )
+            self.fpn_blocks.append(
+                CSPRepLayer(hidden_dim * 2, hidden_dim, round(3 * depth_mult), act=act, expansion=expansion)
+            )
 
         # bottom-up pan
         self.downsample_convs = nn.ModuleList()
@@ -539,8 +540,14 @@ class HybridEncoder(nn.Module):
     def forward(self, feats):
         assert len(feats) == len(self.in_channels)
         
-        # baseline
-        proj_feats = [self.input_proj[i](feat) for i, feat in enumerate(feats)]
+        # Apply MGC module before channel projection
+        proj_feats = self.mgc(feats)
+        
+        # for i, feat in enumerate(proj_feats):
+        #     print(f'feat {i} shape: {feat.shape}')
+        
+        # # baseline
+        # proj_feats = [self.input_proj[i](feat) for i, feat in enumerate(feats)]
         
         # # FaPN
         # proj_feats = [self.feature_selection[i](feat) for i, feat in enumerate(feats)]
@@ -569,8 +576,8 @@ class HybridEncoder(nn.Module):
             feat_high = self.lateral_convs[len(self.in_channels) - 1 - idx](feat_high)
             inner_outs[0] = feat_high
             
-            # # exp1: baseline
-            # upsample_feat = F.interpolate(feat_high, scale_factor=2., mode='bilinear')
+            # exp1: baseline
+            upsample_feat = F.interpolate(feat_high, scale_factor=2., mode='nearest')
             
             # # # exp 2: Deconv
             # upsample_feat = self.upsample_convs[len(self.in_channels) - 1 - idx](feat_high)
@@ -580,16 +587,16 @@ class HybridEncoder(nn.Module):
             # offset = self.offset[len(self.in_channels)-1-idx](torch.cat([feat_low, upsample_feat * 2], dim=1))
             # feat_align = self.feature_align[len(self.in_channels)-1-idx]((upsample_feat, offset))
             
-            # exp4: AdaFPN 
-            inner_out = self.ada_fpn_blocks[len(self.in_channels)-1-idx](feat_high, feat_low)
-            inner_outs.insert(0, inner_out)
+            # # exp4: AdaFPN 
+            # inner_out = self.ada_fpn_blocks[len(self.in_channels)-1-idx](feat_high, feat_low)
+            # inner_outs.insert(0, inner_out)
             
             # # Ours (align low to high)
             # feat_low = self.sa_cross_attn[len(self.in_channels) - 1 - idx](feat_low, feat_high) 
             # upsample_feat = F.interpolate(feat_high, scale_factor=2., mode='bilinear')
                 
-            # inner_out = self.fpn_blocks[len(self.in_channels)-1-idx](torch.concat([upsample_feat, feat_low], dim=1))
-            # inner_outs.insert(0, inner_out)
+            inner_out = self.fpn_blocks[len(self.in_channels)-1-idx](torch.concat([upsample_feat, feat_low], dim=1))
+            inner_outs.insert(0, inner_out)
 
         outs = [inner_outs[0]]
         for idx in range(len(self.in_channels) - 1): # 0, 1, 2
