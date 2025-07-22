@@ -54,7 +54,7 @@ from ultralytics.nn.modules import (
     SCDown,
     RepVGGDW,
     v10Detect,
-    SpatialAlignTransnormer,
+    SpatialAlignTransnormer
 )
 from ultralytics.utils import DEFAULT_CFG_DICT, DEFAULT_CFG_KEYS, LOGGER, colorstr, emojis, yaml_load
 from ultralytics.utils.checks import check_requirements, check_suffix, check_yaml
@@ -77,45 +77,18 @@ except ImportError:
     thop = None
 
 
-class BaseModel(torch.nn.Module):
-    """
-    Base class for all YOLO models in the Ultralytics family.
-
-    This class provides common functionality for YOLO models including forward pass handling, model fusion,
-    information display, and weight loading capabilities.
-
-    Attributes:
-        model (torch.nn.Module): The neural network model.
-        save (list): List of layer indices to save outputs from.
-        stride (torch.Tensor): Model stride values.
-
-    Methods:
-        forward: Perform forward pass for training or inference.
-        predict: Perform inference on input tensor.
-        fuse: Fuse Conv2d and BatchNorm2d layers for optimization.
-        info: Print model information.
-        load: Load weights into the model.
-        loss: Compute loss for training.
-
-    Examples:
-        Create a BaseModel instance
-        >>> model = BaseModel()
-        >>> model.info()  # Display model information
-    """
+class BaseModel(nn.Module):
+    """The BaseModel class serves as a base class for all the models in the Ultralytics YOLO family."""
 
     def forward(self, x, *args, **kwargs):
         """
-        Perform forward pass of the model for either training or inference.
-
-        If x is a dict, calculates and returns the loss for training. Otherwise, returns predictions for inference.
+        Forward pass of the model on a single scale. Wrapper for `_forward_once` method.
 
         Args:
-            x (torch.Tensor | dict): Input tensor for inference, or dict with image tensor and labels for training.
-            *args (Any): Variable length argument list.
-            **kwargs (Any): Arbitrary keyword arguments.
+            x (torch.Tensor | dict): The input image tensor or a dict including image tensor and gt labels.
 
         Returns:
-            (torch.Tensor): Loss if x is a dict (training), or network predictions (inference).
+            (torch.Tensor): The output of the network.
         """
         if isinstance(x, dict):  # for cases of training and validating while training.
             return self.loss(x, *args, **kwargs)
@@ -127,9 +100,9 @@ class BaseModel(torch.nn.Module):
 
         Args:
             x (torch.Tensor): The input tensor to the model.
-            profile (bool): Print the computation time of each layer if True.
-            visualize (bool): Save the feature maps of the model if True.
-            augment (bool): Augment image during prediction.
+            profile (bool):  Print the computation time of each layer if True, defaults to False.
+            visualize (bool): Save the feature maps of the model if True, defaults to False.
+            augment (bool): Augment image during prediction, defaults to False.
             embed (list, optional): A list of feature vectors/embeddings to return.
 
         Returns:
@@ -138,7 +111,6 @@ class BaseModel(torch.nn.Module):
         if augment:
             return self._predict_augment(x)
         return self._predict_once(x, profile, visualize, embed)
-
 
     def _predict_once(self, x, profile=False, visualize=False, embed=None):
         """
@@ -154,9 +126,7 @@ class BaseModel(torch.nn.Module):
             (torch.Tensor): The last output of the model.
         """
         y, dt, embeddings = [], [], []  # outputs
-        y, dt, embeddings = [], [], []  # outputs
-        
-        for idx, m in enumerate(self.model):
+        for m in self.model:
             if m.f != -1:  # if not from previous layer
                 x = y[m.f] if isinstance(m.f, int) else [x if j == -1 else y[j] for j in m.f]  # from earlier layers
             if profile:
@@ -166,10 +136,9 @@ class BaseModel(torch.nn.Module):
             if visualize:
                 feature_visualization(x, m.type, m.i, save_dir=visualize)
             if embed and m.i in embed:
-                embeddings.append(torch.nn.functional.adaptive_avg_pool2d(x, (1, 1)).squeeze(-1).squeeze(-1))  # flatten
+                embeddings.append(nn.functional.adaptive_avg_pool2d(x, (1, 1)).squeeze(-1).squeeze(-1))  # flatten
                 if m.i == max(embed):
                     return torch.unbind(torch.cat(embeddings, 1), dim=0)
-                  
         return x
 
     def _predict_augment(self, x):
@@ -762,7 +731,7 @@ def torch_safe_load(weight):
                 "ultralytics.yolo.data": "ultralytics.data",
             }
         ):  # for legacy 8.0 Classify and Pose models
-            ckpt = torch.load(file, map_location="cpu", weights_only=False)
+            ckpt = torch.load(file, map_location="cpu", weights_only=False)  # load ckpt, weights_only=False for YOLOv8
 
     except ModuleNotFoundError as e:  # e.name is missing module name
         if e.name == "models":
@@ -782,7 +751,7 @@ def torch_safe_load(weight):
             f"run a command with an official YOLOv8 model, i.e. 'yolo predict model=yolov8n.pt'"
         )
         check_requirements(e.name)  # install missing module
-        ckpt = torch.load(file, map_location="cpu")
+        ckpt = torch.load(file, map_location="cpu", weights_only=False)  # load ckpt again
 
     if not isinstance(ckpt, dict):
         # File is likely a YOLO instance saved with i.e. torch.save(model, "saved_model.pt")

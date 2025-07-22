@@ -22,6 +22,7 @@ __all__ = (
     "DeformableTransformerDecoderLayer",
     "MSDeformAttn",
     "MLP",
+    "SpatialAlignTransnormer",
 )
 
 
@@ -426,48 +427,8 @@ class DeformableTransformerDecoder(nn.Module):
         return torch.stack(dec_bboxes), torch.stack(dec_cls)
 
 
-
-def get_activation(act: str, inpace: bool=True):
-    """get activation
-    """
-    if act is None:
-        return nn.Identity()
-
-    elif isinstance(act, nn.Module):
-        return act 
-
-    act = act.lower()
-    
-    if act == 'silu' or act == 'swish':
-        m = nn.SiLU()
-
-    elif act == 'relu':
-        m = nn.ReLU()
-
-    elif act == 'leaky_relu':
-        m = nn.LeakyReLU()
-
-    elif act == 'silu':
-        m = nn.SiLU()
-    
-    elif act == 'gelu':
-        m = nn.GELU()
-
-    elif act == 'hardsigmoid':
-        m = nn.Hardsigmoid()
-
-    else:
-        raise RuntimeError('')  
-
-    if hasattr(m, 'inplace'):
-        m.inplace = inpace
-    
-    return m 
-
-
 from einops import rearrange
 import numpy as np
-
 class SpatialAlignTransnormer(nn.Module):
     def __init__(self, c1, c2, nhead=8, is_first=False, is_yolov6=False, dropout=0.0, activation="gelu"):
         '''
@@ -484,7 +445,7 @@ class SpatialAlignTransnormer(nn.Module):
         self.is_yolov6 = is_yolov6
         
         # bilinear interpolation upsample
-        self.upsample = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=False)
+        self.upsample = nn.Upsample(scale_factor=2, mode='bilinear')
         if self.is_yolov6:
             self.upsample = nn.ConvTranspose2d(c2, c2, kernel_size=2, stride=2)
         
@@ -511,7 +472,7 @@ class SpatialAlignTransnormer(nn.Module):
         self.linear1 = nn.Linear(c1, c1 * expansion)
         self.dropout = nn.Dropout(dropout)
         self.linear2 = nn.Linear(c1 * expansion, c1)
-        self.activation = get_activation(activation)
+        self.activation = nn.GELU()
         self.norm1 = nn.LayerNorm(c1)
         self.norm2 = nn.LayerNorm(c1)
         self.dropout1 = nn.Dropout(dropout)
@@ -519,9 +480,11 @@ class SpatialAlignTransnormer(nn.Module):
 
         self.avg_pool_high = nn.Identity()
         self.avg_pool_low = nn.Identity()
+        self.scale_factor=2.0
         if is_first:
             self.avg_pool_low = nn.AvgPool2d(kernel_size=2, stride=2)
         else:
+            self.scale_factor = 4.0
             self.avg_pool_high = nn.AvgPool2d(kernel_size=2, stride=2)
             self.avg_pool_low = nn.AvgPool2d(kernel_size=4, stride=4)
         
@@ -610,12 +573,13 @@ class SpatialAlignTransnormer(nn.Module):
         K = rearrange(K, 'hw b (h d) -> (b h) hw d', h=self.heads)
         V = rearrange(V, 'hw b (h d) -> (b h) hw d', h=self.heads)
         
-        # SIMA: n1-norm kernel function: QK normalization for stability
-        # https://github.com/UCDvision/sima/blob/main/sima.py
+        # # SIMA: n1-norm kernel function: QK normalization for stability
+        # # https://github.com/UCDvision/sima/blob/main/sima.py
         # Q = F.normalize(Q, p=1, dim=-2, eps=self.eps) 
-        # K = F.normalize(K, p=1, dim=-2, eps=self.eps)
-        Q = F.relu(Q) 
-        K = F.relu(K)
+        # K = F.normalize(K, p=1, dim=-2, eps=self.eps) 
+        
+        Q = F.relu(Q)  # ReLU activation for Q
+        K = F.relu(K)  # ReLU activation for K
 
         # CosFormer transform
         m = max(src_len, tgt_len)

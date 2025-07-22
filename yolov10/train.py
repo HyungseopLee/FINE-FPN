@@ -18,8 +18,9 @@ model = YOLO(args.model_config)
 
 # # resume
 # model = YOLO('/home/hslee/FINE-FPN/ultralytics/runs/detect/coco/*yolov10m_300e_baseline/train/weights/last.pt')
-# weights = torch.load('/home/hslee/FINE-FPN/yolov10/runs/detect/coco/*yolo10l_500e_NormAttention/train_4GPU_nbs256_h16_posEmbed/weights/last.pt')
+# weights = torch.load('/home/hslee/FINE-FPN/ultralytics/runs/detect/coco/*yolov10m_300e_baseline/train/weights/last.pt')
 # model.model.load_state_dict(weights, strict=True)
+
 
 model.info()
 
@@ -28,28 +29,34 @@ results = model.train(
     data="coco.yaml",
     
     epochs=500,
-    batch=64, # 4 GPUs
+    batch=128, # 4 GPUs
     nbs=256,
     
     imgsz=640, 
     
+    pretrained=False,
     project=args.project,
     
-    device='0,1', # idle GPUs
+    device='0,1,2,3', # idle GPUs
     
-    save_period=50,
+    save_period=100,
     patience=100,
     resume=False,
-    workers=16,
+    workers=8,
     amp=True,
     
-    # yolov10-L settings
+    # yolov10-M settings
     scale=0.9,
-    mixup=0.15,
-    copy_paste=0.3,
+    mixup=0.1,
+    copy_paste=0.1,
     optimizer='SGD',
+    
+    # # yolov10-L settings
+    # scale=0.9,
+    # mixup=0.15,
+    # copy_paste=0.3,
+    # optimizer='SGD',
 )
-
 
 
 '''
@@ -64,21 +71,23 @@ export NCCL_SHM_DISABLE=1
 export NCCL_IGNORE_DISABLED_P2P=1
 export NCCL_DEBUG=INFO
 python -m torch.distributed.run --nproc_per_node 2 train.py \
-    --model-config /home/hslee/FINE-FPN/ultralytics/ultralytics/cfg/models/v10/yolov10m.yaml \
-    --project runs/detect/coco/*yolov10m_300e_baseline \
-    2>&1 | tee ./runs/detect/coco/*yolov10m_300e_baseline/train.log
+    --model-config /home/hslee/SONeck/new_ultralytics/ultralytics/cfg/models/v5/yolov5s_FINE.yaml \
+    --project runs/detect/coco/*yolov5s_300e_NormAttention \
+    2>&1 | tee ./runs/detect/coco/*yolov5s_300e_NormAttention/train_posEmbed_nhead16-8_noNBS.log
     
 python train.py \
-    --model-config /home/hslee/FINE-FPN/ultralytics/ultralytics/cfg/models/v10/yolov10m_SAFusion.yaml \
-    --project runs/detect/coco/*yolov10m_300e_SemanticReLULinear \
-    2>&1 | tee ./runs/detect/coco/*yolov10m_300e_SemanticReLULinear/train_noPosEmbed.log
+    --model-config /home/hslee/Desktop/Embedded_AI/EXP/new_ultralytics/ultralytics/cfg/models/v10/yolov10n_FINE_TD_BU.yaml \
+    --project runs/detect/coco/yolov10n_500e_NormAttention \
+    2>&1 | tee ./runs/detect/coco/yolov10n_500e_NormAttention/train_posEmbed_4align.log
     
     
 
 python -m torch.distributed.run --nproc_per_node 2 train.py \
-    --model-config /home/hslee/SONeck/yolov10/ultralytics/cfg/models/v10/yolov10l_FINE.yaml \
-    --project runs/detect/coco/yolo10l_500e_ours \
-    2>&1 | tee ./runs/detect/coco/yolo10l_500e_ours/train_2GPU_PosEmbed_relu.log
+    
+python -m torch.distributed.run --nproc_per_node 4 train.py \
+    --model-config /home2/hslee/EXP/yolov10/ultralytics/cfg/models/v10/yolov10m_FINE.yaml \
+    --project runs/detect/coco/yolo10m_500e_ours \
+    # 2>&1 | tee ./runs/detect/coco/yolo10m_500e_ours/train_PosEmbed_relu.log
     
 python -m torch.distributed.run --nproc_per_node 2 train.py \
     --weights=''
@@ -87,9 +96,4 @@ python -m torch.distributed.run --nproc_per_node 2 train.py \
 python -m torch.distributed.run --master_port=1235 --nproc_per_node 1 train.py \
     --model-config /home/hslee/FINE-FPN/new_ultralytics/ultralytics/cfg/models/v10/yolov10s_FINE.yaml \
     2>&1 | tee ./runs/detect/coco/test.log
-    
-yolo detect train data=coco.yaml model=yolov10l.yaml epochs=500 batch=128 nbs=256 imgsz=640 device=0,1,2,3 \
-    2>&1 | tee ./test.log
-    
-    
 '''

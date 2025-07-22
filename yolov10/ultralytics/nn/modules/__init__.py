@@ -78,7 +78,7 @@ from .transformer import (
     TransformerBlock,
     TransformerEncoderLayer,
     TransformerLayer,
-    SpatialAlignTransnormer,
+    SpatialAlignTransnormer
 )
 
 __all__ = (
@@ -93,6 +93,7 @@ __all__ = (
     "GhostConv",
     "ChannelAttention",
     "SpatialAttention",
+    "SpatialAlignTransnormer"
     "CBAM",
     "Concat",
     "TransformerLayer",
@@ -144,6 +145,5 @@ __all__ = (
     "C2fCIB",
     "SCDown",
     "RepVGGDW",
-    "v10Detect",
-    "SpatialAlignTransnormer",
+    "v10Detect"
 )

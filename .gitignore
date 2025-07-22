@@ -12,6 +12,7 @@ rethinking-fpn/
 # dataset download
 TinyPerson-v5-Down.ipynb
 data/coco/
+datasets/
 
 coco.yaml
 
