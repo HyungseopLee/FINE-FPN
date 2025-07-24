@@ -510,8 +510,15 @@ class AdaFPNBlock(nn.Module):
     
 
 # https://openaccess.thecvf.com/content/CVPR2021/papers/Hu_A2-FPN_Attention_Aggregation_Based_Feature_Pyramid_Network_for_Instance_Segmentation_CVPR_2021_paper.pdf
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from typing import List, Optional, Callable
+from collections import OrderedDict
+
 class MultiLevelGlobalContext(nn.Module):
-    def __init__(self, in_channels_list: list, out_channels: int, lambda_o: float = 0.0001):
+    def __init__(self, in_channels_list: List[int], out_channels: int, lambda_o: float = 0.0001):
         super().__init__()
         self.num_levels = len(in_channels_list)
         self.out_channels = out_channels
@@ -542,7 +549,7 @@ class MultiLevelGlobalContext(nn.Module):
             self.context_output.append(nn.Conv2d(out_channels, out_channels, 1, bias=False))
             self.residual_proj.append(nn.Conv2d(in_ch, out_channels, 1, bias=False))
             
-        self.orthogonal_loss = 0.0
+        # self.orthogonal_loss = 0.0
 
     def _build_gcn_module(self, channels: int):
         return nn.Sequential(
@@ -575,10 +582,10 @@ class MultiLevelGlobalContext(nn.Module):
         
         return attention_weights
     
-    def context_collector(self, features: list) -> tuple:
+    def context_collector(self, features: List[torch.Tensor]) -> tuple:
         """Context Collector: Equation 1"""
         context_features = []
-        total_orthogonal_loss = 0.0
+        # total_orthogonal_loss = 0.0
         
         for i, (feat, semantic_conv, embed_conv) in enumerate(
             zip(features, self.semantic_entities, self.feature_embeddings)
@@ -593,7 +600,7 @@ class MultiLevelGlobalContext(nn.Module):
             W_psi = semantic_conv.weight.view(ni, ci)
             identity = torch.eye(ni, device=W_psi.device, dtype=W_psi.dtype)
             ortho_loss = torch.norm(torch.mm(W_psi, W_psi.t()) - identity, p='fro') ** 2
-            total_orthogonal_loss += ortho_loss
+            # total_orthogonal_loss += ortho_loss
             
             # W(Fbb_i): feature embeddings  
             embedded_features = embed_conv(feat)  # [B, c, H, W]
@@ -610,10 +617,11 @@ class MultiLevelGlobalContext(nn.Module):
             context_feat = torch.bmm(embedded_flat, attention_flat.transpose(1, 2))  # [B, c, ni]
             context_features.append(context_feat)
         
-        self.orthogonal_loss = self.lambda_o * total_orthogonal_loss
-        return context_features, self.orthogonal_loss
+        # self.orthogonal_loss = self.lambda_o * total_orthogonal_loss
+        # return context_features, self.orthogonal_loss
+        return context_features
     
-    def graph_reasoning(self, context_features: list) -> torch.Tensor:
+    def graph_reasoning(self, context_features: List[torch.Tensor]) -> torch.Tensor:
         """Graph Reasoning: Equations 4, 5"""
         # GCN (Equation 4)
         refined_contexts = []
@@ -630,8 +638,8 @@ class MultiLevelGlobalContext(nn.Module):
         
         return global_context
     
-    def context_distributor(self, features: list, 
-                          global_context: torch.Tensor) -> list:
+    def context_distributor(self, features: List[torch.Tensor], 
+                          global_context: torch.Tensor) -> List[torch.Tensor]:
         """Context Distributor: Equation 6"""
         enhanced_features = []
         pointer = 0
@@ -668,10 +676,11 @@ class MultiLevelGlobalContext(nn.Module):
         
         return enhanced_features
     
-    def forward(self, features: list) -> list:
+    def forward(self, features: List[torch.Tensor]) -> List[torch.Tensor]:
         """MGC"""
         # Step 1: Context Collector (Equation 1)
-        context_features, ortho_loss = self.context_collector(features)
+        # context_features, ortho_loss = self.context_collector(features)
+        context_features = self.context_collector(features)
         
         # Step 2: Graph Reasoning (Equations 4, 5)
         global_context = self.graph_reasoning(context_features)
