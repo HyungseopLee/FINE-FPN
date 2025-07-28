@@ -32,18 +32,13 @@ results = model.train(
     batch=128, # 4 GPUs
     nbs=256,
     
-    imgsz=640, 
-    
-    pretrained=False,
+    imgsz=640,
     project=args.project,
     
     device='0,1,2,3', # idle GPUs
     
     save_period=100,
     patience=100,
-    resume=False,
-    workers=8,
-    amp=True,
     
     # yolov10-M settings
     scale=0.9,
@@ -76,13 +71,9 @@ python -m torch.distributed.run --nproc_per_node 2 train.py \
     2>&1 | tee ./runs/detect/coco/*yolov5s_300e_NormAttention/train_posEmbed_nhead16-8_noNBS.log
     
 python train.py \
-    --model-config /home/hslee/Desktop/Embedded_AI/EXP/new_ultralytics/ultralytics/cfg/models/v10/yolov10n_FINE_TD_BU.yaml \
-    --project runs/detect/coco/yolov10n_500e_NormAttention \
-    2>&1 | tee ./runs/detect/coco/yolov10n_500e_NormAttention/train_posEmbed_4align.log
-    
-    
-
-python -m torch.distributed.run --nproc_per_node 2 train.py \
+    --model-config /home2/hslee/EXP/yolov10/ultralytics/cfg/models/v10/yolov10m_FINE.yaml \
+    2>&1 | tee ./test.log
+        
     
 python -m torch.distributed.run --nproc_per_node 4 train.py \
     --model-config /home2/hslee/EXP/yolov10/ultralytics/cfg/models/v10/yolov10m_FINE.yaml \
