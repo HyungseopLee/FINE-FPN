@@ -28,18 +28,18 @@ results = model.train(
     
     data="coco.yaml",
     
-    epochs=300,
+    epochs=500,
     # epochs=100,
     batch=64, # 4 GPUs
-    # nbs=256,
+    nbs=256,
     
     imgsz=640, 
     
     pretrained=False,
     project=args.project,
     
-    device='-1',  # single GPU
-    # device='-1,-1', # idle GPUs
+    # device='-1',  # single GPU
+    device='-1,-1', # idle GPUs
     # device='0,1,2,3', # idle GPUs
     
     save_period=50,
@@ -48,11 +48,11 @@ results = model.train(
     workers=16,
     amp=True,
     
-    # # yolov10-L settings
-    # scale=0.9,
-    # mixup=0.15,
-    # copy_paste=0.3,
-    # optimizer='SGD',
+    # yolov10-L settings
+    scale=0.9,
+    mixup=0.15,
+    copy_paste=0.3,
+    optimizer='SGD',
 )
 
 
@@ -82,10 +82,10 @@ python train.py \
 
 python -m torch.distributed.run --nproc_per_node 2 train.py \
     
-python train.py \
-    --model-config /home/hslee/FINE-FPN/yolov10/ultralytics/cfg/models/v10/yolov10l_FINE_TD_BU.yaml \
-    --project runs/detect/coco/*yolo10l_500e_NormAttention \
-    2>&1 | tee ./runs/detect/coco/*yolo10l_500e_NormAttention/train_yolov10l_PosEmbed_bu-td.log
+python -m torch.distributed.run --nproc_per_node 2 train.py \
+    --model-config /home/hslee/SONeck/new_ultralytics/ultralytics/cfg/models/v10/yolov10l_FINE.yaml \
+    --project runs/detect/coco/*yolo10l_500e_ours \
+    2>&1 | tee ./runs/detect/coco/*yolo10l_500e_ours/train_relu_posEmbed_nhead32-16.log
     
 python -m torch.distributed.run --nproc_per_node 2 train.py \
     --weights=''
