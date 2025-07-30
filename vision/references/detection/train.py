@@ -745,6 +745,23 @@ python train.py \
     --semantic-gap /home/hslee/Desktop/Embedded_AI/EXP/vision/references/detection/pretrained/fasterrcnn_best_model_23.pth \
     
 
+# Keypoint R-CNN
+torchrun --nproc_per_node=8 train.py\
+    --dataset coco_kp --model keypointrcnn_resnet50_fpn --epochs 46\
+    --lr-steps 36 43 --aspect-ratio-group-factor 3 --weights-backbone ResNet50_Weights.IMAGENET1K_V1
+
+torchrun --nproc_per_node=4 train.py \
+    --dataset coco_kp --model keypointrcnn_resnet50_fpn --epochs 46 \
+    --lr-steps 36 43 --aspect-ratio-group-factor 3 --weights-backbone ResNet50_Weights.IMAGENET1K_V1 \
+    --lr 0.01 \
+    --weights-backbone ResNet50_Weights.IMAGENET1K_V1
+
+torchrun --nproc_per_node=2 train.py \
+    --dataset coco_kp --model keypointrcnn_resnet50_fpn --epochs 46 \
+    --lr-steps 36 43 --aspect-ratio-group-factor 3 --weights-backbone ResNet50_Weights.IMAGENET1K_V1 \
+    --lr 0.005 \
+    2>&1 | tee ./outputs/keypointrcnn-r50/FINE/train.log
+    
 
 # Eval
 
