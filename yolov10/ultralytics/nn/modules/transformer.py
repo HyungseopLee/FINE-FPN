@@ -22,7 +22,7 @@ __all__ = (
     "DeformableTransformerDecoderLayer",
     "MSDeformAttn",
     "MLP",
-    "SpatialAlignTransnormer",
+    "SemanticAlignTransNormer",
 )
 
 
@@ -428,7 +428,7 @@ class DeformableTransformerDecoder(nn.Module):
 
 from einops import rearrange
 import numpy as np
-class SpatialAlignTransnormer(nn.Module):
+class SemanticAlignTransNormer(nn.Module):
     def __init__(self, c1, c2, nhead=8, is_first=False, is_yolov6=False, dropout=0.0, activation="gelu"):
         '''
         c1: #channels of low-level feature map
@@ -437,7 +437,6 @@ class SpatialAlignTransnormer(nn.Module):
         
         super().__init__()
         self.eps = 1e-6
-        self.normalize_before = False
         
         self.heads = nhead
         self.head_dim = c1 // nhead
@@ -462,7 +461,6 @@ class SpatialAlignTransnormer(nn.Module):
         self.v_proj = nn.Linear(c1, c1)
         self.out_proj = nn.Linear(c1, c1)
         
-        self.attn_norm = nn.LayerNorm(self.head_dim)
         self.attn_norm = nn.LayerNorm(self.head_dim)
         
         # FFN
@@ -577,6 +575,7 @@ class SpatialAlignTransnormer(nn.Module):
         K = F.normalize(K, p=1, dim=-2, eps=self.eps) 
 
         # CosFormer transform
+        # https://github.com/OpenNLPLab/cosFormer
         m = max(src_len, tgt_len)
         weight_index = self.get_index(m).to(Q)
         # (N * h, L, 2 * d)
@@ -608,7 +607,7 @@ class SpatialAlignTransnormer(nn.Module):
         out = residual + self.dropout2(out) # [B, HW, C]
         
         
-        # 5. Reshape to spatial map [B, HW, C] -> [B, C, H, W]
+        # Reshape to spatial map [B, HW, C] -> [B, C, H, W]
         a3_sa = out.permute(0, 2, 1).contiguous().view(bs, c_a3, h, w)  # [B, C, H, W]
         a3_sa = F.interpolate(a3_sa, scale_factor=self.scale_factor, mode='nearest')
         a3_sa = a3_sa * original_a3

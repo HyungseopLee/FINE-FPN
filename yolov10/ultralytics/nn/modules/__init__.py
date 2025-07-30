@@ -78,7 +78,7 @@ from .transformer import (
     TransformerBlock,
     TransformerEncoderLayer,
     TransformerLayer,
-    SpatialAlignTransnormer
+    SemanticAlignTransNormer
 )
 
 __all__ = (
@@ -93,7 +93,7 @@ __all__ = (
     "GhostConv",
     "ChannelAttention",
     "SpatialAttention",
-    "SpatialAlignTransnormer"
+    "SemanticAlignTransNormer"
     "CBAM",
     "Concat",
     "TransformerLayer",
