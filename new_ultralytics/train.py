@@ -48,11 +48,15 @@ results = model.train(
     workers=16,
     amp=True,
     
-    # yolov10-L settings
-    scale=0.9,
-    mixup=0.15,
-    copy_paste=0.3,
-    optimizer='SGD',
+    # # yolov10-L settings
+    # scale=0.9,
+    # mixup=0.15,
+    # copy_paste=0.3,
+    # optimizer='SGD',
+    
+    # yolov9-s settings
+    
+    
 )
 
 
@@ -83,9 +87,9 @@ python train.py \
 python -m torch.distributed.run --nproc_per_node 2 train.py \
     
 python -m torch.distributed.run --nproc_per_node 2 train.py \
-    --model-config /home/hslee/SONeck/new_ultralytics/ultralytics/cfg/models/v10/yolov10l_FINE.yaml \
-    --project runs/detect/coco/*yolo10l_500e_ours \
-    2>&1 | tee ./runs/detect/coco/*yolo10l_500e_ours/train_relu_posEmbed_nhead32-16.log
+    --model-config /home/hslee/SONeck/new_ultralytics/ultralytics/cfg/models/v9/yolov9s_FINE.yaml \
+    --project runs/detect/coco/yolo9s_500e_ours \
+    2>&1 | tee ./runs/detect/coco/yolo9s_500e_ours/train_posEmbed_nhead8_normAttn.log
     
 python -m torch.distributed.run --nproc_per_node 2 train.py \
     --weights=''

@@ -495,6 +495,9 @@ class BaseTrainer:
             if self.stop:
                 break  # must break all DDP ranks
             epoch += 1
+            
+            # Log epoch time
+            print(f"Epoch {epoch} completed in {self.epoch_time:.2f} seconds", flush=True)
 
         if RANK in (-1, 0):
             # Do final val with best.pt

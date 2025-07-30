@@ -28,23 +28,27 @@ results = model.train(
     
     data="coco.yaml",
     
-    epochs=500,
-    batch=128, # 4 GPUs
+    epochs=300,
+    batch=64, # 2 GPUs
     nbs=256,
     
     imgsz=640,
     project=args.project,
     
-    device='0,1,2,3', # idle GPUs
+    device='0,1', 
     
     save_period=100,
     patience=100,
     
-    # yolov10-M settings
-    scale=0.9,
-    mixup=0.1,
-    copy_paste=0.1,
+    # yolov6s settings
     optimizer='SGD',
+    cos_lr=True,
+    
+    # # yolov10-M settings
+    # scale=0.9,
+    # mixup=0.1,
+    # copy_paste=0.1,
+    # optimizer='SGD',
     
     # # yolov10-L settings
     # scale=0.9,
@@ -75,10 +79,10 @@ python train.py \
     2>&1 | tee ./test.log
         
     
-python -m torch.distributed.run --nproc_per_node 4 train.py \
-    --model-config /home2/hslee/EXP/yolov10/ultralytics/cfg/models/v10/yolov10m_FINE.yaml \
+python -m torch.distributed.run --nproc_per_node 2 train.py \
+    --model-config /home/hslee/SONeck/yolov10/ultralytics/cfg/models/v10/yolov10m_FINE.yaml \
     --project runs/detect/coco/yolo10m_500e_ours \
-    # 2>&1 | tee ./runs/detect/coco/yolo10m_500e_ours/train_PosEmbed_relu.log
+    2>&1 | tee ./runs/detect/coco/yolo10m_500e_ours/train_posEmbed_nhead16-8_normAttn_nearest.log
     
 python -m torch.distributed.run --nproc_per_node 2 train.py \
     --weights=''

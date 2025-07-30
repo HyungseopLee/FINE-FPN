@@ -1,0 +1,39 @@
+# Ultralytics 🚀 AGPL-3.0 License - https://ultralytics.com/license
+
+# YOLOv9s object detection model with P3/8 - P5/32 outputs
+# Model docs: https://docs.ultralytics.com/models/yolov9
+# Task docs: https://docs.ultralytics.com/tasks/detect
+# 544 layers, 7318368 parameters, 27.6 GFLOPs
+
+# Parameters
+nc: 80 # number of classes
+
+# GELAN backbone
+backbone:
+  - [-1, 1, Conv, [32, 3, 2]] # 0-P1/2
+  - [-1, 1, Conv, [64, 3, 2]] # 1-P2/4
+  - [-1, 1, RepNCSPELAN4, [128, 128, 64, 1]] # 2
+  - [-1, 1, AConv, [240]] # 3-P3/8
+  - [-1, 1, RepNCSPELAN4, [240, 240, 120, 1]] # 4
+  - [-1, 1, AConv, [360]] # 5-P4/16
+  - [-1, 1, RepNCSPELAN4, [360, 360, 180, 1]] # 6
+  - [-1, 1, AConv, [480]] # 7-P5/32
+  - [-1, 1, RepNCSPELAN4, [480, 480, 240, 1]] # 8
+  - [-1, 1, SPPELAN, [480, 240]] # 9
+
+head:
+  - [[-1, 6], 1, SpatialAlignTransnormer, [240, 480, 8, True]] # cat backbone P4 (10)
+  - [-1, 1, RepNCSPELAN4, [360, 360, 180, 1]] # 11
+
+  - [[-1, 4], 1, SpatialAlignTransnormer, [120, 240, 8, False]] # cat backbone P4 (12)
+  - [-1, 1, RepNCSPELAN4, [240, 240, 120, 1]] # 13
+
+  - [-1, 1, AConv, [180]] # 14
+  - [[-1, 11], 1, Concat, [1]] # cat head P4 (15)
+  - [-1, 1, RepNCSPELAN4, [360, 360, 180, 1]] # 16 (P4/16-medium)
+
+  - [-1, 1, AConv, [240]] # 17
+  - [[-1, 9], 1, Concat, [1]] # cat head P5 (18)
+  - [-1, 1, RepNCSPELAN4, [480, 480, 240, 1]] # 19 (P5/32-large)
+
+  - [[13, 16, 19], 1, Detect, [nc]] # Detect(P3, P4, P5)
