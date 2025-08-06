@@ -84,8 +84,8 @@ export CUDA_VISIBLE_DEVICES=0,1
 torchrun --nproc_per_node=2 \
     tools/train.py \
     -c configs/rtdetr/rtdetr_r18vd_6x_coco.yml \
-    --output-dir=/home/hslee/SONeck/new_rtdetr/output/v1_r18vd_12e_AdaFPN \
-    --use-amp --seed=0 2>&1 | tee ./output/v1_r18vd_12e_AdaFPN/train.log
+    --output-dir=/home/hslee/SONeck/new_rtdetr/output/v1_r18vd_12e_MGC \
+    --use-amp --seed=0 2>&1 | tee ./output/v1_r18vd_12e_MGC/train.log
     
     --use-amp
         

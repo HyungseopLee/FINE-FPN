@@ -274,9 +274,7 @@ class BaseTrainer:
             dist.broadcast(self.amp, src=0)  # broadcast the tensor from rank 0 to all other ranks (returns None)
         self.amp = bool(self.amp)  # as boolean
         
-        # self.scaler = torch.cuda.amp.GradScaler(enabled=self.amp)
-        self.scaler = torch.amp.GradScaler(enabled=self.amp)
-        
+        self.scaler = torch.cuda.amp.GradScaler(enabled=self.amp)
         if world_size > 1:
             self.model = nn.parallel.DistributedDataParallel(self.model, device_ids=[RANK])
 
@@ -346,6 +344,20 @@ class BaseTrainer:
             base_idx = (self.epochs - self.args.close_mosaic) * nb
             self.plot_idx.extend([base_idx, base_idx + 1, base_idx + 2])
         epoch = self.start_epoch
+        
+        
+        from ptflops import get_model_complexity_info
+        self.model.eval().to(self.device)
+        with torch.no_grad():
+            macs, params = get_model_complexity_info(
+                self.model,
+                input_res=(3, 640, 640),
+                as_strings=True,
+                print_per_layer_stat=True,
+                verbose=True
+            )
+        print(f"FLOPs: {macs}, Params: {params}")
+        print(f"self.args.nbs: {self.args.nbs}")
         while True:
             self.epoch = epoch
             self.run_callbacks("on_train_epoch_start")
@@ -358,9 +370,10 @@ class BaseTrainer:
                 self._close_dataloader_mosaic()
                 self.train_loader.reset()
 
-            if RANK in (-1, 0):
-                LOGGER.info(self.progress_string())
-                pbar = TQDM(enumerate(self.train_loader), total=nb)
+            # if RANK in (-1, 0):
+            #     LOGGER.info(self.progress_string())
+            #     pbar = TQDM(enumerate(self.train_loader), total=nb)
+            
             self.tloss = None
             self.optimizer.zero_grad()
             for i, batch in pbar:
@@ -379,8 +392,7 @@ class BaseTrainer:
                             x["momentum"] = np.interp(ni, xi, [self.args.warmup_momentum, self.args.momentum])
 
                 # Forward
-                # with torch.cuda.amp.autocast(self.amp):
-                with torch.amp.autocast(device_type='cuda', enabled=self.amp):
+                with torch.cuda.amp.autocast(self.amp):
                     batch = self.preprocess_batch(batch)
                     self.loss, self.loss_items = self.model(batch)
                     if RANK != -1:
@@ -407,18 +419,35 @@ class BaseTrainer:
                         if self.stop:  # training time exceeded
                             break
 
+                # # Log
+                # mem = f"{torch.cuda.memory_reserved() / 1E9 if torch.cuda.is_available() else 0:.3g}G"  # (GB)
+                # loss_len = self.tloss.shape[0] if len(self.tloss.shape) else 1
+                # losses = self.tloss if loss_len > 1 else torch.unsqueeze(self.tloss, 0)
+                # if RANK in (-1, 0):
+                #     pbar.set_description(
+                #         ("%11s" * 2 + "%11.4g" * (2 + loss_len))
+                #         % (f"{epoch + 1}/{self.epochs}", mem, *losses, batch["cls"].shape[0], batch["img"].shape[-1])
+                #     )
+                #     self.run_callbacks("on_batch_end")
+                #     if self.args.plots and ni in self.plot_idx:
+                #         self.plot_training_samples(batch, ni)
+
                 # Log
-                mem = f"{torch.cuda.memory_reserved() / 1E9 if torch.cuda.is_available() else 0:.3g}G"  # (GB)
-                loss_len = self.tloss.shape[0] if len(self.tloss.shape) else 1
-                losses = self.tloss if loss_len > 1 else torch.unsqueeze(self.tloss, 0)
-                if RANK in (-1, 0):
-                    pbar.set_description(
-                        ("%11s" * 2 + "%11.4g" * (2 + loss_len))
-                        % (f"{epoch + 1}/{self.epochs}", mem, *losses, batch["cls"].shape[0], batch["img"].shape[-1])
-                    )
-                    self.run_callbacks("on_batch_end")
-                    if self.args.plots and ni in self.plot_idx:
-                        self.plot_training_samples(batch, ni)
+                if RANK in {-1, 0}:  # Only log for rank 0
+                    mem = f"{torch.cuda.memory_reserved() / 1E9 if torch.cuda.is_available() else 0:.3g}G"  # (GB)
+                    loss_length = self.tloss.shape[0] if len(self.tloss.shape) else 1
+                    losses = self.tloss if loss_length > 1 else torch.unsqueeze(self.tloss, 0)
+                    if i % 100 == 0:
+                        loss_str = " ".join([f"loss_{j}: {loss.item():.4g}" for j, loss in enumerate(losses)])
+                        print(
+                            f"Epoch: {epoch + 1}/{self.epochs} "
+                            f"Iter: {i}/{nb} "
+                            f"Mem: {mem} "
+                            f"{loss_str} "
+                            f"Batch: {batch['cls'].shape[0]} "
+                            f"Image: {batch['img'].shape[-1]}",
+                            flush=True
+                        )
 
                 self.run_callbacks("on_train_batch_end")
 
@@ -466,6 +495,9 @@ class BaseTrainer:
             if self.stop:
                 break  # must break all DDP ranks
             epoch += 1
+            
+            # Log epoch time
+            print(f"Epoch {epoch} completed in {self.epoch_time:.2f} seconds", flush=True)
 
         if RANK in (-1, 0):
             # Do final val with best.pt

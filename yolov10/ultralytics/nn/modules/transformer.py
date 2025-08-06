@@ -22,7 +22,7 @@ __all__ = (
     "DeformableTransformerDecoderLayer",
     "MSDeformAttn",
     "MLP",
-    "SpatialAlignTransnormer",
+    "SemanticAlignTransNormer",
 )
 
 
@@ -426,10 +426,9 @@ class DeformableTransformerDecoder(nn.Module):
 
         return torch.stack(dec_bboxes), torch.stack(dec_cls)
 
-
 from einops import rearrange
 import numpy as np
-class SpatialAlignTransnormer(nn.Module):
+class SemanticAlignTransNormer(nn.Module):
     def __init__(self, c1, c2, nhead=8, is_first=False, is_yolov6=False, dropout=0.0, activation="gelu"):
         '''
         c1: #channels of low-level feature map
@@ -438,14 +437,13 @@ class SpatialAlignTransnormer(nn.Module):
         
         super().__init__()
         self.eps = 1e-6
-        self.normalize_before = False
         
         self.heads = nhead
         self.head_dim = c1 // nhead
         self.is_yolov6 = is_yolov6
         
         # bilinear interpolation upsample
-        self.upsample = nn.Upsample(scale_factor=2, mode='bilinear')
+        self.upsample = nn.Upsample(scale_factor=2, mode='nearest')
         if self.is_yolov6:
             self.upsample = nn.ConvTranspose2d(c2, c2, kernel_size=2, stride=2)
         
@@ -456,16 +454,14 @@ class SpatialAlignTransnormer(nn.Module):
 
         self.q_proj = nn.Sequential(
             nn.Linear(c1, c1),
-            nn.LayerNorm(c1)
         )
         self.k_proj = nn.Sequential(
             nn.Linear(c1, c1),
-            nn.LayerNorm(c1)
         )
         self.v_proj = nn.Linear(c1, c1)
         self.out_proj = nn.Linear(c1, c1)
         
-        self.attn_norm = nn.RMSNorm(self.head_dim)
+        self.attn_norm = nn.LayerNorm(self.head_dim)
         
         # FFN
         expansion = 4
@@ -573,15 +569,13 @@ class SpatialAlignTransnormer(nn.Module):
         K = rearrange(K, 'hw b (h d) -> (b h) hw d', h=self.heads)
         V = rearrange(V, 'hw b (h d) -> (b h) hw d', h=self.heads)
         
-        # # SIMA: n1-norm kernel function: QK normalization for stability
-        # # https://github.com/UCDvision/sima/blob/main/sima.py
-        # Q = F.normalize(Q, p=1, dim=-2, eps=self.eps) 
-        # K = F.normalize(K, p=1, dim=-2, eps=self.eps) 
-        
-        Q = F.relu(Q)  # ReLU activation for Q
-        K = F.relu(K)  # ReLU activation for K
+        # SIMA: n1-norm kernel function: QK normalization for stability
+        # https://github.com/UCDvision/sima/blob/main/sima.py
+        Q = F.normalize(Q, p=1, dim=-2, eps=self.eps) 
+        K = F.normalize(K, p=1, dim=-2, eps=self.eps) 
 
         # CosFormer transform
+        # https://github.com/OpenNLPLab/cosFormer
         m = max(src_len, tgt_len)
         weight_index = self.get_index(m).to(Q)
         # (N * h, L, 2 * d)
@@ -613,9 +607,9 @@ class SpatialAlignTransnormer(nn.Module):
         out = residual + self.dropout2(out) # [B, HW, C]
         
         
-        # 5. Reshape to spatial map [B, HW, C] -> [B, C, H, W]
+        # Reshape to spatial map [B, HW, C] -> [B, C, H, W]
         a3_sa = out.permute(0, 2, 1).contiguous().view(bs, c_a3, h, w)  # [B, C, H, W]
-        a3_sa = F.interpolate(a3_sa, size=original_a3.shape[2:], mode='bilinear', align_corners=False)
+        a3_sa = F.interpolate(a3_sa, scale_factor=self.scale_factor, mode='nearest')
         a3_sa = a3_sa * original_a3
         
         a4_up = self.upsample(original_a4)  # [B, C, H, W]
