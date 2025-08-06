@@ -220,6 +220,7 @@ class SemanticAlignTransNormer(nn.Module):
         self.v_proj = nn.Linear(dim, dim)
         self.out_proj = nn.Linear(dim, dim)
         
+        # https://arxiv.org/pdf/2210.10340
         self.attn_norm = nn.RMSNorm(self.head_dim)
         
         # FFN

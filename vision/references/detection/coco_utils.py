@@ -200,16 +200,22 @@ class CocoDetection(torchvision.datasets.CocoDetection):
 def get_coco(root, image_set, transforms, mode="instances", use_v2=False, with_masks=False):
     anno_file_template = "{}_{}2017.json"
     # 2025.07.09 @HyungseopLee
-    # blackwell
-    PATHS = {
-        "train": (os.path.join("images", "train2017"), os.path.join("annotations", "instances_train2017.json")),
-        "val": (os.path.join("images", "val2017"), os.path.join("annotations", "instances_val2017.json")),
-    }
+    # # blackwell
+    # PATHS = {
+    #     "train": (os.path.join("images", "train2017"), os.path.join("annotations", "instances_train2017.json")),
+    #     "val": (os.path.join("images", "val2017"), os.path.join("annotations", "instances_val2017.json")),
+    # }
     # # others
     # PATHS = {
     #     "train": (os.path.join("train2017"), os.path.join("annotations", "instances_train2017.json")),
     #     "val": (os.path.join("val2017"), os.path.join("annotations", "instances_val2017.json")),
     # }
+
+    # keypoint detection
+    PATHS = {
+        "train": (os.path.join("images", "train2017"), os.path.join("annotations", "person_keypoints_train2017.json")),
+        "val": (os.path.join("images", "val2017"), os.path.join("annotations", "person_keypoints_val2017.json")),
+    }   
 
     img_folder, ann_file = PATHS[image_set]
     img_folder = os.path.join(root, img_folder)

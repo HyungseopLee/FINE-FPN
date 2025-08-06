@@ -1,0 +1,87 @@
+W0804 00:49:21.721000 895293 site-packages/torch/distributed/run.py:766] 
+W0804 00:49:21.721000 895293 site-packages/torch/distributed/run.py:766] *****************************************
+W0804 00:49:21.721000 895293 site-packages/torch/distributed/run.py:766] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0804 00:49:21.721000 895293 site-packages/torch/distributed/run.py:766] *****************************************
+| distributed init (rank 0): env://
+/home/hslee/anaconda3/envs/torch271/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py:4631: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+[rank0]:[W804 00:49:23.443621193 ProcessGroupNCCL.cpp:4718] [PG ID 0 PG GUID 0 Rank 0]  using GPU 0 as device used by this process is currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. You can pecify device_id in init_process_group() to force use of a particular device.
+| distributed init (rank 1): env://
+/home/hslee/anaconda3/envs/torch271/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py:4631: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+[rank1]:[W804 00:49:23.452660035 ProcessGroupNCCL.cpp:4718] [PG ID 0 PG GUID 0 Rank 1]  using GPU 1 as device used by this process is currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. You can pecify device_id in init_process_group() to force use of a particular device.
+Namespace(data_path='/media/data/coco', dataset='coco', model='deeplabv3_resnet50', aux_loss=True, device='cuda', batch_size=4, epochs=30, workers=16, lr=0.005, momentum=0.9, weight_decay=0.0001, lr_warmup_epochs=0, lr_warmup_method='linear', lr_warmup_decay=0.01, print_freq=10, output_dir='.', resume='', start_epoch=0, test_only=False, use_deterministic_algorithms=False, world_size=2, dist_url='env://', weights=None, weights_backbone='ResNet50_Weights.IMAGENET1K_V1', amp=False, backend='pil', use_v2=False, rank=0, gpu=0, distributed=True, dist_backend='nccl')
+loading annotations into memory...
+Done (t=4.75s)
+creating index...
+index created!
+loading annotations into memory...
+Done (t=0.21s)
+creating index...
+index created!
+| module                     | #parameters or shape   | #flops     |
+|:---------------------------|:-----------------------|:-----------|
+| module                     | 42.004M                | 0.179T     |
+|  backbone                  |  23.508M               |  0.103T    |
+|   backbone.conv1           |   9.408K               |   0.636G   |
+|    backbone.conv1.weight   |    (64, 3, 7, 7)       |            |
+|   backbone.bn1             |   0.128K               |   8.653M   |
+|    backbone.bn1.weight     |    (64,)               |            |
+|    backbone.bn1.bias       |    (64,)               |            |
+|   backbone.layer1          |   0.216M               |   3.647G   |
+|    backbone.layer1.0       |    75.008K             |    1.268G  |
+|    backbone.layer1.1       |    70.4K               |    1.19G   |
+|    backbone.layer1.2       |    70.4K               |    1.19G   |
+|   backbone.layer2          |   1.22M                |   5.571G   |
+|    backbone.layer2.0       |    0.379M              |    2.022G  |
+|    backbone.layer2.1       |    0.28M               |    1.183G  |
+|    backbone.layer2.2       |    0.28M               |    1.183G  |
+|    backbone.layer2.3       |    0.28M               |    1.183G  |
+|   backbone.layer3          |   7.098M               |   29.991G  |
+|    backbone.layer3.0       |    1.512M              |    6.39G   |
+|    backbone.layer3.1       |    1.117M              |    4.72G   |
+|    backbone.layer3.2       |    1.117M              |    4.72G   |
+|    backbone.layer3.3       |    1.117M              |    4.72G   |
+|    backbone.layer3.4       |    1.117M              |    4.72G   |
+|    backbone.layer3.5       |    1.117M              |    4.72G   |
+|   backbone.layer4          |   14.965M              |   63.226G  |
+|    backbone.layer4.0       |    6.04M               |    25.517G |
+|    backbone.layer4.1       |    4.463M              |    18.854G |
+|    backbone.layer4.2       |    4.463M              |    18.854G |
+|  classifier                |  16.131M               |  65.949G   |
+|   classifier.0             |   15.535M              |   63.432G  |
+|    classifier.0.convs      |    15.207M             |    62.045G |
+|    classifier.0.project    |    0.328M              |    1.387G  |
+|   classifier.1             |   0.59M                |   2.492G   |
+|    classifier.1.weight     |    (256, 256, 3, 3)    |            |
+|   classifier.2             |   0.512K               |   2.163M   |
+|    classifier.2.weight     |    (256,)              |            |
+|    classifier.2.bias       |    (256,)              |            |
+|   classifier.4             |   5.397K               |   22.714M  |
+|    classifier.4.weight     |    (21, 256, 1, 1)     |            |
+|    classifier.4.bias       |    (21,)               |            |
+|  aux_classifier            |  2.365M                |  9.993G    |
+|   aux_classifier.0         |   2.359M               |   9.968G   |
+|    aux_classifier.0.weight |    (256, 1024, 3, 3)   |            |
+|   aux_classifier.1         |   0.512K               |   2.163M   |
+|    aux_classifier.1.weight |    (256,)              |            |
+|    aux_classifier.1.bias   |    (256,)              |            |
+|   aux_classifier.4         |   5.397K               |   22.714M  |
+|    aux_classifier.4.weight |    (21, 256, 1, 1)     |            |
+|    aux_classifier.4.bias   |    (21,)               |            |
+GFLOPS: 179.07
+Start training
+/home/hslee/SONeck/vision/references/segmentation/train.py:110: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=scaler is not None):
+/home/hslee/SONeck/vision/references/segmentation/train.py:110: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=scaler is not None):
+Epoch: [0]  [    0/11564]  eta: 1 day, 0:50:33  lr: 0.00499998702870792  loss: 4.6028 (4.6028)  time: 7.7338  data: 0.8694  max mem: 42185
+Epoch: [0]  [   10/11564]  eta: 2:37:18  lr: 0.004999857315581469  loss: 2.2495 (2.6452)  time: 0.8169  data: 0.0820  max mem: 42185
+Epoch: [0]  [   20/11564]  eta: 1:32:28  lr: 0.004999727602081105  loss: 1.5327 (2.0777)  time: 0.1180  data: 0.0030  max mem: 42185
+Epoch: [0]  [   30/11564]  eta: 1:09:26  lr: 0.0049995978882068194  loss: 1.0029 (1.8031)  time: 0.1107  data: 0.0026  max mem: 42185
+Epoch: [0]  [   40/11564]  eta: 0:57:40  lr: 0.004999468173958598  loss: 1.1795 (1.7499)  time: 0.1109  data: 0.0029  max mem: 42185
+Epoch: [0]  [   50/11564]  eta: 0:50:29  lr: 0.004999338459336431  loss: 1.1319 (1.6209)  time: 0.1110  data: 0.0031  max mem: 42185
+Epoch: [0]  [   60/11564]  eta: 0:45:39  lr: 0.004999208744340304  loss: 1.1176 (1.6383)  time: 0.1109  data: 0.0030  max mem: 42185
+Epoch: [0]  [   70/11564]  eta: 0:42:11  lr: 0.004999079028970202  loss: 1.4364 (1.6118)  time: 0.1110  data: 0.0030  max mem: 42185
+Epoch: [0]  [   80/11564]  eta: 0:39:35  lr: 0.00499894931322612  loss: 1.1293 (1.5324)  time: 0.1112  data: 0.0030  max mem: 42185
+Epoch: [0]  [   90/11564]  eta: 0:37:32  lr: 0.0049988195971080425  loss: 1.1805 (1.5452)  time: 0.1114  data: 0.0031  max mem: 42185

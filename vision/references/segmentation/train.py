@@ -360,7 +360,14 @@ torchrun --nproc_per_node=2 train.py \
 torchrun --nproc_per_node=8 train.py --lr 0.02 --dataset coco -b 4 --model deeplabv3_resnet50 --aux-loss --weights-backbone ResNet50_Weights.IMAGENET1K_V1
 
 
-
+torchrun --nproc_per_node=2 train.py \
+    --lr 0.005 \
+    --dataset coco --data-path /media/data/coco \
+    -b 4 \
+    --model deeplabv3_resnet50 \
+    --aux-loss \
+    --weights-backbone ResNet50_Weights.IMAGENET1K_V1 \
+    2>&1 | tee ./outputs/deeplabv3_resnet50/test.log
 
 
 '''
