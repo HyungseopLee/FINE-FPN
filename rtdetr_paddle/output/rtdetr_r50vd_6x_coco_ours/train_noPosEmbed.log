@@ -1,859 +1,0 @@
-[2025-07-12 15:27:04,006] [    INFO] distributed_strategy.py:333 - distributed strategy initialized
-======================= Modified FLAGS detected =======================
-FLAGS(name='FLAGS_curand_dir', current_value='/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/../nvidia/curand/lib', default_value='')
-FLAGS(name='FLAGS_cudnn_dir', current_value='/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/../nvidia/cudnn/lib', default_value='')
-FLAGS(name='FLAGS_cupti_dir', current_value='/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/../nvidia/cuda_cupti/lib', default_value='')
-FLAGS(name='FLAGS_cublas_dir', current_value='/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/../nvidia/cublas/lib', default_value='')
-FLAGS(name='FLAGS_cuda_cccl_dir', current_value='/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/../nvidia/cuda_cccl/include/', default_value='')
-FLAGS(name='FLAGS_cusparse_dir', current_value='/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/../nvidia/cusparse/lib', default_value='')
-FLAGS(name='FLAGS_enable_pir_in_executor', current_value=True, default_value=False)
-FLAGS(name='FLAGS_nccl_dir', current_value='/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/../nvidia/nccl/lib', default_value='')
-FLAGS(name='FLAGS_nvidia_package_dir', current_value='/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/../nvidia', default_value='')
-FLAGS(name='FLAGS_cusolver_dir', current_value='/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/../nvidia/cusolver/lib', default_value='')
-=======================================================================
-[2025-07-12 15:27:04,007] [    INFO] topology.py:525 - Total 1 pipe comm group(s) create successfully!
-W0712 15:27:04.273229 166770 gpu_resources.cc:114] Please NOTE: device: 0, GPU Compute Capability: 8.6, Driver API Version: 12.9, Runtime API Version: 12.9
-[2025-07-12 15:27:04,276] [    INFO] topology.py:525 - Total 1 data comm group(s) create successfully!
-[2025-07-12 15:27:04,276] [    INFO] topology.py:525 - Total 1 model comm group(s) create successfully!
-[2025-07-12 15:27:04,276] [    INFO] topology.py:525 - Total 1 sharding comm group(s) create successfully!
-[2025-07-12 15:27:04,276] [    INFO] topology.py:439 - HybridParallelInfo: rank_id: 0, mp_degree: 1, sharding_degree: 1, pp_degree: 1, dp_degree: 1, sep_degree: 1, mp_group: [0],  sharding_group: [0], pp_group: [0], dp_group: [0], sep:group: None, check/clip group: [0]
-Warning: Unable to use MOT metric, please install motmetrics, for example: `pip install motmetrics`, see https://github.com/longcw/py-motmetrics
-Warning: Unable to use MCMOT metric, please install motmetrics, for example: `pip install motmetrics`, see https://github.com/longcw/py-motmetrics
-loading annotations into memory...
-Done (t=7.91s)
-creating index...
-index created!
-[07/12 15:27:19] ppdet.data.source.coco WARNING: Found an invalid bbox in annotations: im_id: 200365, area: 0.0 x1: 296.65, y1: 388.33, x2: 297.67999999999995, y2: 388.33.
-[07/12 15:27:25] ppdet.data.source.coco WARNING: Found an invalid bbox in annotations: im_id: 550395, area: 0.0 x1: 9.98, y1: 188.56, x2: 15.52, y2: 188.56.
-[07/12 15:27:26] ppdet.data.source.coco INFO: Load [117266 samples valid, 1021 samples invalid] in file /media/data/coco/annotations/instances_train2017.json.
-[07/12 15:27:29] ppdet.utils.download INFO: Downloading ResNet50_vd_ssld_v2_pretrained.pdparams from https://paddledet.bj.bcebos.com/models/pretrained/ResNet50_vd_ssld_v2_pretrained.pdparams
-  0%|          | 0/139208 [00:00<?, ?KB/s]  0%|          | 19/139208 [00:00<27:03, 85.74KB/s]  0%|          | 35/139208 [00:00<28:40, 80.87KB/s]  0%|          | 67/139208 [00:00<21:08, 109.71KB/s]  0%|          | 83/139208 [00:00<20:12, 114.73KB/s]  0%|          | 107/139208 [00:00<16:03, 144.41KB/s]  0%|          | 124/139208 [00:01<19:34, 118.39KB/s]  0%|          | 147/139208 [00:01<25:37, 90.43KB/s]   0%|          | 163/139208 [00:01<26:30, 87.44KB/s]  0%|          | 179/139208 [00:01<28:10, 82.24KB/s]  0%|          | 195/139208 [00:02<28:00, 82.73KB/s]  0%|          | 211/139208 [00:02<29:13, 79.26KB/s]  0%|          | 227/139208 [00:02<29:20, 78.92KB/s]  0%|          | 243/139208 [00:02<29:21, 78.87KB/s]  0%|          | 259/139208 [00:02<29:16, 79.11KB/s]  0%|          | 275/139208 [00:03<30:03, 77.01KB/s]  0%|          | 291/139208 [00:03<31:58, 72.41KB/s]  0%|          | 307/139208 [00:03<32:35, 71.01KB/s]  0%|          | 323/139208 [00:03<33:43, 68.62KB/s]  0%|          | 339/139208 [00:04<33:48, 68.47KB/s]  0%|          | 355/139208 [00:04<33:50, 68.38KB/s]  0%|          | 371/139208 [00:04<33:48, 68.44KB/s]  0%|          | 387/139208 [00:04<36:42, 63.03KB/s]  0%|          | 403/139208 [00:05<36:14, 63.82KB/s]  0%|          | 419/139208 [00:05<35:39, 64.88KB/s]  0%|          | 435/139208 [00:05<35:13, 65.66KB/s]  0%|          | 451/139208 [00:05<35:15, 65.60KB/s]  0%|          | 467/139208 [00:06<36:11, 63.90KB/s]  0%|          | 483/139208 [00:06<36:28, 63.39KB/s]  0%|          | 499/139208 [00:06<35:58, 64.26KB/s]  0%|          | 515/139208 [00:06<36:13, 63.81KB/s]  0%|          | 531/139208 [00:07<37:19, 61.93KB/s]  0%|          | 547/139208 [00:07<36:31, 63.28KB/s]  0%|          | 563/139208 [00:07<36:39, 63.04KB/s]  0%|          | 579/139208 [00:07<36:41, 62.97KB/s]  0%|          | 595/139208 [00:08<36:02, 64.09KB/s]  0%|          | 611/139208 [00:08<38:36, 59.83KB/s]  0%|          | 627/139208 [00:08<38:22, 60.19KB/s]  0%|          | 643/139208 [00:08<38:51, 59.44KB/s]  0%|          | 659/139208 [00:09<38:34, 59.85KB/s]  0%|          | 675/139208 [00:09<45:52, 50.33KB/s]  0%|          | 691/139208 [00:10<49:12, 46.91KB/s]  1%|          | 707/139208 [00:10<43:32, 53.01KB/s]  1%|          | 723/139208 [00:10<38:51, 59.40KB/s]  1%|          | 739/139208 [00:10<35:20, 65.31KB/s]  1%|          | 755/139208 [00:10<31:31, 73.21KB/s]  1%|          | 771/139208 [00:10<28:25, 81.18KB/s]  1%|          | 787/139208 [00:11<25:41, 89.79KB/s]  1%|          | 803/139208 [00:11<23:48, 96.91KB/s]  1%|          | 819/139208 [00:11<21:40, 106.45KB/s]  1%|          | 835/139208 [00:11<19:45, 116.73KB/s]  1%|          | 851/139208 [00:11<18:15, 126.30KB/s]  1%|          | 883/139208 [00:11<16:14, 142.01KB/s]  1%|          | 915/139208 [00:11<14:27, 159.44KB/s]  1%|          | 947/139208 [00:12<13:10, 174.87KB/s]  1%|          | 978/139208 [00:12<12:12, 188.78KB/s]  1%|          | 1010/139208 [00:12<11:21, 202.78KB/s]  1%|          | 1042/139208 [00:12<10:23, 221.46KB/s]  1%|          | 1074/139208 [00:12<09:28, 243.01KB/s]  1%|          | 1106/139208 [00:12<08:57, 256.98KB/s]  1%|          | 1154/139208 [00:12<08:10, 281.46KB/s]  1%|          | 1202/139208 [00:12<07:21, 312.85KB/s]  1%|          | 1250/139208 [00:13<06:55, 332.22KB/s]  1%|          | 1298/139208 [00:13<06:21, 361.51KB/s]  1%|          | 1346/139208 [00:13<05:55, 387.95KB/s]  1%|          | 1410/139208 [00:13<05:25, 423.24KB/s]  1%|          | 1474/139208 [00:13<05:01, 457.37KB/s]  1%|          | 1538/139208 [00:13<04:40, 490.52KB/s]  1%|          | 1602/139208 [00:13<04:21, 527.18KB/s]  1%|          | 1682/139208 [00:13<04:00, 572.32KB/s]  1%|▏         | 1762/139208 [00:13<03:43, 614.44KB/s]  1%|▏         | 1826/139208 [00:14<05:54, 387.90KB/s]  2%|▏         | 2098/139208 [00:14<02:48, 811.74KB/s]  2%|▏         | 2200/139208 [00:14<02:46, 821.33KB/s]  2%|▏         | 2297/139208 [00:14<02:44, 829.89KB/s]  2%|▏         | 2391/139208 [00:14<02:44, 831.98KB/s]  2%|▏         | 2482/139208 [00:14<02:46, 819.52KB/s]  2%|▏         | 2578/139208 [00:14<02:45, 827.02KB/s]  2%|▏         | 2674/139208 [00:15<02:44, 829.50KB/s]  2%|▏         | 2770/139208 [00:15<02:42, 838.42KB/s]  2%|▏         | 2866/139208 [00:15<02:42, 836.87KB/s]  2%|▏         | 2962/139208 [00:15<02:42, 837.38KB/s]  2%|▏         | 3058/139208 [00:15<02:41, 842.03KB/s]  2%|▏         | 3154/139208 [00:15<02:39, 850.79KB/s]  2%|▏         | 3266/139208 [00:15<02:29, 910.00KB/s]  2%|▏         | 3378/139208 [00:15<02:23, 948.76KB/s]  3%|▎         | 3491/139208 [00:15<02:15, 999.47KB/s]  3%|▎         | 3618/139208 [00:16<02:07, 1060.32KB/s]  3%|▎         | 3762/139208 [00:16<01:58, 1140.17KB/s]  3%|▎         | 3906/139208 [00:16<01:51, 1211.03KB/s]  3%|▎         | 4066/139208 [00:16<01:43, 1304.11KB/s]  3%|▎         | 4226/139208 [00:16<01:37, 1385.43KB/s]  3%|▎         | 4402/139208 [00:16<01:31, 1478.26KB/s]  3%|▎         | 4594/139208 [00:16<01:24, 1587.33KB/s]  3%|▎         | 4802/139208 [00:16<01:18, 1702.33KB/s]  4%|▎         | 5026/139208 [00:16<01:13, 1818.62KB/s]  4%|▍         | 5266/139208 [00:17<01:08, 1951.35KB/s]  4%|▍         | 5510/139208 [00:17<01:03, 2092.23KB/s]  4%|▍         | 5778/139208 [00:17<00:59, 2229.60KB/s]  4%|▍         | 6066/139208 [00:17<00:55, 2389.16KB/s]  5%|▍         | 6370/139208 [00:17<00:51, 2562.78KB/s]  5%|▍         | 6690/139208 [00:17<00:48, 2730.38KB/s]  5%|▌         | 7042/139208 [00:17<00:45, 2924.15KB/s]  5%|▌         | 7410/139208 [00:17<00:42, 3120.72KB/s]  6%|▌         | 7808/139208 [00:17<00:38, 3372.55KB/s]  6%|▌         | 8210/139208 [00:17<00:36, 3554.74KB/s]  6%|▌         | 8658/139208 [00:18<00:34, 3801.56KB/s]  7%|▋         | 9138/139208 [00:18<00:31, 4071.51KB/s]  7%|▋         | 9650/139208 [00:18<00:29, 4358.91KB/s]  7%|▋         | 10194/139208 [00:18<00:27, 4659.56KB/s]  8%|▊         | 10770/139208 [00:18<00:25, 4980.01KB/s]  8%|▊         | 11362/139208 [00:18<00:24, 5244.04KB/s]  9%|▊         | 11954/139208 [00:18<00:23, 5427.72KB/s]  9%|▉         | 12546/139208 [00:18<00:22, 5558.95KB/s]  9%|▉         | 13138/139208 [00:18<00:22, 5666.33KB/s] 10%|▉         | 13730/139208 [00:18<00:21, 5724.86KB/s] 10%|█         | 14322/139208 [00:19<00:21, 5761.77KB/s] 11%|█         | 14914/139208 [00:19<00:21, 5797.60KB/s] 11%|█         | 15506/139208 [00:19<00:21, 5832.40KB/s] 12%|█▏        | 16090/139208 [00:19<00:31, 3955.35KB/s] 13%|█▎        | 17618/139208 [00:19<00:18, 6484.32KB/s] 13%|█▎        | 18406/139208 [00:19<00:19, 6284.93KB/s] 14%|█▎        | 19133/139208 [00:19<00:19, 6188.45KB/s] 14%|█▍        | 19820/139208 [00:19<00:19, 6093.37KB/s] 15%|█▍        | 20477/139208 [00:20<00:19, 6041.51KB/s] 15%|█▌        | 21114/139208 [00:20<00:19, 5974.93KB/s] 16%|█▌        | 21734/139208 [00:20<00:19, 5941.31KB/s] 16%|█▌        | 22344/139208 [00:20<00:19, 5917.16KB/s] 16%|█▋        | 22947/139208 [00:20<00:19, 5883.50KB/s] 17%|█▋        | 23543/139208 [00:20<00:19, 5891.49KB/s] 17%|█▋        | 24138/139208 [00:20<00:19, 5904.67KB/s] 18%|█▊        | 24733/139208 [00:20<00:19, 5898.48KB/s] 18%|█▊        | 25326/139208 [00:20<00:19, 5889.59KB/s] 19%|█▊        | 25922/139208 [00:21<00:19, 5866.83KB/s] 19%|█▉        | 26514/139208 [00:21<00:19, 5864.64KB/s] 19%|█▉        | 27106/139208 [00:21<00:19, 5864.39KB/s] 20%|█▉        | 27698/139208 [00:21<00:18, 5880.47KB/s] 20%|██        | 28290/139208 [00:21<00:18, 5874.38KB/s] 21%|██        | 28882/139208 [00:21<00:18, 5868.33KB/s] 21%|██        | 29474/139208 [00:21<00:18, 5869.59KB/s] 22%|██▏       | 30066/139208 [00:21<00:18, 5882.64KB/s] 22%|██▏       | 30658/139208 [00:21<00:18, 5877.81KB/s] 22%|██▏       | 31250/139208 [00:21<00:18, 5872.19KB/s] 23%|██▎       | 31842/139208 [00:22<00:18, 5862.85KB/s] 23%|██▎       | 32434/139208 [00:22<00:18, 5868.76KB/s] 24%|██▎       | 33026/139208 [00:22<00:18, 5866.66KB/s] 24%|██▍       | 33618/139208 [00:22<00:18, 5865.25KB/s] 25%|██▍       | 34210/139208 [00:22<00:17, 5878.86KB/s] 25%|██▌       | 34802/139208 [00:22<00:17, 5875.56KB/s] 25%|██▌       | 35394/139208 [00:22<00:17, 5871.12KB/s] 26%|██▌       | 35986/139208 [00:22<00:17, 5869.13KB/s] 26%|██▋       | 36579/139208 [00:22<00:17, 5886.93KB/s] 27%|██▋       | 37170/139208 [00:22<00:17, 5876.42KB/s] 27%|██▋       | 37762/139208 [00:23<00:17, 5873.16KB/s] 28%|██▊       | 38354/139208 [00:23<00:17, 5885.81KB/s] 28%|██▊       | 38946/139208 [00:23<00:17, 5878.65KB/s] 28%|██▊       | 39538/139208 [00:23<00:16, 5873.05KB/s] 29%|██▉       | 40131/139208 [00:23<00:16, 5889.69KB/s] 29%|██▉       | 40722/139208 [00:23<00:16, 5879.01KB/s] 30%|██▉       | 41314/139208 [00:23<00:16, 5873.69KB/s] 30%|███       | 41906/139208 [00:23<00:16, 5863.84KB/s] 31%|███       | 42498/139208 [00:23<00:16, 5858.86KB/s] 31%|███       | 43090/139208 [00:23<00:16, 5868.06KB/s] 31%|███▏      | 43682/139208 [00:24<00:16, 5867.80KB/s] 32%|███▏      | 44274/139208 [00:24<00:16, 5863.62KB/s] 32%|███▏      | 44866/139208 [00:24<00:16, 5866.22KB/s] 33%|███▎      | 45458/139208 [00:24<00:15, 5882.04KB/s] 33%|███▎      | 46050/139208 [00:24<00:15, 5870.78KB/s] 34%|███▎      | 46642/139208 [00:24<00:15, 5873.49KB/s] 34%|███▍      | 47234/139208 [00:24<00:15, 5885.29KB/s] 34%|███▍      | 47826/139208 [00:24<00:15, 5879.26KB/s] 35%|███▍      | 48418/139208 [00:24<00:15, 5874.96KB/s] 35%|███▌      | 49010/139208 [00:24<00:15, 5885.71KB/s] 36%|███▌      | 49602/139208 [00:25<00:15, 5863.08KB/s] 36%|███▌      | 50194/139208 [00:25<00:15, 5862.18KB/s] 36%|███▋      | 50786/139208 [00:25<00:15, 5843.09KB/s] 37%|███▋      | 51378/139208 [00:25<00:15, 5849.56KB/s] 37%|███▋      | 51970/139208 [00:25<00:14, 5852.76KB/s] 38%|███▊      | 52562/139208 [00:25<00:14, 5871.08KB/s] 38%|███▊      | 53154/139208 [00:25<00:14, 5853.35KB/s] 39%|███▊      | 53747/139208 [00:25<00:14, 5875.94KB/s] 39%|███▉      | 54338/139208 [00:25<00:14, 5864.90KB/s] 39%|███▉      | 54930/139208 [00:25<00:14, 5868.13KB/s] 40%|███▉      | 55522/139208 [00:26<00:14, 5882.43KB/s] 40%|████      | 56114/139208 [00:26<00:14, 5876.53KB/s] 41%|████      | 56706/139208 [00:26<00:14, 5872.57KB/s] 41%|████      | 57298/139208 [00:26<00:13, 5867.70KB/s] 42%|████▏     | 57890/139208 [00:26<00:13, 5867.34KB/s] 42%|████▏     | 58483/139208 [00:26<00:13, 5885.91KB/s] 42%|████▏     | 59074/139208 [00:26<00:13, 5875.80KB/s] 43%|████▎     | 59666/139208 [00:26<00:13, 5869.09KB/s] 43%|████▎     | 60258/139208 [00:26<00:13, 5867.27KB/s] 44%|████▎     | 60845/139208 [00:27<00:30, 2570.97KB/s] 44%|████▍     | 61426/139208 [00:27<00:25, 3076.67KB/s] 45%|████▍     | 62018/139208 [00:27<00:21, 3584.59KB/s] 45%|████▍     | 62613/139208 [00:27<00:18, 4073.69KB/s] 45%|████▌     | 63202/139208 [00:27<00:16, 4475.60KB/s] 46%|████▌     | 63794/139208 [00:27<00:15, 4821.18KB/s] 46%|████▋     | 64386/139208 [00:28<00:14, 5092.57KB/s] 47%|████▋     | 64978/139208 [00:28<00:14, 5301.91KB/s] 47%|████▋     | 65570/139208 [00:28<00:13, 5471.80KB/s] 48%|████▊     | 66162/139208 [00:28<00:13, 5583.25KB/s] 48%|████▊     | 66754/139208 [00:28<00:12, 5664.99KB/s] 48%|████▊     | 67346/139208 [00:28<00:12, 5722.92KB/s] 49%|████▉     | 67938/139208 [00:28<00:12, 5780.44KB/s] 49%|████▉     | 68530/139208 [00:28<00:12, 5804.87KB/s] 50%|████▉     | 69122/139208 [00:28<00:12, 5820.63KB/s] 50%|█████     | 69714/139208 [00:28<00:11, 5829.40KB/s] 51%|█████     | 70312/139208 [00:29<00:11, 5874.02KB/s] 51%|█████     | 70902/139208 [00:29<00:11, 5867.39KB/s] 51%|█████▏    | 71491/139208 [00:29<00:11, 5857.91KB/s] 52%|█████▏    | 72082/139208 [00:29<00:11, 5855.20KB/s] 52%|█████▏    | 72674/139208 [00:29<00:11, 5858.48KB/s] 53%|█████▎    | 73266/139208 [00:29<00:11, 5850.78KB/s] 53%|█████▎    | 73852/139208 [00:29<00:18, 3591.66KB/s] 54%|█████▍    | 75698/139208 [00:29<00:09, 6641.15KB/s] 55%|█████▌    | 76568/139208 [00:30<00:09, 6421.64KB/s] 56%|█████▌    | 77355/139208 [00:30<00:09, 6278.09KB/s] 56%|█████▌    | 78083/139208 [00:30<00:09, 6155.06KB/s] 57%|█████▋    | 78768/139208 [00:30<00:09, 6100.88KB/s] 57%|█████▋    | 79426/139208 [00:30<00:09, 6014.79KB/s] 58%|█████▊    | 80060/139208 [00:30<00:09, 6001.94KB/s] 58%|█████▊    | 80683/139208 [00:30<00:09, 5969.65KB/s] 58%|█████▊    | 81296/139208 [00:30<00:09, 5947.81KB/s] 59%|█████▉    | 81902/139208 [00:30<00:09, 5928.62KB/s] 59%|█████▉    | 82503/139208 [00:31<00:09, 5904.41KB/s] 60%|█████▉    | 83099/139208 [00:31<00:09, 5901.88KB/s] 60%|██████    | 83693/139208 [00:31<00:09, 5895.62KB/s] 61%|██████    | 84285/139208 [00:31<00:09, 5887.07KB/s] 61%|██████    | 84876/139208 [00:31<00:09, 5889.57KB/s] 61%|██████▏   | 85467/139208 [00:31<00:09, 5881.90KB/s] 62%|██████▏   | 86057/139208 [00:31<00:09, 5868.01KB/s] 62%|██████▏   | 86658/139208 [00:31<00:08, 5862.77KB/s] 63%|██████▎   | 87250/139208 [00:31<00:08, 5862.99KB/s] 63%|██████▎   | 87842/139208 [00:31<00:08, 5863.22KB/s] 64%|██████▎   | 88434/139208 [00:32<00:08, 5878.50KB/s] 64%|██████▍   | 89026/139208 [00:32<00:08, 5868.04KB/s] 64%|██████▍   | 89618/139208 [00:32<00:08, 5872.78KB/s] 65%|██████▍   | 90210/139208 [00:32<00:08, 5867.35KB/s] 65%|██████▌   | 90797/139208 [00:32<00:08, 5862.44KB/s] 66%|██████▌   | 91384/139208 [00:32<00:08, 5851.26KB/s] 66%|██████▌   | 91970/139208 [00:32<00:08, 5837.00KB/s] 66%|██████▋   | 92562/139208 [00:32<00:07, 5847.03KB/s] 67%|██████▋   | 93154/139208 [00:32<00:07, 5842.28KB/s] 67%|██████▋   | 93746/139208 [00:33<00:07, 5857.20KB/s] 68%|██████▊   | 94338/139208 [00:33<00:07, 5858.30KB/s] 68%|██████▊   | 94930/139208 [00:33<00:07, 5859.61KB/s] 69%|██████▊   | 95522/139208 [00:33<00:07, 5876.38KB/s] 69%|██████▉   | 96114/139208 [00:33<00:07, 5871.96KB/s] 69%|██████▉   | 96706/139208 [00:33<00:07, 5869.67KB/s] 70%|██████▉   | 97298/139208 [00:33<00:07, 5883.76KB/s] 70%|███████   | 97890/139208 [00:33<00:07, 5875.87KB/s] 71%|███████   | 98482/139208 [00:33<00:06, 5873.47KB/s] 71%|███████   | 99074/139208 [00:33<00:06, 5869.27KB/s] 72%|███████▏  | 99666/139208 [00:34<00:06, 5882.82KB/s] 72%|███████▏  | 100258/139208 [00:34<00:06, 5878.33KB/s] 72%|███████▏  | 100850/139208 [00:34<00:06, 5873.54KB/s] 73%|███████▎  | 101442/139208 [00:34<00:06, 5870.06KB/s] 73%|███████▎  | 102034/139208 [00:34<00:06, 5868.11KB/s] 74%|███████▎  | 102626/139208 [00:34<00:06, 5864.94KB/s] 74%|███████▍  | 103218/139208 [00:34<00:06, 5875.46KB/s] 75%|███████▍  | 103810/139208 [00:34<00:06, 5858.19KB/s] 75%|███████▌  | 104409/139208 [00:34<00:05, 5897.02KB/s] 75%|███████▌  | 104999/139208 [00:34<00:05, 5877.89KB/s] 76%|███████▌  | 105587/139208 [00:35<00:05, 5863.93KB/s] 76%|███████▋  | 106178/139208 [00:35<00:05, 5862.25KB/s] 77%|███████▋  | 106771/139208 [00:35<00:05, 5881.89KB/s] 77%|███████▋  | 107362/139208 [00:35<00:05, 5873.26KB/s] 78%|███████▊  | 107954/139208 [00:35<00:05, 5867.13KB/s] 78%|███████▊  | 108549/139208 [00:35<00:05, 5891.44KB/s] 78%|███████▊  | 109139/139208 [00:35<00:05, 5879.12KB/s] 79%|███████▉  | 109730/139208 [00:35<00:05, 5871.43KB/s] 79%|███████▉  | 110322/139208 [00:35<00:04, 5884.98KB/s] 80%|███████▉  | 110914/139208 [00:35<00:04, 5875.85KB/s] 80%|████████  | 111502/139208 [00:36<00:04, 5875.81KB/s] 81%|████████  | 112090/139208 [00:36<00:04, 5860.80KB/s] 81%|████████  | 112677/139208 [00:36<00:04, 5846.24KB/s] 81%|████████▏ | 113266/139208 [00:36<00:04, 5828.53KB/s] 82%|████████▏ | 113858/139208 [00:36<00:04, 5838.22KB/s] 82%|████████▏ | 114450/139208 [00:36<00:04, 5841.54KB/s] 83%|████████▎ | 115042/139208 [00:36<00:04, 5848.69KB/s] 83%|████████▎ | 115634/139208 [00:36<00:04, 5836.59KB/s] 83%|████████▎ | 116226/139208 [00:36<00:03, 5842.24KB/s] 84%|████████▍ | 116824/139208 [00:36<00:03, 5882.97KB/s] 84%|████████▍ | 117413/139208 [00:37<00:03, 5866.89KB/s] 85%|████████▍ | 118002/139208 [00:37<00:03, 5858.38KB/s] 85%|████████▌ | 118594/139208 [00:37<00:03, 5840.55KB/s] 86%|████████▌ | 119190/139208 [00:37<00:03, 5875.75KB/s] 86%|████████▌ | 119778/139208 [00:37<00:03, 5860.39KB/s] 86%|████████▋ | 120370/139208 [00:37<00:03, 5862.26KB/s] 87%|████████▋ | 120957/139208 [00:38<00:07, 2558.83KB/s] 87%|████████▋ | 121554/139208 [00:38<00:05, 3080.70KB/s] 88%|████████▊ | 122146/139208 [00:38<00:04, 3581.67KB/s] 88%|████████▊ | 122738/139208 [00:38<00:04, 4047.93KB/s] 89%|████████▊ | 123330/139208 [00:38<00:03, 4458.88KB/s] 89%|████████▉ | 123922/139208 [00:38<00:03, 4799.27KB/s] 89%|████████▉ | 124514/139208 [00:38<00:02, 5065.92KB/s] 90%|████████▉ | 125090/139208 [00:38<00:02, 5232.87KB/s] 90%|█████████ | 125682/139208 [00:38<00:02, 5407.57KB/s] 91%|█████████ | 126277/139208 [00:38<00:02, 5560.01KB/s] 91%|█████████ | 126866/139208 [00:39<00:02, 5640.20KB/s] 92%|█████████▏| 127458/139208 [00:39<00:02, 5690.25KB/s] 92%|█████████▏| 128050/139208 [00:39<00:01, 5741.40KB/s] 92%|█████████▏| 128642/139208 [00:39<00:01, 5790.67KB/s] 93%|█████████▎| 129234/139208 [00:39<00:01, 5809.81KB/s] 93%|█████████▎| 129826/139208 [00:39<00:01, 5830.12KB/s] 94%|█████████▎| 130418/139208 [00:39<00:01, 5837.87KB/s] 94%|█████████▍| 131010/139208 [00:39<00:01, 5845.19KB/s] 95%|█████████▍| 131602/139208 [00:39<00:01, 5866.98KB/s] 95%|█████████▍| 132194/139208 [00:40<00:01, 5866.64KB/s] 95%|█████████▌| 132786/139208 [00:40<00:01, 5864.25KB/s] 96%|█████████▌| 133378/139208 [00:40<00:00, 5864.44KB/s] 96%|█████████▌| 133965/139208 [00:40<00:00, 5862.77KB/s] 97%|█████████▋| 134554/139208 [00:40<00:00, 5870.48KB/s] 97%|█████████▋| 135142/139208 [00:40<00:00, 5823.12KB/s] 98%|█████████▊| 135732/139208 [00:40<00:00, 5845.73KB/s] 98%|█████████▊| 136322/139208 [00:40<00:00, 5828.92KB/s] 98%|█████████▊| 136914/139208 [00:40<00:00, 5838.79KB/s] 99%|█████████▉| 137506/139208 [00:40<00:00, 5860.59KB/s] 99%|█████████▉| 138098/139208 [00:41<00:00, 5863.35KB/s]100%|█████████▉| 138690/139208 [00:41<00:00, 5859.57KB/s]100%|██████████| 139208/139208 [00:41<00:00, 3379.20KB/s]
-[07/12 15:28:14] ppdet.utils.checkpoint INFO: Finish loading model weights: /home2/hslee/.cache/paddle/weights/ResNet50_vd_ssld_v2_pretrained.pdparams
-[07/12 15:28:14] ppdet.engine INFO: Model structure: 
-DETR(
-  (backbone): ResNet(
-    (conv1): Sequential(
-      (conv1_1): ConvNormLayer(
-        (conv): Conv2D(3, 32, kernel_size=[3, 3], stride=[2, 2], padding=1, data_format=NCHW)
-        (norm): BatchNorm2D(num_features=32, momentum=0.9, epsilon=1e-05)
-      )
-      (conv1_2): ConvNormLayer(
-        (conv): Conv2D(32, 32, kernel_size=[3, 3], padding=1, data_format=NCHW)
-        (norm): BatchNorm2D(num_features=32, momentum=0.9, epsilon=1e-05)
-      )
-      (conv1_3): ConvNormLayer(
-        (conv): Conv2D(32, 64, kernel_size=[3, 3], padding=1, data_format=NCHW)
-        (norm): BatchNorm2D(num_features=64, momentum=0.9, epsilon=1e-05)
-      )
-    )
-    (res2): Blocks(
-      (res2a): BottleNeck(
-        (branch2a): ConvNormLayer(
-          (conv): Conv2D(64, 64, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=64, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2b): ConvNormLayer(
-          (conv): Conv2D(64, 64, kernel_size=[3, 3], padding=1, data_format=NCHW)
-          (norm): BatchNorm2D(num_features=64, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2c): ConvNormLayer(
-          (conv): Conv2D(64, 256, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (short): ConvNormLayer(
-          (conv): Conv2D(64, 256, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-      )
-      (res2b): BottleNeck(
-        (branch2a): ConvNormLayer(
-          (conv): Conv2D(256, 64, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=64, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2b): ConvNormLayer(
-          (conv): Conv2D(64, 64, kernel_size=[3, 3], padding=1, data_format=NCHW)
-          (norm): BatchNorm2D(num_features=64, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2c): ConvNormLayer(
-          (conv): Conv2D(64, 256, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-      )
-      (res2c): BottleNeck(
-        (branch2a): ConvNormLayer(
-          (conv): Conv2D(256, 64, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=64, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2b): ConvNormLayer(
-          (conv): Conv2D(64, 64, kernel_size=[3, 3], padding=1, data_format=NCHW)
-          (norm): BatchNorm2D(num_features=64, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2c): ConvNormLayer(
-          (conv): Conv2D(64, 256, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-      )
-    )
-    (res3): Blocks(
-      (res3a): BottleNeck(
-        (branch2a): ConvNormLayer(
-          (conv): Conv2D(256, 128, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=128, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2b): ConvNormLayer(
-          (conv): Conv2D(128, 128, kernel_size=[3, 3], stride=[2, 2], padding=1, data_format=NCHW)
-          (norm): BatchNorm2D(num_features=128, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2c): ConvNormLayer(
-          (conv): Conv2D(128, 512, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=512, momentum=0.9, epsilon=1e-05)
-        )
-        (short): Sequential(
-          (pool): AvgPool2D(kernel_size=2, stride=2, padding=0)
-          (conv): ConvNormLayer(
-            (conv): Conv2D(256, 512, kernel_size=[1, 1], data_format=NCHW)
-            (norm): BatchNorm2D(num_features=512, momentum=0.9, epsilon=1e-05)
-          )
-        )
-      )
-      (res3b): BottleNeck(
-        (branch2a): ConvNormLayer(
-          (conv): Conv2D(512, 128, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=128, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2b): ConvNormLayer(
-          (conv): Conv2D(128, 128, kernel_size=[3, 3], padding=1, data_format=NCHW)
-          (norm): BatchNorm2D(num_features=128, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2c): ConvNormLayer(
-          (conv): Conv2D(128, 512, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=512, momentum=0.9, epsilon=1e-05)
-        )
-      )
-      (res3c): BottleNeck(
-        (branch2a): ConvNormLayer(
-          (conv): Conv2D(512, 128, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=128, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2b): ConvNormLayer(
-          (conv): Conv2D(128, 128, kernel_size=[3, 3], padding=1, data_format=NCHW)
-          (norm): BatchNorm2D(num_features=128, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2c): ConvNormLayer(
-          (conv): Conv2D(128, 512, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=512, momentum=0.9, epsilon=1e-05)
-        )
-      )
-      (res3d): BottleNeck(
-        (branch2a): ConvNormLayer(
-          (conv): Conv2D(512, 128, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=128, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2b): ConvNormLayer(
-          (conv): Conv2D(128, 128, kernel_size=[3, 3], padding=1, data_format=NCHW)
-          (norm): BatchNorm2D(num_features=128, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2c): ConvNormLayer(
-          (conv): Conv2D(128, 512, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=512, momentum=0.9, epsilon=1e-05)
-        )
-      )
-    )
-    (res4): Blocks(
-      (res4a): BottleNeck(
-        (branch2a): ConvNormLayer(
-          (conv): Conv2D(512, 256, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2b): ConvNormLayer(
-          (conv): Conv2D(256, 256, kernel_size=[3, 3], stride=[2, 2], padding=1, data_format=NCHW)
-          (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2c): ConvNormLayer(
-          (conv): Conv2D(256, 1024, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=1024, momentum=0.9, epsilon=1e-05)
-        )
-        (short): Sequential(
-          (pool): AvgPool2D(kernel_size=2, stride=2, padding=0)
-          (conv): ConvNormLayer(
-            (conv): Conv2D(512, 1024, kernel_size=[1, 1], data_format=NCHW)
-            (norm): BatchNorm2D(num_features=1024, momentum=0.9, epsilon=1e-05)
-          )
-        )
-      )
-      (res4b): BottleNeck(
-        (branch2a): ConvNormLayer(
-          (conv): Conv2D(1024, 256, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2b): ConvNormLayer(
-          (conv): Conv2D(256, 256, kernel_size=[3, 3], padding=1, data_format=NCHW)
-          (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2c): ConvNormLayer(
-          (conv): Conv2D(256, 1024, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=1024, momentum=0.9, epsilon=1e-05)
-        )
-      )
-      (res4c): BottleNeck(
-        (branch2a): ConvNormLayer(
-          (conv): Conv2D(1024, 256, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2b): ConvNormLayer(
-          (conv): Conv2D(256, 256, kernel_size=[3, 3], padding=1, data_format=NCHW)
-          (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2c): ConvNormLayer(
-          (conv): Conv2D(256, 1024, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=1024, momentum=0.9, epsilon=1e-05)
-        )
-      )
-      (res4d): BottleNeck(
-        (branch2a): ConvNormLayer(
-          (conv): Conv2D(1024, 256, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2b): ConvNormLayer(
-          (conv): Conv2D(256, 256, kernel_size=[3, 3], padding=1, data_format=NCHW)
-          (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2c): ConvNormLayer(
-          (conv): Conv2D(256, 1024, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=1024, momentum=0.9, epsilon=1e-05)
-        )
-      )
-      (res4e): BottleNeck(
-        (branch2a): ConvNormLayer(
-          (conv): Conv2D(1024, 256, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2b): ConvNormLayer(
-          (conv): Conv2D(256, 256, kernel_size=[3, 3], padding=1, data_format=NCHW)
-          (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2c): ConvNormLayer(
-          (conv): Conv2D(256, 1024, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=1024, momentum=0.9, epsilon=1e-05)
-        )
-      )
-      (res4f): BottleNeck(
-        (branch2a): ConvNormLayer(
-          (conv): Conv2D(1024, 256, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2b): ConvNormLayer(
-          (conv): Conv2D(256, 256, kernel_size=[3, 3], padding=1, data_format=NCHW)
-          (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2c): ConvNormLayer(
-          (conv): Conv2D(256, 1024, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=1024, momentum=0.9, epsilon=1e-05)
-        )
-      )
-    )
-    (res5): Blocks(
-      (res5a): BottleNeck(
-        (branch2a): ConvNormLayer(
-          (conv): Conv2D(1024, 512, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=512, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2b): ConvNormLayer(
-          (conv): Conv2D(512, 512, kernel_size=[3, 3], stride=[2, 2], padding=1, data_format=NCHW)
-          (norm): BatchNorm2D(num_features=512, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2c): ConvNormLayer(
-          (conv): Conv2D(512, 2048, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=2048, momentum=0.9, epsilon=1e-05)
-        )
-        (short): Sequential(
-          (pool): AvgPool2D(kernel_size=2, stride=2, padding=0)
-          (conv): ConvNormLayer(
-            (conv): Conv2D(1024, 2048, kernel_size=[1, 1], data_format=NCHW)
-            (norm): BatchNorm2D(num_features=2048, momentum=0.9, epsilon=1e-05)
-          )
-        )
-      )
-      (res5b): BottleNeck(
-        (branch2a): ConvNormLayer(
-          (conv): Conv2D(2048, 512, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=512, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2b): ConvNormLayer(
-          (conv): Conv2D(512, 512, kernel_size=[3, 3], padding=1, data_format=NCHW)
-          (norm): BatchNorm2D(num_features=512, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2c): ConvNormLayer(
-          (conv): Conv2D(512, 2048, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=2048, momentum=0.9, epsilon=1e-05)
-        )
-      )
-      (res5c): BottleNeck(
-        (branch2a): ConvNormLayer(
-          (conv): Conv2D(2048, 512, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=512, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2b): ConvNormLayer(
-          (conv): Conv2D(512, 512, kernel_size=[3, 3], padding=1, data_format=NCHW)
-          (norm): BatchNorm2D(num_features=512, momentum=0.9, epsilon=1e-05)
-        )
-        (branch2c): ConvNormLayer(
-          (conv): Conv2D(512, 2048, kernel_size=[1, 1], data_format=NCHW)
-          (norm): BatchNorm2D(num_features=2048, momentum=0.9, epsilon=1e-05)
-        )
-      )
-    )
-  )
-  (transformer): RTDETRTransformer(
-    (input_proj): LayerList(
-      (0): Sequential(
-        (conv): Conv2D(256, 256, kernel_size=[1, 1], data_format=NCHW)
-        (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-      )
-      (1): Sequential(
-        (conv): Conv2D(256, 256, kernel_size=[1, 1], data_format=NCHW)
-        (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-      )
-      (2): Sequential(
-        (conv): Conv2D(256, 256, kernel_size=[1, 1], data_format=NCHW)
-        (norm): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-      )
-    )
-    (decoder): TransformerDecoder(
-      (layers): LayerList(
-        (0): TransformerDecoderLayer(
-          (self_attn): MultiHeadAttention(
-            (out_proj): Linear(in_features=256, out_features=256, dtype=float32)
-          )
-          (dropout1): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (norm1): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-          (cross_attn): PPMSDeformableAttention(
-            (sampling_offsets): Linear(in_features=256, out_features=192, dtype=float32)
-            (attention_weights): Linear(in_features=256, out_features=96, dtype=float32)
-            (value_proj): Linear(in_features=256, out_features=256, dtype=float32)
-            (output_proj): Linear(in_features=256, out_features=256, dtype=float32)
-          )
-          (dropout2): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (norm2): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-          (linear1): Linear(in_features=256, out_features=1024, dtype=float32)
-          (dropout3): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (linear2): Linear(in_features=1024, out_features=256, dtype=float32)
-          (dropout4): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (norm3): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-        )
-        (1): TransformerDecoderLayer(
-          (self_attn): MultiHeadAttention(
-            (out_proj): Linear(in_features=256, out_features=256, dtype=float32)
-          )
-          (dropout1): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (norm1): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-          (cross_attn): PPMSDeformableAttention(
-            (sampling_offsets): Linear(in_features=256, out_features=192, dtype=float32)
-            (attention_weights): Linear(in_features=256, out_features=96, dtype=float32)
-            (value_proj): Linear(in_features=256, out_features=256, dtype=float32)
-            (output_proj): Linear(in_features=256, out_features=256, dtype=float32)
-          )
-          (dropout2): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (norm2): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-          (linear1): Linear(in_features=256, out_features=1024, dtype=float32)
-          (dropout3): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (linear2): Linear(in_features=1024, out_features=256, dtype=float32)
-          (dropout4): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (norm3): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-        )
-        (2): TransformerDecoderLayer(
-          (self_attn): MultiHeadAttention(
-            (out_proj): Linear(in_features=256, out_features=256, dtype=float32)
-          )
-          (dropout1): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (norm1): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-          (cross_attn): PPMSDeformableAttention(
-            (sampling_offsets): Linear(in_features=256, out_features=192, dtype=float32)
-            (attention_weights): Linear(in_features=256, out_features=96, dtype=float32)
-            (value_proj): Linear(in_features=256, out_features=256, dtype=float32)
-            (output_proj): Linear(in_features=256, out_features=256, dtype=float32)
-          )
-          (dropout2): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (norm2): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-          (linear1): Linear(in_features=256, out_features=1024, dtype=float32)
-          (dropout3): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (linear2): Linear(in_features=1024, out_features=256, dtype=float32)
-          (dropout4): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (norm3): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-        )
-        (3): TransformerDecoderLayer(
-          (self_attn): MultiHeadAttention(
-            (out_proj): Linear(in_features=256, out_features=256, dtype=float32)
-          )
-          (dropout1): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (norm1): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-          (cross_attn): PPMSDeformableAttention(
-            (sampling_offsets): Linear(in_features=256, out_features=192, dtype=float32)
-            (attention_weights): Linear(in_features=256, out_features=96, dtype=float32)
-            (value_proj): Linear(in_features=256, out_features=256, dtype=float32)
-            (output_proj): Linear(in_features=256, out_features=256, dtype=float32)
-          )
-          (dropout2): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (norm2): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-          (linear1): Linear(in_features=256, out_features=1024, dtype=float32)
-          (dropout3): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (linear2): Linear(in_features=1024, out_features=256, dtype=float32)
-          (dropout4): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (norm3): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-        )
-        (4): TransformerDecoderLayer(
-          (self_attn): MultiHeadAttention(
-            (out_proj): Linear(in_features=256, out_features=256, dtype=float32)
-          )
-          (dropout1): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (norm1): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-          (cross_attn): PPMSDeformableAttention(
-            (sampling_offsets): Linear(in_features=256, out_features=192, dtype=float32)
-            (attention_weights): Linear(in_features=256, out_features=96, dtype=float32)
-            (value_proj): Linear(in_features=256, out_features=256, dtype=float32)
-            (output_proj): Linear(in_features=256, out_features=256, dtype=float32)
-          )
-          (dropout2): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (norm2): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-          (linear1): Linear(in_features=256, out_features=1024, dtype=float32)
-          (dropout3): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (linear2): Linear(in_features=1024, out_features=256, dtype=float32)
-          (dropout4): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (norm3): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-        )
-        (5): TransformerDecoderLayer(
-          (self_attn): MultiHeadAttention(
-            (out_proj): Linear(in_features=256, out_features=256, dtype=float32)
-          )
-          (dropout1): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (norm1): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-          (cross_attn): PPMSDeformableAttention(
-            (sampling_offsets): Linear(in_features=256, out_features=192, dtype=float32)
-            (attention_weights): Linear(in_features=256, out_features=96, dtype=float32)
-            (value_proj): Linear(in_features=256, out_features=256, dtype=float32)
-            (output_proj): Linear(in_features=256, out_features=256, dtype=float32)
-          )
-          (dropout2): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (norm2): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-          (linear1): Linear(in_features=256, out_features=1024, dtype=float32)
-          (dropout3): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (linear2): Linear(in_features=1024, out_features=256, dtype=float32)
-          (dropout4): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          (norm3): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-        )
-      )
-    )
-    (denoising_class_embed): Embedding(80, 256, sparse=False, scale_grad_by_freq=False)
-    (query_pos_head): MLP(
-      (layers): LayerList(
-        (0): Linear(in_features=4, out_features=512, dtype=float32)
-        (1): Linear(in_features=512, out_features=256, dtype=float32)
-      )
-    )
-    (enc_output): Sequential(
-      (0): Linear(in_features=256, out_features=256, dtype=float32)
-      (1): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-    )
-    (enc_score_head): Linear(in_features=256, out_features=80, dtype=float32)
-    (enc_bbox_head): MLP(
-      (layers): LayerList(
-        (0): Linear(in_features=256, out_features=256, dtype=float32)
-        (1): Linear(in_features=256, out_features=256, dtype=float32)
-        (2): Linear(in_features=256, out_features=4, dtype=float32)
-      )
-    )
-    (dec_score_head): LayerList(
-      (0): Linear(in_features=256, out_features=80, dtype=float32)
-      (1): Linear(in_features=256, out_features=80, dtype=float32)
-      (2): Linear(in_features=256, out_features=80, dtype=float32)
-      (3): Linear(in_features=256, out_features=80, dtype=float32)
-      (4): Linear(in_features=256, out_features=80, dtype=float32)
-      (5): Linear(in_features=256, out_features=80, dtype=float32)
-    )
-    (dec_bbox_head): LayerList(
-      (0): MLP(
-        (layers): LayerList(
-          (0): Linear(in_features=256, out_features=256, dtype=float32)
-          (1): Linear(in_features=256, out_features=256, dtype=float32)
-          (2): Linear(in_features=256, out_features=4, dtype=float32)
-        )
-      )
-      (1): MLP(
-        (layers): LayerList(
-          (0): Linear(in_features=256, out_features=256, dtype=float32)
-          (1): Linear(in_features=256, out_features=256, dtype=float32)
-          (2): Linear(in_features=256, out_features=4, dtype=float32)
-        )
-      )
-      (2): MLP(
-        (layers): LayerList(
-          (0): Linear(in_features=256, out_features=256, dtype=float32)
-          (1): Linear(in_features=256, out_features=256, dtype=float32)
-          (2): Linear(in_features=256, out_features=4, dtype=float32)
-        )
-      )
-      (3): MLP(
-        (layers): LayerList(
-          (0): Linear(in_features=256, out_features=256, dtype=float32)
-          (1): Linear(in_features=256, out_features=256, dtype=float32)
-          (2): Linear(in_features=256, out_features=4, dtype=float32)
-        )
-      )
-      (4): MLP(
-        (layers): LayerList(
-          (0): Linear(in_features=256, out_features=256, dtype=float32)
-          (1): Linear(in_features=256, out_features=256, dtype=float32)
-          (2): Linear(in_features=256, out_features=4, dtype=float32)
-        )
-      )
-      (5): MLP(
-        (layers): LayerList(
-          (0): Linear(in_features=256, out_features=256, dtype=float32)
-          (1): Linear(in_features=256, out_features=256, dtype=float32)
-          (2): Linear(in_features=256, out_features=4, dtype=float32)
-        )
-      )
-    )
-  )
-  (detr_head): DINOHead(
-    (loss): DINOLoss(
-      (matcher): HungarianMatcher()
-    )
-  )
-  (neck): HybridEncoder(
-    (input_proj): LayerList(
-      (0): Sequential(
-        (0): Conv2D(512, 256, kernel_size=[1, 1], data_format=NCHW)
-        (1): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-      )
-      (1): Sequential(
-        (0): Conv2D(1024, 256, kernel_size=[1, 1], data_format=NCHW)
-        (1): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-      )
-      (2): Sequential(
-        (0): Conv2D(2048, 256, kernel_size=[1, 1], data_format=NCHW)
-        (1): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-      )
-    )
-    (encoder): LayerList(
-      (0): TransformerEncoder(
-        (layers): LayerList(
-          (0): TransformerLayer(
-            (self_attn): MultiHeadAttention(
-              (out_proj): Linear(in_features=256, out_features=256, dtype=float32)
-            )
-            (linear1): Linear(in_features=256, out_features=1024, dtype=float32)
-            (dropout): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-            (linear2): Linear(in_features=1024, out_features=256, dtype=float32)
-            (norm1): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-            (norm2): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-            (dropout1): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-            (dropout2): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-          )
-        )
-      )
-    )
-    (lateral_convs): LayerList(
-      (0): BaseConv(
-        (conv): Conv2D(256, 256, kernel_size=[1, 1], data_format=NCHW)
-        (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-      )
-      (1): BaseConv(
-        (conv): Conv2D(256, 256, kernel_size=[1, 1], data_format=NCHW)
-        (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-      )
-    )
-    (fpn_blocks): LayerList(
-      (0): CSPRepLayer(
-        (conv1): BaseConv(
-          (conv): Conv2D(512, 256, kernel_size=[1, 1], data_format=NCHW)
-          (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (conv2): BaseConv(
-          (conv): Conv2D(512, 256, kernel_size=[1, 1], data_format=NCHW)
-          (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (bottlenecks): Sequential(
-          (0): RepVggBlock(
-            (conv1): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[3, 3], padding=1, data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-            (conv2): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[1, 1], data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-          )
-          (1): RepVggBlock(
-            (conv1): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[3, 3], padding=1, data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-            (conv2): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[1, 1], data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-          )
-          (2): RepVggBlock(
-            (conv1): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[3, 3], padding=1, data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-            (conv2): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[1, 1], data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-          )
-        )
-        (conv3): Identity()
-      )
-      (1): CSPRepLayer(
-        (conv1): BaseConv(
-          (conv): Conv2D(512, 256, kernel_size=[1, 1], data_format=NCHW)
-          (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (conv2): BaseConv(
-          (conv): Conv2D(512, 256, kernel_size=[1, 1], data_format=NCHW)
-          (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (bottlenecks): Sequential(
-          (0): RepVggBlock(
-            (conv1): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[3, 3], padding=1, data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-            (conv2): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[1, 1], data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-          )
-          (1): RepVggBlock(
-            (conv1): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[3, 3], padding=1, data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-            (conv2): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[1, 1], data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-          )
-          (2): RepVggBlock(
-            (conv1): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[3, 3], padding=1, data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-            (conv2): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[1, 1], data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-          )
-        )
-        (conv3): Identity()
-      )
-    )
-    (downsample_convs): LayerList(
-      (0): BaseConv(
-        (conv): Conv2D(256, 256, kernel_size=[3, 3], stride=[2, 2], padding=1, data_format=NCHW)
-        (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-      )
-      (1): BaseConv(
-        (conv): Conv2D(256, 256, kernel_size=[3, 3], stride=[2, 2], padding=1, data_format=NCHW)
-        (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-      )
-    )
-    (pan_blocks): LayerList(
-      (0): CSPRepLayer(
-        (conv1): BaseConv(
-          (conv): Conv2D(512, 256, kernel_size=[1, 1], data_format=NCHW)
-          (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (conv2): BaseConv(
-          (conv): Conv2D(512, 256, kernel_size=[1, 1], data_format=NCHW)
-          (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (bottlenecks): Sequential(
-          (0): RepVggBlock(
-            (conv1): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[3, 3], padding=1, data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-            (conv2): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[1, 1], data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-          )
-          (1): RepVggBlock(
-            (conv1): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[3, 3], padding=1, data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-            (conv2): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[1, 1], data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-          )
-          (2): RepVggBlock(
-            (conv1): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[3, 3], padding=1, data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-            (conv2): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[1, 1], data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-          )
-        )
-        (conv3): Identity()
-      )
-      (1): CSPRepLayer(
-        (conv1): BaseConv(
-          (conv): Conv2D(512, 256, kernel_size=[1, 1], data_format=NCHW)
-          (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (conv2): BaseConv(
-          (conv): Conv2D(512, 256, kernel_size=[1, 1], data_format=NCHW)
-          (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-        )
-        (bottlenecks): Sequential(
-          (0): RepVggBlock(
-            (conv1): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[3, 3], padding=1, data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-            (conv2): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[1, 1], data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-          )
-          (1): RepVggBlock(
-            (conv1): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[3, 3], padding=1, data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-            (conv2): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[1, 1], data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-          )
-          (2): RepVggBlock(
-            (conv1): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[3, 3], padding=1, data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-            (conv2): ConvBNLayer(
-              (conv): Conv2D(256, 256, kernel_size=[1, 1], data_format=NCHW)
-              (bn): BatchNorm2D(num_features=256, momentum=0.9, epsilon=1e-05)
-            )
-          )
-        )
-        (conv3): Identity()
-      )
-    )
-    (sa_cross_attn): LayerList(
-      (0): SpatialAlignTransNormer(
-        (q_proj): Linear(in_features=256, out_features=256, dtype=float32)
-        (k_proj): Linear(in_features=256, out_features=256, dtype=float32)
-        (v_proj): Linear(in_features=256, out_features=256, dtype=float32)
-        (out_proj): Linear(in_features=256, out_features=256, dtype=float32)
-        (attn_norm): LayerNorm(normalized_shape=[16], epsilon=1e-06)
-        (linear1): Linear(in_features=256, out_features=1024, dtype=float32)
-        (dropout): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-        (linear2): Linear(in_features=1024, out_features=256, dtype=float32)
-        (activation): GELU(approximate=False)
-        (norm1): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-        (norm2): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-        (dropout1): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-        (dropout2): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-        (avg_pool_high): Identity()
-        (avg_pool_low): AvgPool2D(kernel_size=2, stride=2, padding=0)
-      )
-      (1): SpatialAlignTransNormer(
-        (q_proj): Linear(in_features=256, out_features=256, dtype=float32)
-        (k_proj): Linear(in_features=256, out_features=256, dtype=float32)
-        (v_proj): Linear(in_features=256, out_features=256, dtype=float32)
-        (out_proj): Linear(in_features=256, out_features=256, dtype=float32)
-        (attn_norm): LayerNorm(normalized_shape=[16], epsilon=1e-06)
-        (linear1): Linear(in_features=256, out_features=1024, dtype=float32)
-        (dropout): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-        (linear2): Linear(in_features=1024, out_features=256, dtype=float32)
-        (activation): GELU(approximate=False)
-        (norm1): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-        (norm2): LayerNorm(normalized_shape=[256], epsilon=1e-05)
-        (dropout1): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-        (dropout2): Dropout(p=0.0, axis=None, mode=upscale_in_train)
-        (avg_pool_high): AvgPool2D(kernel_size=2, stride=2, padding=0)
-        (avg_pool_low): AvgPool2D(kernel_size=4, stride=4, padding=0)
-      )
-    )
-  )
-)
-Traceback (most recent call last):
-  File "/home2/hslee/EXP/rtdetr_paddle/tools/train.py", line 183, in <module>
-    main()
-    ~~~~^^
-  File "/home2/hslee/EXP/rtdetr_paddle/tools/train.py", line 179, in main
-    run(FLAGS, cfg)
-    ~~~^^^^^^^^^^^^
-  File "/home2/hslee/EXP/rtdetr_paddle/tools/train.py", line 135, in run
-    trainer.train(FLAGS.eval)
-    ~~~~~~~~~~~~~^^^^^^^^^^^^
-  File "/home2/hslee/EXP/rtdetr_paddle/ppdet/engine/trainer.py", line 380, in train
-    outputs = model(data)
-  File "/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/nn/layer/layers.py", line 1571, in __call__
-    return self.forward(*inputs, **kwargs)
-           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
-  File "/home2/hslee/EXP/rtdetr_paddle/ppdet/modeling/architectures/meta_arch.py", line 60, in forward
-    out = self.get_loss()
-  File "/home2/hslee/EXP/rtdetr_paddle/ppdet/modeling/architectures/detr.py", line 113, in get_loss
-    return self._forward()
-           ~~~~~~~~~~~~~^^
-  File "/home2/hslee/EXP/rtdetr_paddle/ppdet/modeling/architectures/detr.py", line 79, in _forward
-    body_feats = self.backbone(self.inputs)
-  File "/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/nn/layer/layers.py", line 1571, in __call__
-    return self.forward(*inputs, **kwargs)
-           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
-  File "/home2/hslee/EXP/rtdetr_paddle/ppdet/modeling/backbones/resnet.py", line 584, in forward
-    x = stage(x)
-  File "/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/nn/layer/layers.py", line 1571, in __call__
-    return self.forward(*inputs, **kwargs)
-           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
-  File "/home2/hslee/EXP/rtdetr_paddle/ppdet/modeling/backbones/resnet.py", line 423, in forward
-    block_out = block(block_out)
-  File "/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/nn/layer/layers.py", line 1571, in __call__
-    return self.forward(*inputs, **kwargs)
-           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
-  File "/home2/hslee/EXP/rtdetr_paddle/ppdet/modeling/backbones/resnet.py", line 372, in forward
-    out = paddle.add(x=out, y=short)
-  File "/home2/hslee/anaconda3/envs/paddle/lib/python3.13/site-packages/paddle/tensor/math.py", line 753, in add
-    return _C_ops.add(x, y)
-           ~~~~~~~~~~^^^^^^
-MemoryError: 
-
---------------------------------------
-C++ Traceback (most recent call last):
---------------------------------------
-0   paddle::pybind::eager_api_add(_object*, _object*, _object*)
-1   add_ad_func(paddle::Tensor const&, paddle::Tensor const&)
-2   paddle::experimental::add(paddle::Tensor const&, paddle::Tensor const&)
-3   void phi::AddRawKernel<float, phi::GPUContext>(phi::GPUContext const&, phi::DenseTensor const&, phi::DenseTensor const&, int, phi::DenseTensor*)
-4   float* phi::DeviceContext::Alloc<float>(phi::TensorBase*, unsigned long, bool) const
-5   phi::DenseTensor::AllocateFrom(phi::Allocator*, phi::DataType, unsigned long, bool)
-6   paddle::memory::allocation::Allocator::Allocate(unsigned long)
-7   paddle::memory::allocation::StatAllocator::AllocateImpl(unsigned long)
-8   paddle::memory::allocation::Allocator::Allocate(unsigned long)
-9   paddle::memory::allocation::Allocator::Allocate(unsigned long)
-10  std::string phi::enforce::GetCompleteTraceBackString<std::string >(std::string&&, char const*, int)
-11  common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
-
-----------------------
-Error Message Summary:
-----------------------
-ResourceExhaustedError: 
-
-Out of memory error on GPU 0. Cannot allocate 144.000000MB memory on GPU 0, 23.480652GB memory has been allocated and available memory is only 80.000000MB.
-
-Please check whether there is any other process using GPU 0.
-1. If yes, please stop them, or start PaddlePaddle on another GPU.
-2. If no, please decrease the batch size of your model. 
- (at /paddle/paddle/phi/core/memory/allocation/cuda_allocator.cc:71)
-
