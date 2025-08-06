@@ -19,6 +19,11 @@ import torchvision.transforms as T
 from PIL import Image
 import seaborn as sns
 
+from sklearn.manifold import TSNE
+import numpy as np
+from matplotlib.colors import LinearSegmentedColormap
+
+
 
 def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, scaler=None):
     model.train()
@@ -151,7 +156,7 @@ COCO_CLASSES = [
     'toaster', 'sink', 'refrigerator', 'blender', 'book', 'clock', 'vase', 'scissors', 'teddybear',
     'hairdrier', 'toothbrush', 'hairbrush'
 ]
-SAVE_DIR = "images"
+SAVE_DIR = "images/Dark-Complex/"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
 
@@ -159,7 +164,7 @@ def get_class_color(class_id):
     np.random.seed(class_id)
     return np.random.rand(3,)
 
-def visualize(model, image_path, device, is_baseline=False):
+def visualize(model, image_path, device, threshold, is_baseline=False):
     # 이미지 로딩
     image = Image.open(image_path).convert("RGB")
     
@@ -185,7 +190,6 @@ def visualize(model, image_path, device, is_baseline=False):
     scores = output["scores"].cpu()
     masks = output.get("masks")
 
-    threshold = 0.5
     for i in range(len(boxes)):
         if scores[i] < threshold:
             continue
@@ -227,18 +231,18 @@ def visualize(model, image_path, device, is_baseline=False):
             )
         )
 
-        # Mask
-        mask = masks[i, 0].cpu().numpy()
-        mask = (mask > 0.5).astype(np.uint8)
-        colored_mask = np.zeros_like(image_np, dtype=np.uint8)
+        # # Mask
+        # mask = masks[i, 0].cpu().numpy()
+        # mask = (mask > 0.5).astype(np.uint8)
+        
+        # r, g, b = [int(c * 255) for c in color]
+        # colored_mask = np.zeros_like(image_np, dtype=np.uint8)
+        # colored_mask[:, :, 0] = mask * r
+        # colored_mask[:, :, 1] = mask * g
+        # colored_mask[:, :, 2] = mask * b
 
-        r, g, b = [int(c * 255) for c in color]
-        colored_mask[:, :, 0] = mask * r
-        colored_mask[:, :, 1] = mask * g
-        colored_mask[:, :, 2] = mask * b
-
-        image_np = np.where(mask[..., None], 0.5 * image_np + 0.5 * colored_mask, image_np).astype(np.uint8)
-        ax.imshow(image_np)
+        # image_np = np.where(mask[..., None], 0.5 * image_np + 0.5 * colored_mask, image_np).astype(np.uint8)
+        # ax.imshow(image_np)
 
 
     # 이미지를 파일로 저장 (figure는 띄우지 않음)
@@ -246,17 +250,18 @@ def visualize(model, image_path, device, is_baseline=False):
     ax.axis("off")
     
     base_name = os.path.splitext(os.path.basename(image_path))[0]  # 파일명만 추출
+    threshold_str = str(threshold).replace('.', '')  # threshold를 문자열로 변환
     if is_baseline:
-        save_path = os.path.join(SAVE_DIR, f"{base_name}_baseline.png")
+        save_path = os.path.join(SAVE_DIR, f"{base_name}_baseline_{threshold_str}.png")
     else:
-        save_path = os.path.join(SAVE_DIR, f"{base_name}_ours.png")
+        save_path = os.path.join(SAVE_DIR, f"{base_name}_ours_{threshold_str}.png")
         
     plt.savefig(save_path, bbox_inches="tight", dpi=1500)
     plt.close(fig)  # figure 닫기
     print(f"Saved visualization to {save_path}")
     
 def visualize_gt(coco, image_path, img_id, device):
-    # 이미지 로딩
+    # 이미지 로딩 및 전처리
     image = Image.open(image_path).convert("RGB")
     original_image = image.copy()
     image = image.resize((640, 640))  # 모델과 동일 크기로 resize
@@ -271,78 +276,105 @@ def visualize_gt(coco, image_path, img_id, device):
     for ann in anns:
         bbox = ann["bbox"]  # [x, y, width, height]
         label = ann["category_id"]
-        class_name = COCO_CLASSES[label]  # COCO 클래스 라벨에 맞는 이름
+        
+        if label >= len(COCO_CLASSES):
+            print(f"Warning: Invalid class ID {label} for image {image_path}. Skipping.")
+            continue
+        
+        class_name = COCO_CLASSES[label]
         color = get_class_color(label)
 
-        # Calculate scaling factors
+        # 스케일 보정
         scale_x = 640 / original_image.width
         scale_y = 640 / original_image.height
-        
-        # Adjust bounding box based on image scaling
         bbox = [coord * scale_x if i % 2 == 0 else coord * scale_y for i, coord in enumerate(bbox)]
 
-        # Draw bounding box
+        # Bounding box
         rect = patches.Rectangle(
             (bbox[0], bbox[1]), bbox[2], bbox[3],
             linewidth=5, edgecolor=color, facecolor="none"
         )
         ax.add_patch(rect)
         ax.text(
-            box[0],
-            box[1],
-            f"{class_name}: {score:.2f}",
+            bbox[0],
+            bbox[1],
+            f"{class_name}",
             color="white",
             fontsize=20,
             fontweight='bold',
             bbox=dict(
                 facecolor=color,
-                edgecolor='black',   # 테두리
-                boxstyle='round,pad=0.3',  # 박스 스타일과 패딩
+                edgecolor='black',
+                boxstyle='round,pad=0.3',
                 alpha=0.9,
                 linewidth=1.5
             )
         )
-    
-    
-        if "segmentation" in ann:
-            mask = coco.annToMask(ann)
-            mask = Image.fromarray(mask.astype(np.uint8) * 255)
-            mask = mask.resize((640, 640), Image.NEAREST)  # Resize
-            mask = np.array(mask)
-            colored_mask = np.zeros_like(image_np, dtype=np.uint8)
-            colored_mask[:, :, 0] = mask * color[0] * 255
-            colored_mask[:, :, 1] = mask * color[1] * 255
-            colored_mask[:, :, 2] = mask * color[2] * 255
-            # 마스크를 원본 이미지와 합성하여 적용
-            image_np = np.where(mask[..., None], 0.5 * image_np + 0.5 * colored_mask, image_np).astype(np.uint8)
-            ax.imshow(image_np)
+
+        # # Mask 시각화
+        # if "segmentation" in ann:
+        #     mask = coco.annToMask(ann)
+        #     mask = Image.fromarray(mask.astype(np.uint8) * 255)
+        #     mask = mask.resize((640, 640), Image.NEAREST)
+        #     mask = np.array(mask)
+        #     mask = (mask > 0).astype(np.uint8)
+
+        #     # 마스크 색상 일관성 유지
+        #     r, g, b = [int(c * 255) for c in color]
+        #     colored_mask = np.zeros_like(image_np, dtype=np.uint8)
+        #     colored_mask[:, :, 0] = mask * r
+        #     colored_mask[:, :, 1] = mask * g
+        #     colored_mask[:, :, 2] = mask * b
+
+        #     # 이미지 위에 마스크 반투명 합성
+        #     image_np = np.where(mask[..., None], 0.5 * image_np + 0.5 * colored_mask, image_np).astype(np.uint8)
+        #     ax.imshow(image_np)
 
     ax.axis("off")
-    
-    # 이미지를 파일로 저장 (figure는 띄우지 않음)
+
+    # 저장 경로 설정
     base_name = os.path.splitext(os.path.basename(image_path))[0]
     save_path = os.path.join(SAVE_DIR, f"{base_name}_gt.png")
-    
+
     plt.savefig(save_path, bbox_inches="tight", dpi=1500)
-    plt.close(fig)  # figure 닫기
+    plt.close(fig)
     print(f"Saved GT visualization to {save_path}")
 
-
-def visualize_coco_samples(model, coco_ann_file, image_root, device, is_baseline=False, num_samples=30, seed=723):
+def visualize_coco_samples(model, coco_ann_file, image_root, device, is_baseline=False, num_samples=30, seed=723, threshold=0.75):
     # COCO annotation 불러오기
     coco = COCO(coco_ann_file)
 
-    # # 모든 이미지 ID 중에서 무작위로 샘플링 (매번 동일한 이미지 선택을 위해 시드 설정)
-    # img_ids = coco.getImgIds()
-    # random.seed(seed)  # 고정된 시드로 샘플링
-    # sampled_ids = random.sample(img_ids, num_samples)
+    # 모든 이미지 ID 중에서 무작위로 샘플링 (매번 동일한 이미지 선택을 위해 시드 설정)
+    img_ids = coco.getImgIds()
+    random.seed(86)  # 고정된 시드로 샘플링
+    sampled_ids = random.sample(img_ids, num_samples)
     
     sampled_ids = [
-        311180,
-        89697,
-        60449,
-        241326,
-        466835
+        # 311180,
+        # 89697,
+        # 60449,
+        # 241326,
+        # 466835
+        # 60449,
+        # 119911,
+        # 238013,
+        # 11813,
+        # 103585,
+        
+        # false positives
+        193884,
+        238866,
+        466835,
+        468233,
+        575815,
+        
+        # # complex & dark scene
+        # 74092,
+        # 460494,
+        # 306136,
+        # 423798,
+        # 455085,
+        
     ]
     
     for img_id in sampled_ids:
@@ -353,12 +385,12 @@ def visualize_coco_samples(model, coco_ann_file, image_root, device, is_baseline
         img_info = coco.loadImgs(img_id)[0]
         img_path = os.path.join(image_root, img_info['file_name'])
 
-        visualize(model, img_path, device=device, is_baseline=is_baseline)
-        # visualize_gt(coco, img_path, img_id, device=device)
+        print(f"threshold: {threshold}")
+        visualize(model, img_path, device=device, is_baseline=is_baseline, threshold=threshold)
+        visualize_gt(coco, img_path, img_id, device=device)
 
 
 
-from matplotlib.colors import LinearSegmentedColormap
 # light_reds = LinearSegmentedColormap.from_list("light_reds", ["#fff5f0", "#fcbba1", "#fb6a4a", "#cb181d"])        
 
 def visualize_cosine_similarity_of_hierarchical_features(
@@ -415,20 +447,13 @@ def visualize_cosine_similarity_of_hierarchical_features(
     else:
         save_path = os.path.join(save_dir, f"cosine_similarity_img{img_id}_ours.png")
         
-    plt.savefig(save_path, dpi=300, transparent=True)
+    plt.savefig(save_path, dpi=1500, transparent=True)
     print(f"✅ Saved cosine similarity heatmap: {save_path}")
     plt.close()
     
    
 
     
-from sklearn.manifold import TSNE
-import matplotlib.pyplot as plt
-import seaborn as sns
-import torch
-import numpy as np
-import os
-
 def visualize_tSNE_of_aligned_vs_misaligned_features(
     aligned_hooks: dict[str, dict[str, torch.Tensor]],
     misaligned_hooks: dict[str, dict[str, torch.Tensor]],
@@ -501,7 +526,7 @@ def visualize_tSNE_of_aligned_vs_misaligned_features(
         save_dir,
         f"tsne_img{img_id}_{'baseline' if is_baseline else 'ours'}.png"
     )
-    plt.savefig(save_path, dpi=300)
+    plt.savefig(save_path, dpi=1500)
     plt.close()
 
     print(f"✅ Saved aligned vs misaligned t-SNE plot: {save_path}")
@@ -567,7 +592,7 @@ def compare_aligned_misaligned_similarity(
     
     os.makedirs(save_dir, exist_ok=True)
     save_path = os.path.join(save_dir, f"similarity_comparison_img{img_id}.png")
-    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.savefig(save_path, dpi=1500, bbox_inches='tight')
     plt.close()
     
     return aligned_sim, misaligned_sim, save_path

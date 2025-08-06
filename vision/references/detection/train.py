@@ -209,6 +209,13 @@ def get_args_parser(add_help=True):
         help="to check semantic gap, set path to model weights.",
     )
     parser.add_argument("--image", default=False, type=str, help="Path to image for visualization")
+    # threshold
+    parser.add_argument(
+        "--threshold",
+        default=0.75,
+        type=float,
+        help="Threshold for visualization, default is 0.75",
+    )
 
     return parser
 
@@ -238,6 +245,9 @@ def main(args):
         raise ValueError("Oops, if you want Keypoint detection, set --dataset coco_kp")
     if args.dataset == "coco_kp" and args.use_v2:
         raise ValueError("KeyPoint detection doesn't support V2 transforms yet")
+    
+    # get threshold 
+    threshold = args.threshold
 
     if args.output_dir:
         utils.mkdir(args.output_dir)
@@ -255,8 +265,8 @@ def main(args):
         is_baseline = args.visualize == "baseline"
 
         if is_baseline:
-            from torchvision.models.detection import fasterrcnn_resnet50_fpn
-            model = fasterrcnn_resnet50_fpn(weights="DEFAULT")
+            from torchvision.models.detection import maskrcnn_resnet50_fpn
+            model = maskrcnn_resnet50_fpn(weights="DEFAULT")
         else:
             # 
             model = torchvision.models.get_model(
@@ -275,7 +285,7 @@ def main(args):
         coco_ann_file = "/media/data/coco/annotations/instances_val2017.json"
         image_root = "/media/data/coco/images/val2017"
 
-        visualize_coco_samples(model, coco_ann_file, image_root, device, is_baseline=is_baseline)
+        visualize_coco_samples(model, coco_ann_file, image_root, device, is_baseline=is_baseline, threshold=threshold)
         return
     
     
@@ -285,8 +295,8 @@ def main(args):
         is_baseline = args.semantic_gap == "baseline"
         
         if is_baseline:
-            from torchvision.models.detection import fasterrcnn_resnet50_fpn
-            model = fasterrcnn_resnet50_fpn(weights="DEFAULT")
+            from torchvision.models.detection import maskrcnn_resnet50_fpn
+            model = maskrcnn_resnet50_fpn(weights="DEFAULT")
         else:
             model = torchvision.models.get_model(
                 args.model,
@@ -717,18 +727,23 @@ torchrun --nproc_per_node=4 train.py \
 
 ## baseline
 python train.py \
-    --model fasterrcnn_resnet50_fpn \
+    --model maskrcnn_resnet50_fpn \
     --test-only \
     --visualize baseline \
+    --threshold 0.75 \
     2>&1 | tee ./test.log
     
 ## Ours
 python train.py \
-    --model fasterrcnn_resnet50_fpn \
+    --model maskrcnn_resnet50_fpn \
     --test-only \
-    --visualize /home/hslee/Desktop/Embedded_AI/EXP/vision/references/detection/pretrained/fasterrcnn_best_model_23.pth \
+    --visualize /home/hslee/Desktop/Embedded_AI/CLASS-FPN/vision/references/detection/pretrained/maskrcnn_best_model_25.pth \
+    --threshold 0.75 \
     2>&1 | tee ./test.log
     
+    ß
+
+# semantic gap
 
 python train.py \
     --model maskrcnn_resnet50_fpn \
@@ -737,12 +752,10 @@ python train.py \
     2>&1 | tee ./baseline_sim.log
     
 python train.py \
-    --model fasterrcnn_resnet50_fpn \
+    --model maskrcnn_resnet50_fpn \
     --test-only \
-    --semantic-gap baseline \
+    --semantic-gap /home/hslee/Desktop/Embedded_AI/CLASS-FPN/vision/references/detection/pretrained/maskrcnn_best_model_25.pth \
     2>&1 | tee ./test.log
- 
-    --semantic-gap /home/hslee/Desktop/Embedded_AI/EXP/vision/references/detection/pretrained/fasterrcnn_best_model_23.pth \
     
 
 # Keypoint R-CNN
