@@ -9,7 +9,6 @@ from ..utils import _log_api_usage_once
 
 import torch
 import math
-
 class ExtraFPNBlock(nn.Module):
     """
     Base class for the extra block in the FPN.
@@ -71,309 +70,357 @@ def get_activation(act: str, inpace: bool=True):
     
     return m 
 
-
-class SpatialAlignCrossAttention(nn.Module):
-    def __init__(self, dim, dropout=0.0, activation='gelu', use_fusion_token=True):
+class ConvTranspose(nn.Module):
+    def __init__(self, in_channels, out_channels, kernel_size=2, stride=2):
         super().__init__()
+        self.conv = nn.ConvTranspose2d(in_channels, out_channels, kernel_size=kernel_size, stride=stride)
+        self.bn = nn.BatchNorm2d(out_channels)
+        self.act = nn.ReLU(inplace=True)
 
-        self.normalize_before = False
-        self.dropout = dropout
-        self.use_fusion_token = use_fusion_token
+    def forward(self, x):
+        x = self.conv(x)
+        x = self.bn(x)
+        x = self.act(x)
+        return x
 
-        high_token = torch.randn(1, 1, dim)
-        self.high_fusion_factor_token = nn.Parameter(high_token)   
+
+
+def _pair(x):
+    """Convert scalar or tuple to tuple of length 2."""
+    if isinstance(x, (int, float)):
+        return (x, x)
+    return x
+
+class DCNv2(nn.Module):
+    def __init__(
+        self,
+        in_channels,
+        out_channels,
+        kernel_size,
+        stride=1,
+        padding=0,
+        dilation=1,
+        deformable_groups=1,
+    ):
+        super(DCNv2, self).__init__()
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.kernel_size = _pair(kernel_size)
+        self.stride = _pair(stride)
+        self.padding = _pair(padding)
+        self.dilation = _pair(dilation)
+        self.deformable_groups = deformable_groups
+
+        # Deformable convolution using torchvision
+        self.deform_conv = torchvision.ops.DeformConv2d(
+            in_channels=in_channels,
+            out_channels=out_channels,
+            kernel_size=self.kernel_size,
+            stride=self.stride,
+            padding=self.padding,
+            dilation=self.dilation,
+            groups=deformable_groups,
+            bias=True
+        )
+
+        self.relu = nn.ReLU(inplace=True)
         
-        self.high_fusion_factor_head = nn.Sequential(
-            nn.Linear(dim, dim // 4),
-            nn.ReLU(),
-            nn.Linear(dim // 4, 1)
-        )     
-        
-        self.cross_attn = nn.MultiheadAttention(dim, 8, dropout=0.0, batch_first=True)
+        # Initialize weights
+        self.reset_parameters()
 
-        self.linear1 = nn.Linear(dim, dim * 4)
-        self.dropout_layer = nn.Dropout(dropout)
-        self.linear2 = nn.Linear(dim * 4, dim)
+    def reset_parameters(self):
+        n = self.in_channels * self.kernel_size[0] * self.kernel_size[1]
+        stdv = 1.0 / math.sqrt(n)
+        self.deform_conv.weight.data.uniform_(-stdv, stdv)
+        if self.deform_conv.bias is not None:
+            self.deform_conv.bias.data.zero_()
 
-        self.norm1 = nn.LayerNorm(dim)
-        self.norm2 = nn.LayerNorm(dim)
-        self.dropout1 = nn.Dropout(dropout)
-        self.dropout2 = nn.Dropout(dropout)
-        self.activation = get_activation(activation)
-
-        self.avg_pool_2x = nn.AvgPool2d(kernel_size=2, stride=2)
-        self.avg_pool_4x = nn.AvgPool2d(kernel_size=4, stride=4)
-        
-
-    @staticmethod
-    def get_sinusoidal_pos_embed_2d(h, w, dim, device):
-        assert dim % 4 == 0, f"Channel dim ({dim}) must be divisible by 4 for 2D positional encoding"
-        div_term = torch.exp(torch.arange(0, dim // 4, device=device) * (-torch.log(torch.tensor(10000.0)) / (dim // 4)))
-
-        pos_h = torch.arange(h, device=device).reshape(h, 1)
-        pe_h = torch.zeros(h, dim // 2, device=device)
-        sin_h = torch.sin(pos_h * div_term)
-        cos_h = torch.cos(pos_h * div_term)
-        pe_h[:, 0::2] = sin_h
-        pe_h[:, 1::2] = cos_h
-
-        pos_w = torch.arange(w, device=device).reshape(w, 1)
-        pe_w = torch.zeros(w, dim // 2, device=device)
-        sin_w = torch.sin(pos_w * div_term)
-        cos_w = torch.cos(pos_w * div_term)
-        pe_w[:, 0::2] = sin_w
-        pe_w[:, 1::2] = cos_w
-
-        pe_h = pe_h.unsqueeze(1).expand(-1, w, -1)
-        pe_w = pe_w.unsqueeze(0).expand(h, -1, -1)
-        pe = torch.cat([pe_h, pe_w], dim=-1)
-        return pe.reshape(1, h * w, dim)
-
-
-    @staticmethod
-    def get_sinusoidal_pos_embed_1d(seq_len, embed_dim, device):
+    def forward(self, input, offset, mask):
         """
-        Generate 1D sinusoidal positional embeddings.
-
         Args:
-        - seq_len: Length of the sequence.
-        - embed_dim: The dimension of the embedding.
-        - device: The device to store the tensor.
-
+            input: Input tensor [bs, in_channels, H, W]
+            offset: Offset tensor [bs, 2 * deformable_groups * kh * kw, H, W]
+            mask: Modulation mask [bs, deformable_groups * kh * kw, H, W]
+        
         Returns:
-        - A tensor of shape (1, seq_len, embed_dim).
+            Output tensor [bs, out_channels, H_out, W_out]
         """
-        # Sinusoidal position encoding (standard method)
-        position = torch.arange(seq_len, dtype=torch.float32, device=device).unsqueeze(1)  # (seq_len, 1)
-        div_term = torch.exp(torch.arange(0., embed_dim, 2, dtype=torch.float32, device=device) * -(math.log(10000.0) / embed_dim))
-        pe = torch.zeros(seq_len, embed_dim, device=device)
-        pe[:, 0::2] = torch.sin(position * div_term)  # Apply sine to even indices
-        pe[:, 1::2] = torch.cos(position * div_term)  # Apply cosine to odd indices
-        return pe.unsqueeze(0)  # Add batch dimension (1, seq_len, embed_dim)
+        # torchvision DeformConv2d expects mask as modulation scalar
+        # Multiply mask with offset to match DCNv2 behavior
+        assert offset.shape[1] == 2 * self.deformable_groups * self.kernel_size[0] * self.kernel_size[1]
+        assert mask.shape[1] == self.deformable_groups * self.kernel_size[0] * self.kernel_size[1]
+        
+        return self.relu(self.deform_conv(input, offset, mask))
 
-    @staticmethod
-    def with_pos_embed(tensor, pos_embed):
-        return tensor if pos_embed is None else tensor + pos_embed
-    
-    def rescaled_tanh_0_2(self, x):
-        x = torch.tanh(x) # [-1, 1]
-        return (x + 1)  # Rescale to [0, 2]
+class DCN(nn.Module):
+    def __init__(
+        self,
+        in_channels,
+        out_channels,
+        kernel_size,
+        stride=1,
+        padding=0,
+        dilation=1,
+        deformable_groups=1,
+        extra_offset_mask=False,
+    ):
+        super(DCN, self).__init__()
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.kernel_size = _pair(kernel_size)
+        self.stride = _pair(stride)
+        self.padding = _pair(padding)
+        self.dilation = _pair(dilation)
+        self.deformable_groups = deformable_groups
+        self.extra_offset_mask = extra_offset_mask
 
-    def forward(self, a3, a4, idx):
-        original_a3 = a3
+        # Deformable convolution
+        self.deform_conv = DCNv2(
+            in_channels=in_channels,
+            out_channels=out_channels,
+            kernel_size=self.kernel_size,
+            stride=self.stride,
+            padding=self.padding,
+            dilation=self.dilation,
+            deformable_groups=self.deformable_groups
+        )
 
-        # Downsample features
-        if idx == 2: # mask r-cnn
-        # if idx == 1: # retinanet, fcos
-            a3_down = self.avg_pool_2x(a3)
+        # Offset and mask prediction
+        channels_ = self.deformable_groups * 3 * self.kernel_size[0] * self.kernel_size[1]
+        self.conv_offset_mask = nn.Conv2d(self.in_channels, channels_, kernel_size=self.kernel_size, stride=self.stride, padding=self.padding, bias=True)
+        self.init_offset()
+        
+    def init_offset(self):
+        self.conv_offset_mask.weight.data.zero_()
+        self.conv_offset_mask.bias.data.zero_()
+
+    def forward(self, input, main_path=None):
+        """
+        Args:
+            input: Input tensor [bs, in_channels, H, W] or list of tensors if extra_offset_mask=True
+            main_path: Unused (kept for compatibility)
+        
+        Returns:
+            Output tensor [bs, out_channels, H_out, W_out]
+        """
+        if self.extra_offset_mask:
+            assert isinstance(input, (list, tuple)) and len(input) == 2, "Expected two inputs for extra_offset_mask"
+            feature_input, offset_input = input 
+            out = self.conv_offset_mask(offset_input)
         else:
-            a3_down = self.avg_pool_4x(a3)
-            a4 = self.avg_pool_2x(a4)
+            feature_input = input
+            out = self.conv_offset_mask(input)
 
-        bs, c_a3, h, w = a3_down.shape
-        _, c_a4, H, W = a4.shape
+        # Split into offsets and mask
+        o1, o2, mask = torch.chunk(out, 3, dim=1)  # Each: [bs, deformable_groups * kh * kw, H, W]
+        offset = torch.cat((o1, o2), dim=1)        # [bs, 2 * deformable_groups * kh * kw, H, W]
+        mask = torch.sigmoid(mask)                  # [bs, deformable_groups * kh * kw, H, W]
 
-        # Flatten spatial dimensions
-        q = a3_down.flatten(2).permute(0, 2, 1)  # [bs, hw, dim]
-        k = a4.flatten(2).permute(0, 2, 1)       # [bs, HW, dim]
-        v = k.clone()
-        
-        q_pe = self.get_sinusoidal_pos_embed_1d(h*w, c_a3, q.device)
-        k_pe = self.get_sinusoidal_pos_embed_1d(H*W, c_a4, k.device)
-        q = self.with_pos_embed(q, q_pe)
-        k = self.with_pos_embed(k, k_pe)
-        
-        high_fusion_factor = self.high_fusion_factor_token.expand(bs, -1, -1)
-        q = torch.cat([high_fusion_factor, q], dim=1)  # [bs, 1 + hw, dim]
-        k = torch.cat([high_fusion_factor, k], dim=1)  # [bs, 1 + HW, dim]
-        v = torch.cat([high_fusion_factor, v], dim=1)  # [bs, 1 + HW, dim] 
-        
-        # Cross-attention
-        residual = q
-        out, _ = self.cross_attn(query=q, key=k, value=v)  # [bs, 1 + hw, dim]
-        if not self.normalize_before:
-            out = self.norm1(out)
-        out = residual + self.dropout1(out)
-        
-        residual = out
-        out = self.linear2(self.dropout_layer(self.activation(self.linear1(out))))
-        if not self.normalize_before:
-            out = self.norm2(out)
-        out = residual + self.dropout2(out)
+        return self.deform_conv(feature_input, offset, mask)
+   
+
+# This code is part of https://github.com/EMI-Group/FaPN/blob/main/detectron2/modeling/backbone/fan.py   
+class FeatureSelectionModule(nn.Module):
+    def __init__(self, in_chan, out_chan, norm="GN"):
+        super(FeatureSelectionModule, self).__init__()
+        self.conv_atten = nn.Conv2d(in_chan, in_chan, kernel_size=1, bias=False)
+        self.norm_atten = nn.GroupNorm(32, in_chan) if norm == "GN" else norm
+        self.sigmoid = nn.Sigmoid()
+        self.conv = nn.Conv2d(in_chan, out_chan, kernel_size=1, bias=False)
+        nn.init.xavier_uniform_(self.conv.weight, gain=1)
+        nn.init.xavier_uniform_(self.conv_atten.weight, gain=1)
+
+    def forward(self, x):
+        atten = self.sigmoid(self.norm_atten(self.conv_atten(F.avg_pool2d(x, x.size()[2:]))))
+        feat = torch.mul(x, atten)
+        x = x + feat
+        feat = self.conv(x)
+        return feat
+    
             
-        # ## image-wise
-        high_fusion_factor = self.high_fusion_factor_head(out[:, 0, :])
-        high_fusion_factor = self.rescaled_tanh_0_2(high_fusion_factor)
-        high_fusion_factor = high_fusion_factor.view(bs, -1, 1, 1)
+class FaPN(nn.Module):
+    def __init__(self, c1, c2, norm="GN"):
+        '''
+        c1: low level feature channels
+        c2: high level feature channels
+        '''
+        super(FaPN, self).__init__()
+        self.fsm = FeatureSelectionModule(c1, c1, norm)
+        self.offset  = nn.Sequential(
+            nn.Conv2d(c1 + c2, c2, kernel_size=1, stride=1, padding=0, bias=False),
+            nn.BatchNorm2d(c2),
+        )
+        self.feature_align = DCN(
+            in_channels=c2,
+            out_channels=c2,
+            kernel_size=3,
+            stride=1,
+            padding=1,
+            deformable_groups=8,
+            extra_offset_mask=True
+        )
         
-        # 5. Reshape to spatial map
-        out = out[:, 1:, :]  # [bs, hw, dim]
-        a3_sa = out.permute(0, 2, 1).contiguous().view(bs, c_a3, h, w)
+    def forward(self, feat_high, feat_low):
         
-        # 6. Upsample
-        scale_factor = 2 if idx == 2 else 4 # faster r-cnn, mask r-cnn
-        # scale_factor = 2 if idx == 1 else 4 # retinanet, fcos
-        a3_sa = F.interpolate(a3_sa, scale_factor=scale_factor, mode='bilinear', align_corners=False)
-
-        a3_sa = a3_sa * original_a3
-
-        # return a3_sa, low_fusion_factor, 2 - low_fusion_factor
-        return a3_sa
-        # return a3_sa
-
-
-class SpatialAlignCrossAttentionReLULinear(nn.Module):
-    def __init__(self, dim, dropout=0.0, activation='gelu', use_fusion_token=True):
-        super().__init__()
-        self.normalize_before = False
-        self.dropout = dropout
-        self.use_fusion_token = use_fusion_token
-        self.heads = 8
-        self.head_dim = dim // self.heads
-        self.scale = self.head_dim ** -0.5
+        feat_low_fsm = self.fsm(feat_low)
+        upsample_feat_high = F.interpolate(feat_high, scale_factor=2., mode='nearest')
+        offset = self.offset(torch.cat([feat_low_fsm, upsample_feat_high * 2], dim=1))
+        feat_high_align = F.relu(self.feature_align([upsample_feat_high, offset]))
         
-        # Linear projections to Q, K, V
-        self.q_proj = nn.Linear(dim, dim)
-        self.k_proj = nn.Linear(dim, dim)
-        self.v_proj = nn.Linear(dim, dim)
+        out = torch.cat([feat_high_align, feat_low_fsm], dim=1)
         
-        self.out_proj = nn.Linear(dim, dim)
+        return out
+        
+        
 
-        self.linear1 = nn.Linear(dim, dim * 4)
-        self.linear2 = nn.Linear(dim * 4, dim)
-        self.dropout_layer = nn.Dropout(dropout)
-
-        self.norm1 = nn.LayerNorm(dim)
-        self.norm2 = nn.LayerNorm(dim)
-        self.dropout1 = nn.Dropout(dropout)
-        self.dropout2 = nn.Dropout(dropout)
-        self.activation = nn.GELU() if activation == 'gelu' else nn.ReLU()
-
-        self.avg_pool_2x = nn.AvgPool2d(kernel_size=2, stride=2)
-        self.avg_pool_4x = nn.AvgPool2d(kernel_size=4, stride=4)
-
-    @staticmethod
-    def get_sinusoidal_pos_embed_2d(h, w, dim, device):
-        assert dim % 4 == 0, f"Channel dim ({dim}) must be divisible by 4 for 2D positional encoding"
-        div_term = torch.exp(torch.arange(0, dim // 4, device=device) * (-torch.log(torch.tensor(10000.0)) / (dim // 4)))
-
-        pos_h = torch.arange(h, device=device).reshape(h, 1)
-        pe_h = torch.zeros(h, dim // 2, device=device)
-        sin_h = torch.sin(pos_h * div_term)
-        cos_h = torch.cos(pos_h * div_term)
-        pe_h[:, 0::2] = sin_h
-        pe_h[:, 1::2] = cos_h
-
-        pos_w = torch.arange(w, device=device).reshape(w, 1)
-        pe_w = torch.zeros(w, dim // 2, device=device)
-        sin_w = torch.sin(pos_w * div_term)
-        cos_w = torch.cos(pos_w * div_term)
-        pe_w[:, 0::2] = sin_w
-        pe_w[:, 1::2] = cos_w
-
-        pe_h = pe_h.unsqueeze(1).expand(-1, w, -1)
-        pe_w = pe_w.unsqueeze(0).expand(h, -1, -1)
-        pe = torch.cat([pe_h, pe_w], dim=-1)
-        return pe.reshape(1, h * w, dim)
-
-
-    @staticmethod
-    def get_sinusoidal_pos_embed_1d(seq_len, embed_dim, device):
-        """
-        Generate 1D sinusoidal positional embeddings.
-
-        Args:
-        - seq_len: Length of the sequence.
-        - embed_dim: The dimension of the embedding.
-        - device: The device to store the tensor.
-
-        Returns:
-        - A tensor of shape (1, seq_len, embed_dim).
-        """
-        # Sinusoidal position encoding (standard method)
-        position = torch.arange(seq_len, dtype=torch.float32, device=device).unsqueeze(1)  # (seq_len, 1)
-        div_term = torch.exp(torch.arange(0., embed_dim, 2, dtype=torch.float32, device=device) * -(math.log(10000.0) / embed_dim))
-        pe = torch.zeros(seq_len, embed_dim, device=device)
-        pe[:, 0::2] = torch.sin(position * div_term)  # Apply sine to even indices
-        pe[:, 1::2] = torch.cos(position * div_term)  # Apply cosine to odd indices
-        return pe.unsqueeze(0)  # Add batch dimension (1, seq_len, embed_dim)
-
-    @staticmethod
-    def with_pos_embed(tensor, pos_embed):
-        return tensor if pos_embed is None else tensor + pos_embed
+class AdaUp(nn.Module):
+    """
+    Adaptive Upsampling module that predicts content-aware offsets for sampling points
+    instead of using fixed bilinear interpolation.
+    """
+    def __init__(self, in_channels, out_channels, scale_factor=2, num_sampling_points=4):
+        super(AdaUp, self).__init__()
+        self.scale_factor = scale_factor
+        self.num_sampling_points = num_sampling_points
+        
+        # Offset prediction network
+        self.offset_conv1 = nn.Conv2d(in_channels + out_channels, 
+                                     in_channels, kernel_size=1, padding=0)
+        self.offset_conv2 = nn.Conv2d(in_channels, 
+                                     num_sampling_points * 2, kernel_size=3, padding=1)
+        
+        # Feature processing
+        self.feature_conv = nn.Conv2d(in_channels, out_channels, kernel_size=1)
+        
+        # Initialize offset prediction to zero
+        nn.init.zeros_(self.offset_conv2.weight)
+        nn.init.zeros_(self.offset_conv2.bias)
+        
+    def forward(self, high_feat, low_feat):
+        B, C_high, H, W = high_feat.shape
+        _, C_low, H_low, W_low = low_feat.shape
+        
+        # Initial upsampling using bilinear interpolation
+        upsampled_high = F.interpolate(high_feat, scale_factor=self.scale_factor, 
+                                      mode='bilinear', align_corners=False)
+        
+        print(f"High feature shape: {upsampled_high.shape}, Low feature shape: {low_feat.shape}")
+        
+        # Concatenate features for offset prediction
+        concat_feat = torch.cat([upsampled_high, low_feat], dim=1)
+        
+        # Predict offsets
+        offset_feat = self.offset_conv1(concat_feat)
+        offset_feat = F.relu(offset_feat)
+        offsets = self.offset_conv2(offset_feat)
+        
+        # Process high-level features
+        processed_high = self.feature_conv(high_feat)
+        
+        # Apply adaptive sampling
+        upsampled_feat = self.adaptive_sampling(processed_high, offsets)
+        
+        return upsampled_feat
     
-    def rescaled_tanh_0_2(self, x):
-        return torch.tanh(x) + 1  # [-1,1] → [0,2]
-
-    def forward(self, a3, a4, idx):
-        original_a3 = a3
-
-        # Downsample features
-        if idx == 2: # mask r-cnn
-        # if idx == 1: # retinanet, fcos
-            a3_down = self.avg_pool_2x(a3)
-        else:
-            a3_down = self.avg_pool_4x(a3)
-            a4 = self.avg_pool_2x(a4)
-
-        bs, c_a3, h, w = a3_down.shape
-        _, c_a4, H, W = a4.shape
-
-        # Flatten input for projection
-        bs, c_a3, h, w = a3_down.shape
-        _, c_a4, H, W = a4.shape
-        a3_flat = a3_down.flatten(2).permute(0, 2, 1)  # [B, hw, C]
-        a4_flat = a4.flatten(2).permute(0, 2, 1)        # [B, HW, C]
+    def adaptive_sampling(self, feat, offsets):
+        B, C, H, W = feat.shape
+        H_up, W_up = H * self.scale_factor, W * self.scale_factor
         
-        residual = a3_flat 
-        Q = self.q_proj(a3_flat)
-        K = self.k_proj(a4_flat)
-        V = self.v_proj(a4_flat)
-
-        # Positional encoding
-        q_pe = self.get_sinusoidal_pos_embed_1d(h * w, c_a3, a3_down.device)
-        k_pe = self.get_sinusoidal_pos_embed_1d(H * W, c_a4, a4.device)
-        Q = self.with_pos_embed(Q, q_pe)
-        K = self.with_pos_embed(K, k_pe)
+        # Create base grid
+        grid_y, grid_x = torch.meshgrid(
+            torch.linspace(-1, 1, H_up, device=feat.device),
+            torch.linspace(-1, 1, W_up, device=feat.device),
+            indexing='ij'
+        )
+        base_grid = torch.stack([grid_x, grid_y], dim=-1).unsqueeze(0).repeat(B, 1, 1, 1)
         
-        # Reshape for multi-head attention
-        Q = Q.reshape(bs, h * w, self.heads, self.head_dim).transpose(1, 2)
-        K = K.reshape(bs, H * W, self.heads, self.head_dim).transpose(1, 2)
-        V = V.reshape(bs, H * W, self.heads, self.head_dim).transpose(1, 2)
-
-        Q = F.relu(Q)
-        K = F.relu(K)
+        # Reshape and normalize offsets
+        offsets = offsets.view(B, self.num_sampling_points, 2, H_up, W_up)
+        offsets = offsets.permute(0, 3, 4, 1, 2)
+        offsets = offsets / torch.tensor([W_up, H_up], device=feat.device).view(1, 1, 1, 1, 2) * 2
         
-        KV = torch.einsum("bhkd,bhkv->bhdv", K, V)
-        Z = 1 / (torch.einsum("bhqd,bhkd->bhq", Q, K.sum(dim=2, keepdim=True)) + 1e-6).unsqueeze(-1)
-        attention = torch.einsum("bhqd,bhdv->bhqv", Q, KV) * Z
-
-        out = attention.transpose(1, 2).contiguous().view(bs, -1, self.heads * self.head_dim)
-        out = self.out_proj(out)
+        # Sample features at offset positions
+        sampled_feats = []
+        for i in range(self.num_sampling_points):
+            offset_grid = base_grid + offsets[:, :, :, i, :]
+            sampled_feat = F.grid_sample(feat, offset_grid, mode='bilinear', 
+                                       padding_mode='border', align_corners=False)
+            sampled_feats.append(sampled_feat)
         
-        src = residual + self.dropout_layer(out)
-        if not self.normalize_before:
-            src = self.norm1(src)
-
-        residual = src
-        if self.normalize_before:
-            src = self.norm2(src)
-        src = self.linear2(self.dropout_layer(self.activation(self.linear1(src))))
-        src = residual + self.dropout_layer(src)
-        if not self.normalize_before:
-            src = self.norm2(src)
+        # Average the sampled features
+        upsampled_feat = torch.stack(sampled_feats, dim=0).mean(dim=0)
+        return upsampled_feat
+    
+class AFF(nn.Module):
+    """
+    Adaptive Feature Fusion module that learns pixel-wise weights
+    for fusing features from different levels.
+    """
+    def __init__(self, in_channels, out_channels, reduction=16):
+        super(AFF, self).__init__()
         
-        # 5. Reshape to spatial map
-        a3_sa = src.permute(0, 2, 1).contiguous().view(bs, c_a3, h, w)
+        # Feature processing
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1)
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1)
         
-        scale_factor = 2 if idx == 2 else 4 # faster r-cnn, mask r-cnn
-        # scale_factor = 2 if idx == 1 else 4 # retinanet, fcos
+        # Attention weight prediction
+        self.attention_conv = nn.Sequential(
+            nn.Conv2d(out_channels, out_channels // reduction, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(out_channels // reduction, 2, kernel_size=3, padding=1),
+            nn.Sigmoid()
+        )
         
-        a3_sa = F.interpolate(a3_sa, scale_factor=scale_factor, mode='bilinear', align_corners=False)
-        a3_sa = a3_sa * original_a3
-        return a3_sa
-
-
+        self.relu = nn.ReLU(inplace=True)
+        
+    def forward(self, high_feat, low_feat):
+        # Ensure same spatial dimensions
+        if high_feat.shape[2:] != low_feat.shape[2:]:
+            high_feat = F.interpolate(high_feat, size=low_feat.shape[2:], 
+                                    mode='bilinear', align_corners=False)
+        
+        # Concatenate features
+        concat_feat = torch.cat([high_feat, low_feat], dim=1)
+        
+        # Process concatenated features
+        feat = self.conv1(concat_feat)
+        feat = self.relu(feat)
+        feat = self.conv2(feat)
+        feat = self.relu(feat)
+        
+        # Predict attention weights
+        attention_weights = self.attention_conv(feat)
+        
+        # Split attention weights
+        weight_high = attention_weights[:, 0:1, :, :]
+        weight_low = attention_weights[:, 1:2, :, :]
+        
+        # Apply attention weights
+        fused_feat = weight_high * high_feat + weight_low * low_feat
+        
+        return fused_feat    
+    
+class AdaFPNBlock(nn.Module):
+    """
+    AdaFPN Block that combines AdaUp and AFF modules
+    """
+    def __init__(self, high_channels, low_channels, out_channels):
+        super(AdaFPNBlock, self).__init__()
+        
+        # Adaptive upsampling
+        self.ada_up = AdaUp(high_channels, out_channels)
+        
+        # Adaptive feature fusion
+        self.aff = AFF(out_channels + low_channels, out_channels)
+        
+    def forward(self, high_feat, low_feat):
+        # Adaptive upsampling
+        upsampled_feat = self.ada_up(high_feat, low_feat)
+        
+        # Adaptive feature fusion
+        fused_feat = self.aff(upsampled_feat, low_feat)
+        
+        return fused_feat            
 
 # This implementation is based on the original CosFormer paper, https://github.com/OpenNLPLab/cosFormer/blob/main/cosformer.py
 import numpy as np
@@ -389,16 +436,8 @@ class SpatialAlignCrossAttentionCosFormer(nn.Module):
         self.scale = self.head_dim ** -0.5
         
         # Linear projections to Q, K, V
-        self.q_proj = nn.Sequential(
-            nn.Linear(dim, dim),
-            nn.LayerNorm(dim),
-        )
-        
-        self.k_proj = nn.Sequential(
-            nn.Linear(dim, dim),
-            nn.LayerNorm(dim),
-        )
-
+        self.q_proj = nn.Linear(dim, dim)
+        self.k_proj = nn.Linear(dim, dim)
         self.v_proj = nn.Linear(dim, dim)
         self.out_proj = nn.Linear(dim, dim)
         
@@ -615,11 +654,56 @@ class FeaturePyramidNetwork(nn.Module):
             self.inner_blocks.append(inner_block_module)
             self.layer_blocks.append(layer_block_module)
             
+        # # Deconv
+        # self.deconv = nn.ModuleList()
+        # for i in range(len(in_channels_list) - 2):
+        #     if in_channels == 0:
+        #         raise ValueError("in_channels=0 is currently not supported")
+        #     self.deconv.append(ConvTranspose(out_channels, out_channels, kernel_size=2, stride=2))
+        
+        
+        # # 2025.04.16 @HyungseopLee: FaPN
+        # self.feature_selection = nn.ModuleList()
+        # for in_channel in in_channels_list:
+        #     feature_select = FeatureSelectionModule(in_channel, out_channels)
+        #     self.feature_selection.append(feature_select)
             
+        # self.feature_align = nn.ModuleList()
+        # for i in range(len(in_channels_list) - 2):
+        #     feature_align = DCN(
+        #         in_channels=out_channels,
+        #         out_channels=out_channels,
+        #         kernel_size=3,
+        #         stride=1,
+        #         padding=1,
+        #         deformable_groups=8,
+        #         extra_offset_mask=True,
+        #     )
+        #     self.feature_align.append(feature_align)
         
-        # mask r-cnn is 4
-        # retina net is 3
+        # self.offset = nn.ModuleList()
+        # for i in range(len(in_channels_list) - 2):
+        #     offset = nn.Sequential(
+        #         nn.Conv2d(out_channels * 2, out_channels, kernel_size=1, stride=1, padding=0, bias=False),
+        #         nn.BatchNorm2d(out_channels),
+        #     )
+        #     self.offset.append(offset)
         
+        
+        # # AdaFPN https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9497077
+        # self.ada_fpn_blocks = nn.ModuleList()
+        # for i in range(len(in_channels_list) - 2):
+        #     high_ch = out_channels
+        #     low_ch = out_channels   
+        #     out_ch = out_channels 
+        #     self.ada_fpn_blocks.append(AdaFPNBlock(high_ch, low_ch, out_ch))
+        
+
+        
+        
+        # # mask r-cnn is 4
+        # # retina net is 3
+
         # self.sa_cross_attn = nn.ModuleList()
         # print(f"len(in_channels_list): {len(in_channels_list)}") # 4  (mask r-cnn is 4)
         # for i in range(len(in_channels_list)-2): # 4
@@ -712,10 +796,44 @@ class FeaturePyramidNetwork(nn.Module):
         # unpack OrderedDict into two lists for easier handling
         names = list(x.keys())
         x = list(x.values())
-
+        
         last_inner = self.get_result_from_inner_blocks(x[-1], -1)
         results = []
         results.append(self.get_result_from_layer_blocks(last_inner, -1))
+
+        # # FaPN
+        # results = []
+        # last_inner = self.feature_selection[-1](x[-1])  # Apply feature selection
+        # results.append(self.get_result_from_layer_blocks(last_inner, -1))
+        
+        # for idx in range(len(x) - 2, -1, -1):
+        #     # inner_lateral = self.feature_selection[idx](x[idx])  # Apply feature selection
+        #     inner_lateral = self.get_result_from_inner_blocks(x[idx], idx)
+        #     feat_shape = inner_lateral.shape[-2:]
+        #     if idx == 0: # mask r-cnn
+        #         # pass
+        #         inner_top_down = F.interpolate(last_inner, size=feat_shape, mode="nearest")
+        #         last_inner = inner_lateral + inner_top_down
+        #     else :
+        #         # offset = self.offset[len(x) - 2 - idx](torch.cat([inner_lateral, inner_top_down * 2], dim=1))
+        #         # inner_top_down = self.feature_align[len(x) - 2 - idx]([inner_top_down, offset])
+        #         last_inner = self.ada_fpn_blocks[len(x) - 2 - idx](last_inner, inner_lateral)
+        #     results.insert(0, self.get_result_from_layer_blocks(last_inner, idx))
+        #     # results.insert(0, self.get_result_from_layer_blocks(inner_top_down, idx))
+            
+
+        # # Deconvolution
+        # for idx in range(len(x) - 2, -1, -1):
+        #     inner_lateral = self.get_result_from_inner_blocks(x[idx], idx)
+        #     feat_shape = inner_lateral.shape[-2:]
+        #     # deconv
+        #     if idx == 0 :
+        #         inner_top_down = F.interpolate(last_inner, size=feat_shape, mode="nearest")
+        #     else :
+        #         inner_top_down = self.deconv[len(x) - 2 - idx](last_inner)
+        #     last_inner = inner_lateral + inner_top_down
+        #     results.insert(0, self.get_result_from_layer_blocks(last_inner, idx))
+        
 
         # baseline
         for idx in range(len(x) - 2, -1, -1):
@@ -725,16 +843,19 @@ class FeaturePyramidNetwork(nn.Module):
             last_inner = inner_lateral + inner_top_down
             results.insert(0, self.get_result_from_layer_blocks(last_inner, idx))
 
-        # # print(f"len(x): {len(x)}") # 4
+        
+        # print(f"len(x): {len(x)}") # 4
         # # mask-rcnn is 4, idx = 2, 1, 0
-        # # retinanet, fcos is 3, idx = 1, 0
+        # retinanet, fcos is 3, idx = 1, 0
+        
         # for idx in range(len(x) - 2, -1, -1): 
         #     inner_lateral = self.get_result_from_inner_blocks(x[idx], idx)
         #     feat_shape = inner_lateral.shape[-2:]
             
+        #     name = names[idx]
         #     # low: inter_lateral
         #     # high: last_inner
-            
+        
         #     # print(f"idx: {idx}")
         #     # print(f"low: {inner_lateral.shape}")
         #     # print(f"high: {last_inner.shape}")
@@ -744,8 +865,15 @@ class FeaturePyramidNetwork(nn.Module):
         #         # inner_lateral, low_ff, high_ff = self.sa_cross_attn[len(x) - 2 - idx](inner_lateral, last_inner, idx)
         #         inner_lateral = self.sa_cross_attn[len(x) - 2 - idx](inner_lateral, last_inner, idx)
                 
+            
         #     inner_top_down = F.interpolate(last_inner, size=feat_shape, mode="bilinear")
         #     last_inner = inner_lateral + inner_top_down
+            
+        #     # self.feature_hooks[name] = {
+        #     #     'fused': last_inner.detach().cpu(),
+        #     #     'low': inner_lateral.detach().cpu(),
+        #     # }
+            
         #     results.insert(0, self.get_result_from_layer_blocks(last_inner, idx))
             
 
