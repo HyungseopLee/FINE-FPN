@@ -28,27 +28,24 @@ results = model.train(
     
     data="coco.yaml",
     
-    epochs=300,
-    batch=64, # 2 GPUs
+    epochs=500,
+    batch=128, # 4 GPUs
     nbs=256,
     
     imgsz=640,
     project=args.project,
     
-    device='0,1', 
+    device='0,1,2,3', 
     
     save_period=100,
     patience=100,
     
-    # yolov6s settings
     optimizer='SGD',
-    cos_lr=True,
     
-    # # yolov10-M settings
-    # scale=0.9,
-    # mixup=0.1,
-    # copy_paste=0.1,
-    # optimizer='SGD',
+    # yolov10-M settings
+    scale=0.9,
+    mixup=0.1,
+    copy_paste=0.1,
     
     # # yolov10-L settings
     # scale=0.9,

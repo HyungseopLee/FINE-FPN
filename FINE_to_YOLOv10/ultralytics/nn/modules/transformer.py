@@ -443,7 +443,7 @@ class SemanticAlignTransNormer(nn.Module):
         self.is_yolov6 = is_yolov6
         
         # bilinear interpolation upsample
-        self.upsample = nn.Upsample(scale_factor=2, mode='nearest')
+        self.upsample = nn.Upsample(scale_factor=2, mode='bilinear')
         if self.is_yolov6:
             self.upsample = nn.ConvTranspose2d(c2, c2, kernel_size=2, stride=2)
         
@@ -538,7 +538,7 @@ class SemanticAlignTransNormer(nn.Module):
         
         a4 = self.high_to_low_embed(a4)
         
-        # Resolution-Consistent
+        # Spatial Bottlneck: Down()
         a3 = self.avg_pool_low(a3)
         a4 = self.avg_pool_high(a4)
 
@@ -547,11 +547,10 @@ class SemanticAlignTransNormer(nn.Module):
         tgt_len = h * w
         src_len = H * W
         
+        # positional embedding
         residual = rearrange(a3, 'b c h w -> b (h w) c')
         a3_flat = rearrange(a3, 'b c h w -> (h w) b c')
         a4_flat = rearrange(a4, 'b c h w -> (h w) b c')
-        
-        # positional encoding
         pos = self.build_2d_sincos_position_embedding(w=w, h=h, embed_dim=c_a3).to(a3.device)
         pos = pos.expand(bs, -1, -1).permute(1, 0, 2)  # [HW, B, C]
         a3_flat = self.with_pos_embed(a3_flat, pos)  # [HW, B, C]
@@ -571,22 +570,22 @@ class SemanticAlignTransNormer(nn.Module):
         
         # SIMA: n1-norm kernel function: QK normalization for stability
         # https://github.com/UCDvision/sima/blob/main/sima.py
-        Q = F.normalize(Q, p=1, dim=-2, eps=self.eps) 
-        K = F.normalize(K, p=1, dim=-2, eps=self.eps) 
+        Q_ = F.normalize(Q, p=1, dim=-2, eps=self.eps) 
+        K_ = F.normalize(K, p=1, dim=-2, eps=self.eps) 
 
-        # CosFormer transform
-        # https://github.com/OpenNLPLab/cosFormer
-        m = max(src_len, tgt_len)
-        weight_index = self.get_index(m).to(Q)
-        # (N * h, L, 2 * d)
-        Q_ = torch.cat([
-            Q * torch.sin(weight_index[:, :tgt_len, :] / m), 
-            Q * torch.cos(weight_index[:, :tgt_len, :] / m)
-        ], dim=-1)
-        K_ = torch.cat([
-            K * torch.sin(weight_index[:, :src_len, :] / m), 
-            K * torch.cos(weight_index[:, :src_len, :] / m)
-        ], dim=-1)
+        # # CosFormer transform
+        # # https://github.com/OpenNLPLab/cosFormer
+        # m = max(src_len, tgt_len)
+        # weight_index = self.get_index(m).to(Q)
+        # # (N * h, L, 2 * d)
+        # Q_ = torch.cat([
+        #     Q * torch.sin(weight_index[:, :tgt_len, :] / m), 
+        #     Q * torch.cos(weight_index[:, :tgt_len, :] / m)
+        # ], dim=-1)
+        # K_ = torch.cat([
+        #     K * torch.sin(weight_index[:, :src_len, :] / m), 
+        #     K * torch.cos(weight_index[:, :src_len, :] / m)
+        # ], dim=-1)
 
         # NormAttention
         KV_ = torch.einsum('nld,nlm->ndm', K_, V)
@@ -606,10 +605,9 @@ class SemanticAlignTransNormer(nn.Module):
         out = self.norm2(out)
         out = residual + self.dropout2(out) # [B, HW, C]
         
-        
         # Reshape to spatial map [B, HW, C] -> [B, C, H, W]
         a3_sa = out.permute(0, 2, 1).contiguous().view(bs, c_a3, h, w)  # [B, C, H, W]
-        a3_sa = F.interpolate(a3_sa, scale_factor=self.scale_factor, mode='nearest')
+        a3_sa = F.interpolate(a3_sa, scale_factor=self.scale_factor, mode='bilinear')
         a3_sa = a3_sa * original_a3
         
         a4_up = self.upsample(original_a4)  # [B, C, H, W]

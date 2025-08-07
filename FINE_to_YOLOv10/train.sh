@@ -17,6 +17,6 @@ conda activate yolov10
 # train command
 # mkdir -p ./runs/detect/coco/yolo10m_500e_ours
 python -m torch.distributed.run --nproc_per_node 4 train.py \
-    --model-config /home2/hslee/EXP/yolov10/ultralytics/cfg/models/v10/yolov10m_FINE.yaml \
+    --model-config ultralytics/cfg/models/v10/yolov10m_FINE.yaml \
     --project runs/detect/coco/yolo10m_500e_ours \
-    2>&1 | tee ./runs/detect/coco/yolo10m_500e_ours/train_posEmbed_nhead16-8_normAttn.log
+    2>&1 | tee ./runs/detect/coco/yolo10m_500e_ours/train_posEmbed_nhead16-8_noCosFor.log
