@@ -358,6 +358,7 @@ class BaseTrainer:
             )
         print(f"FLOPs: {macs}, Params: {params}")
         print(f"self.args.nbs: {self.args.nbs}")
+        
         while True:
             self.epoch = epoch
             self.run_callbacks("on_train_epoch_start")

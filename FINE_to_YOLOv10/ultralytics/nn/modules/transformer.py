@@ -443,7 +443,7 @@ class SemanticAlignTransNormer(nn.Module):
         self.is_yolov6 = is_yolov6
         
         # bilinear interpolation upsample
-        self.upsample = nn.Upsample(scale_factor=2, mode='bilinear')
+        self.upsample = nn.Upsample(scale_factor=2, mode='nearest')
         if self.is_yolov6:
             self.upsample = nn.ConvTranspose2d(c2, c2, kernel_size=2, stride=2)
         
@@ -607,7 +607,7 @@ class SemanticAlignTransNormer(nn.Module):
         
         # Reshape to spatial map [B, HW, C] -> [B, C, H, W]
         a3_sa = out.permute(0, 2, 1).contiguous().view(bs, c_a3, h, w)  # [B, C, H, W]
-        a3_sa = F.interpolate(a3_sa, scale_factor=self.scale_factor, mode='bilinear')
+        a3_sa = F.interpolate(a3_sa, scale_factor=self.scale_factor, mode='nearest')
         a3_sa = a3_sa * original_a3
         
         a4_up = self.upsample(original_a4)  # [B, C, H, W]

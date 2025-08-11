@@ -57,35 +57,26 @@ results = model.train(
 
 '''
 
-python -m torch.distributed.run --nproc_per_node 2 train.py \
-    2>&1 | tee ./runs/detect/VisDrone/train.log
+/home2/hslee/FINE-FPN/FINE_to_YOLOv10/runs/detect/coco/yolo10m_500e_ours/train/weights/last.pt
 
-
-export CUDA_LAUNCH_BLOCKING=1
-export NCCL_P2P_DISABLE=1
-export NCCL_SHM_DISABLE=1
-export NCCL_IGNORE_DISABLED_P2P=1
-export NCCL_DEBUG=INFO
-python -m torch.distributed.run --nproc_per_node 2 train.py \
-    --model-config /home/hslee/SONeck/new_ultralytics/ultralytics/cfg/models/v5/yolov5s_FINE.yaml \
-    --project runs/detect/coco/*yolov5s_300e_NormAttention \
-    2>&1 | tee ./runs/detect/coco/*yolov5s_300e_NormAttention/train_posEmbed_nhead16-8_noNBS.log
+yolo detect train data=coco.yaml \
+    model=./ultralytics/cfg/models/v10/yolov10m_FINE.yaml \
+    project=./runs/detect/coco/yolo10m_500e_ours \
+    epochs=500 batch=128 nbs=256 \
+    imgsz=640 device=0,1,2,3 \
+    optimizer='SGD' save_period=100 patience=100 \
+    scale=0.9 mixup=0.1 copy_paste=0.1 \
+    2>&1 | tee ./runs/detect/coco/yolo10m_500e_ours/train_posEmbed_nhead16-8_noCosFor.log
     
-python train.py \
-    --model-config /home2/hslee/EXP/yolov10/ultralytics/cfg/models/v10/yolov10m_FINE.yaml \
-    2>&1 | tee ./test.log
-        
     
-python -m torch.distributed.run --nproc_per_node 2 train.py \
-    --model-config /home/hslee/SONeck/yolov10/ultralytics/cfg/models/v10/yolov10m_FINE.yaml \
-    --project runs/detect/coco/yolo10m_500e_ours \
-    2>&1 | tee ./runs/detect/coco/yolo10m_500e_ours/train_posEmbed_nhead16-8_normAttn_nearest.log
+yolo detect train data=coco.yaml \
+    model=/home2/hslee/FINE-FPN/FINE_to_YOLOv10/runs/detect/coco/yolo10m_500e_ours/train/weights/last.pt \
+    project=./runs/detect/coco/yolo10m_500e_ours \
+    epochs=500 batch=128 nbs=256 \
+    imgsz=640 device=0,1,2,3 \
+    optimizer='SGD' save_period=100 patience=100 \
+    scale=0.9 mixup=0.1 copy_paste=0.1 \
+    resume=True \
+    2>&1 | tee ./runs/detect/coco/yolo10m_500e_ours/train_posEmbed_nhead16-8_noCosFor.log
     
-python -m torch.distributed.run --nproc_per_node 2 train.py \
-    --weights=''
-   
-   
-python -m torch.distributed.run --master_port=1235 --nproc_per_node 1 train.py \
-    --model-config /home/hslee/FINE-FPN/new_ultralytics/ultralytics/cfg/models/v10/yolov10s_FINE.yaml \
-    2>&1 | tee ./runs/detect/coco/test.log
 '''
