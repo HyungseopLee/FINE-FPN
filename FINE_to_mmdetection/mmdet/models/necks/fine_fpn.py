@@ -440,20 +440,23 @@ class FINEFPNV2(BaseModule):
 
             fine_idx = (used_backbone_levels - 1) - i
             if fine_idx < len(self.fine):
-                aligned_low = self.fine[fine_idx](low, high)
+                aligned_low, ff = self.fine[fine_idx](low, high)
                 # print(f"fine O")
             else:
                 aligned_low = low
                 # print(f"fine X")
             
+            print(f"ff.shape: {ff.shape}")
+            high = high * ff.view(-1, 1, 1, 1)
+            
             if 'scale_factor' in self.upsample_cfg:
                 laterals[i - 1] = aligned_low + F.interpolate(
-                    laterals[i], **self.upsample_cfg)
+                    high, **self.upsample_cfg)
             else:
                 prev_shape = aligned_low.shape[2:]
                 
                 laterals[i - 1] = aligned_low + F.interpolate(
-                    laterals[i], size=prev_shape, **self.upsample_cfg)
+                    high, size=prev_shape, **self.upsample_cfg)
 
 
         # build outputs

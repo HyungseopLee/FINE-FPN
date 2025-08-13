@@ -200,6 +200,9 @@ class FeatureInteractionNEtowrkV2(nn.Module):
         else:
             self.avg_pool_high = nn.AvgPool2d(kernel_size=2, stride=2)
             self.avg_pool_low = nn.AvgPool2d(kernel_size=4, stride=4)
+            
+        # Fusion factor token: image-wise learnable scalar
+        self.fusion_token = nn.Parameter(torch.zeros(1, 1, dim))
         
     @staticmethod
     def build_2d_sincos_position_embedding(w, h, embed_dim=256, temperature=10000.):
@@ -235,6 +238,9 @@ class FeatureInteractionNEtowrkV2(nn.Module):
         low = self.avg_pool_low(low)
         high = self.avg_pool_high(high)
         
+        print(f"low.shape: {low.shape}")
+        print(f"high.shape: {high.shape}")
+        
         bs, c_low, h, w = low.shape
         _, c_high, H, W = high.shape
         tgt_len = h * w
@@ -247,7 +253,11 @@ class FeatureInteractionNEtowrkV2(nn.Module):
         pos = self.build_2d_sincos_position_embedding(w=w, h=h, embed_dim=c_low).to(low.device)
         pos = pos.expand(bs, -1, -1).permute(1, 0, 2)  # [HW, B, C]
         low_flat = self.with_pos_embed(low_flat, pos)  # [HW, B, C]
-        high_flat = self.with_pos_embed(high_flat, pos)  # [HW, B, C]
+        high_flat = self.with_pos_embed(high_flat[1:], pos)
+        
+        # Add fusion factor token to high-level sequence
+        fusion_token = self.fusion_token.expand(1, bs, -1)
+        high_flat = torch.cat([fusion_token, high_flat], dim=0)  # [1+HW, B, C]
         
         # 2. Cross-level multi-head attention with linear complexity
         low_flat = low_flat.to(self.q_proj.weight.dtype)
@@ -270,16 +280,16 @@ class FeatureInteractionNEtowrkV2(nn.Module):
             Q * torch.cos(weight_index[:, :tgt_len, :] / m)
         ], dim=-1)
         K_ = torch.cat([
-            K * torch.sin(weight_index[:, :src_len, :] / m), 
-            K * torch.cos(weight_index[:, :src_len, :] / m)
+            K * torch.sin(weight_index[:, :src_len-1, :] / m),  # token 제외
+            K * torch.cos(weight_index[:, :src_len-1, :] / m)
         ], dim=-1)
-        KV_ = torch.einsum('nld,nlm->ndm', K_, V) # [B*h, N, d]
-        attn_output = torch.einsum('nld,ndm->nlm', Q_, KV_)  # [B*h, N, d]
-        # Replace unstable attention scaling with RMSNorm for gradient stability
+        KV_ = torch.einsum('nld,nlm->ndm', K_, V)
+        attn_output = torch.einsum('nld,ndm->nlm', Q_, KV_)
         attn_output = self.attn_norm(attn_output)
-        attn_output = attn_output.transpose(0, 1).contiguous().view(tgt_len, bs, -1) # [L, B, C]
-        out = self.out_proj(attn_output) #  [N, B, C]
-        out = out.permute(1, 0, 2)  # [B, N, C]
+        attn_output = attn_output.transpose(0, 1).contiguous().view(tgt_len, bs, -1)
+        out = self.out_proj(attn_output)
+        out = out.permute(1, 0, 2)
+        
         # FFN
         out = self.norm1(out)
         out = residual + self.dropout1(out)
@@ -288,10 +298,14 @@ class FeatureInteractionNEtowrkV2(nn.Module):
         out = self.norm2(out)
         out = residual + self.dropout2(out) # [B, HW, C]
         
-        # 3. Spatial Bottleneck Design: Up()
+        # 3. Fusion factor
+        fusion_factor = torch.sigmoid(high_flat[0].permute(1, 0))  # [B, C]
+        fusion_factor = fusion_factor.mean(dim=-1, keepdim=True)  # scalar per image
+        
+        # 4. Spatial Bottleneck Design: Up()
         low_sa = out.permute(0, 2, 1).contiguous().view(bs, c_low, h, w)  # [B, C, H, W]
         low_sa = F.interpolate(low_sa, size=original_low.shape[2:], mode='bilinear', align_corners=False)
         low_sa = low_sa * original_low
         
         # Semantically Aligned low-level feature
-        return low_sa
+        return low_sa, fusion_factor
