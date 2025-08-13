@@ -127,8 +127,9 @@ if __name__ == '__main__':
 '''
 
 # Faster RCNN ours
+mkdir -p outputs/solov2_r50_fine_fpn_1x_coco
 bash ./tools/dist_train.sh \
-    configs/faster_rcnn/faster-rcnn_r50_fine_fpn_2x_coco.py \
+    configs/solov2/solov2_r50_fine_fpn_1x_coco.py \
     2 \
     --cfg-options \
         train_dataloader.dataset.data_root=/media/data/coco/ \
@@ -140,8 +141,8 @@ bash ./tools/dist_train.sh \
         val_evaluator.ann_file=/media/data/coco/annotations/instances_val2017.json \
         test_evaluator.ann_file=/media/data/coco/annotations/instances_val2017.json \
         optim_wrapper.accumulative_counts=4 \
-    --work-dir ./outputs/faster-rcnn_r50_fine_fpn_2x_coco/ \
-    2>&1 | tee ./outputs/faster-rcnn_r50_fine_fpn_2x_coco/train.log
+    --work-dir ./outputs/solov2_r50_fine_fpn_1x_coco/ \
+    2>&1 | tee ./outputs/solov2_r50_fine_fpn_1x_coco/train.log
 
 
 

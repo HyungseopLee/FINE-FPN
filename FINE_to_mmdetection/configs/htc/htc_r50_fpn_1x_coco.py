@@ -1,6 +1,6 @@
 _base_ = './htc-without-semantic_r50_fpn_1x_coco.py'
 model = dict(
-    data_preprocessor=dict(pad_seg=True),
+    data_preprocessor=dict(pad_seg=False),
     roi_head=dict(
         semantic_roi_extractor=dict(
             type='SingleRoIExtractor',
