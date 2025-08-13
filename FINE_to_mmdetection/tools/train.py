@@ -144,6 +144,21 @@ bash ./tools/dist_train.sh \
     2>&1 | tee ./outputs/faster-rcnn_r50_fine_fpn_2x_coco/train.log
 
 
-    --cfg-options optim_wrapper.accumulative_counts=4
+
+bash ./tools/dist_train.sh \
+    configs/faster_rcnn/faster-rcnn_r50_fine_fpn_v2_1x_coco.py \
+    1 \
+    --cfg-options \
+        train_dataloader.dataset.data_root=/media/data/coco/ \
+        train_dataloader.dataset.data_prefix.img=images/train2017/ \
+        val_dataloader.dataset.data_root=/media/data/coco/ \
+        val_dataloader.dataset.data_prefix.img=images/val2017/ \
+        test_dataloader.dataset.data_root=/media/data/coco/ \
+        test_dataloader.dataset.data_prefix.img=images/val2017/ \
+        val_evaluator.ann_file=/media/data/coco/annotations/instances_val2017.json \
+        test_evaluator.ann_file=/media/data/coco/annotations/instances_val2017.json \
+        optim_wrapper.accumulative_counts=8 \
+    --work-dir ./outputs/faster-rcnn_r50_fine_fpn_v2_1x_coco/ \
+    2>&1 | tee ./outputs/faster-rcnn_r50_fine_fpn_v2_1x_coco/train.log
 
 '''
