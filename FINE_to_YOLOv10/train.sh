@@ -12,11 +12,18 @@
 # virtual environment activation
 # source ~/myenv/bin/activate
 
-conda activate yolov10
 
-# train command
-mkdir -p ./runs/detect/coco/yolo10l_500e_ours
+
+# baseline
+mkdir -p ./runs/detect/coco/yolo10l_500e_baseline
 python -m torch.distributed.run --nproc_per_node 4 train.py \
-    --model-config ultralytics/cfg/models/v10/yolov10l_FINE.yaml \
-    --project runs/detect/coco/yolo10l_500e_ours \
-    2>&1 | tee ./runs/detect/coco/yolo10l_500e_ours/train_noPosEmbed_nhead32-16_noCosFor.log
+    --model-config ultralytics/cfg/models/v10/yolov10l.yaml \
+    --project runs/detect/coco/yolo10l_500e_baseline \
+    2>&1 | tee ./runs/detect/coco/yolo10l_500e_baseline/train.log
+
+# # ours
+# mkdir -p ./runs/detect/coco/yolo10l_500e_ours
+# python -m torch.distributed.run --nproc_per_node 4 train.py \
+#     --model-config ultralytics/cfg/models/v10/yolov10l_FINE.yaml \
+#     --project runs/detect/coco/yolo10l_500e_ours \
+#     2>&1 | tee ./runs/detect/coco/yolo10l_500e_ours/train_noPosEmbed_nhead32-16_noCosFor.log

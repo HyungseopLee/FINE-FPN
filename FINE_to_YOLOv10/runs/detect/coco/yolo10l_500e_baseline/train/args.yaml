@@ -13,7 +13,7 @@ val_period: 5
 cache: false
 device: '0'
 workers: 8
-project: runs/detect/coco/yolo10l_500e_ours
+project: runs/detect/coco/yolo10l_500e_baseline
 name: train
 exist_ok: false
 pretrained: true
@@ -104,4 +104,4 @@ erasing: 0.4
 crop_fraction: 1.0
 cfg: null
 tracker: botsort.yaml
-save_dir: runs/detect/coco/yolo10l_500e_ours/train
+save_dir: runs/detect/coco/yolo10l_500e_baseline/train
