@@ -547,14 +547,15 @@ class SemanticAlignTransNormer(nn.Module):
         tgt_len = h * w
         src_len = H * W
         
-        # positional embedding
         residual = rearrange(a3, 'b c h w -> b (h w) c')
         a3_flat = rearrange(a3, 'b c h w -> (h w) b c')
         a4_flat = rearrange(a4, 'b c h w -> (h w) b c')
-        pos = self.build_2d_sincos_position_embedding(w=w, h=h, embed_dim=c_a3).to(a3.device)
-        pos = pos.expand(bs, -1, -1).permute(1, 0, 2)  # [HW, B, C]
-        a3_flat = self.with_pos_embed(a3_flat, pos)  # [HW, B, C]
-        a4_flat = self.with_pos_embed(a4_flat, pos)  # [HW, B, C]
+        
+        # # positional embedding
+        # pos = self.build_2d_sincos_position_embedding(w=w, h=h, embed_dim=c_a3).to(a3.device)
+        # pos = pos.expand(bs, -1, -1).permute(1, 0, 2)  # [HW, B, C]
+        # a3_flat = self.with_pos_embed(a3_flat, pos)  # [HW, B, C]
+        # a4_flat = self.with_pos_embed(a4_flat, pos)  # [HW, B, C]
         
         # embedding
         a3_flat = a3_flat.to(self.q_proj[0].weight.dtype)
@@ -607,7 +608,7 @@ class SemanticAlignTransNormer(nn.Module):
         
         # Reshape to spatial map [B, HW, C] -> [B, C, H, W]
         a3_sa = out.permute(0, 2, 1).contiguous().view(bs, c_a3, h, w)  # [B, C, H, W]
-        a3_sa = F.interpolate(a3_sa, scale_factor=self.scale_factor, mode='nearest')
+        a3_sa = F.interpolate(a3_sa, scale_factor=self.scale_factor, mode='bilinear')
         a3_sa = a3_sa * original_a3
         
         a4_up = self.upsample(original_a4)  # [B, C, H, W]
