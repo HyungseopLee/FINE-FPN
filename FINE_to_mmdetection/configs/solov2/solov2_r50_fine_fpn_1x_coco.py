@@ -22,6 +22,7 @@ model = dict(
         init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50'),
         style='pytorch'),
     neck=dict(
+        # type='FPN',
         type='FINEFPN',
         in_channels=[256, 512, 1024, 2048],
         out_channels=256,

@@ -117,19 +117,20 @@ class FeatureInteractionNEtowrk(nn.Module):
         # l1-norm kernel function: QK for training stability (https://github.com/UCDvision/sima/blob/main/sima.py)
         Q = F.normalize(Q, p=1, dim=-2, eps=self.eps) 
         K = F.normalize(K, p=1, dim=-2, eps=self.eps) 
-        # CosForm transform for nonlinear reweighting (https://github.com/OpenNLPLab/cosFormer/blob/main/cosformer.py)
-        m = max(src_len, tgt_len)
-        weight_index = self.get_index(m).to(Q)
-        Q_ = torch.cat([
-            Q * torch.sin(weight_index[:, :tgt_len, :] / m), 
-            Q * torch.cos(weight_index[:, :tgt_len, :] / m)
-        ], dim=-1)
-        K_ = torch.cat([
-            K * torch.sin(weight_index[:, :src_len, :] / m), 
-            K * torch.cos(weight_index[:, :src_len, :] / m)
-        ], dim=-1)
-        KV_ = torch.einsum('nld,nlm->ndm', K_, V) # [B*h, N, d]
-        attn_output = torch.einsum('nld,ndm->nlm', Q_, KV_)  # [B*h, N, d]
+        
+        # # CosForm transform for nonlinear reweighting (https://github.com/OpenNLPLab/cosFormer/blob/main/cosformer.py)
+        # m = max(src_len, tgt_len)
+        # weight_index = self.get_index(m).to(Q)
+        # Q_ = torch.cat([
+        #     Q * torch.sin(weight_index[:, :tgt_len, :] / m), 
+        #     Q * torch.cos(weight_index[:, :tgt_len, :] / m)
+        # ], dim=-1)
+        # K_ = torch.cat([
+        #     K * torch.sin(weight_index[:, :src_len, :] / m), 
+        #     K * torch.cos(weight_index[:, :src_len, :] / m)
+        # ], dim=-1)
+        KV_ = torch.einsum('nld,nlm->ndm', K, V) # [B*h, N, d]
+        attn_output = torch.einsum('nld,ndm->nlm', Q, KV_)  # [B*h, N, d]
         # Replace unstable attention scaling with RMSNorm for gradient stability
         attn_output = self.attn_norm(attn_output)
         attn_output = attn_output.transpose(0, 1).contiguous().view(tgt_len, bs, -1) # [L, B, C]
