@@ -57,7 +57,7 @@ model = dict(
         ],
         num_outs=5,
         out_channels=256,
-        type='FINEFPNV2'),
+        type='FINEFPN'),
     roi_head=dict(
         bbox_head=dict(
             bbox_coder=dict(
@@ -183,7 +183,7 @@ model = dict(
             nms_pre=2000)),
     type='FasterRCNN')
 optim_wrapper = dict(
-    accumulative_counts=8,
+    accumulative_counts=4,
     optimizer=dict(lr=0.02, momentum=0.9, type='SGD', weight_decay=0.0001),
     type='OptimWrapper')
 param_scheduler = [
@@ -335,4 +335,4 @@ visualizer = dict(
     vis_backends=[
         dict(type='LocalVisBackend'),
     ])
-work_dir = './outputs/faster-rcnn_r50_fine_fpn_v2_1x_coco/'
+work_dir = './outputs/faster-rcnn_r50_fine_fpn_1x_coco/'
