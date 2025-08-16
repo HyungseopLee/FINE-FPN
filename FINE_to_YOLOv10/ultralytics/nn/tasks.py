@@ -131,6 +131,13 @@ class BaseModel(nn.Module):
                 x = y[m.f] if isinstance(m.f, int) else [x if j == -1 else y[j] for j in m.f]  # from earlier layers
             if profile:
                 self._profile_one_layer(m, x, dt)
+                
+            # if isinstance(x, list):
+            #     shapes = [t.shape for t in x]
+            #     print(f"[Layer {m.__class__.__name__}] x is list with shapes: {shapes}")
+            # else:
+            #     print(f"[Layer {m.__class__.__name__}] x shape: {x.shape}")
+        
             x = m(x)  # run
             y.append(x if m.i in self.save else None)  # save output
             if visualize:
