@@ -127,9 +127,9 @@ if __name__ == '__main__':
 '''
 
 # Faster RCNN ours
-mkdir -p outputs/retinanet_r50_fine_fpn_1x_coco/
+mkdir -p outputs/solo_r50_fine_fpn_1x_coco/
 bash ./tools/dist_train.sh \
-    configs/retinanet/retinanet_r50_fine_fpn_1x_coco.py \
+    configs/solo/solo_r50_fine_fpn_1x_coco.py \
     2 \
     --cfg-options \
         train_dataloader.dataset.data_root=/media/data/coco/ \
@@ -141,9 +141,18 @@ bash ./tools/dist_train.sh \
         val_evaluator.ann_file=/media/data/coco/annotations/instances_val2017.json \
         test_evaluator.ann_file=/media/data/coco/annotations/instances_val2017.json \
         optim_wrapper.accumulative_counts=4 \
-    --work-dir ./outputs/retinanet_r50_fine_fpn_1x_coco/ \
-    2>&1 | tee ./outputs/retinanet_r50_fine_fpn_1x_coco/train.log
+    --work-dir ./outputs/solo_r50_fine_fpn_1x_coco/ \
+    2>&1 | tee ./outputs/solo_r50_fine_fpn_1x_coco/train.log
 
+
+## Panoptic Segmentation
+bash ./tools/dist_train.sh \
+    configs/panoptic_fine_fpn/panoptic-fpn_r50_fine_fpn_1x_coco.py \
+    2 \
+    --cfg-options \
+        optim_wrapper.accumulative_counts=4 \
+    --work-dir ./outputs/panoptic-fpn_r50_fine_fpn_1x_coco/ \
+    2>&1 | tee ./outputs/panoptic-fpn_r50_fine_fpn_1x_coco/train.log
 
 
 bash ./tools/dist_train.sh \

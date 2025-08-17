@@ -1,14 +1,18 @@
 #!/bin/bash
 
-#SBATCH --job-name=v10m-ours
+#SBATCH --job-name=v10l-baseline
 
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:4 # 2 gpus
 #SBATCH --ntasks=8 # 1 task per gpu
 
-#SBATCH --cpus-per-task=4  # 32 cpus, or hyper threads, total
-#SBATCH --mem=150G # 8G is reserved for swap
+#SBATCH --cpus-per-task=8  # 32 cpus, or hyper threads, total
+#SBATCH --mem=200G # 8G is reserved for swap
 
+# virtual environment activation
+# source ~/myenv/bin/activate
+
+conda activate torch271
 
 # baseline
 mkdir -p ./runs/detect/coco/yolo10m_500e_ours

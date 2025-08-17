@@ -14,20 +14,6 @@ env_cfg = dict(
     cudnn_benchmark=False,
     dist_cfg=dict(backend='nccl'),
     mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0))
-img_scales = [
-    (
-        1333,
-        800,
-    ),
-    (
-        666,
-        400,
-    ),
-    (
-        2000,
-        1200,
-    ),
-]
 launcher = 'pytorch'
 load_from = None
 log_level = 'INFO'
@@ -37,8 +23,6 @@ model = dict(
         depth=50,
         frozen_stages=1,
         init_cfg=dict(checkpoint='torchvision://resnet50', type='Pretrained'),
-        norm_cfg=dict(requires_grad=True, type='BN'),
-        norm_eval=True,
         num_stages=4,
         out_indices=(
             0,
@@ -48,49 +32,6 @@ model = dict(
         ),
         style='pytorch',
         type='ResNet'),
-    bbox_head=dict(
-        anchor_generator=dict(
-            octave_base_scale=4,
-            ratios=[
-                0.5,
-                1.0,
-                2.0,
-            ],
-            scales_per_octave=3,
-            strides=[
-                8,
-                16,
-                32,
-                64,
-                128,
-            ],
-            type='AnchorGenerator'),
-        bbox_coder=dict(
-            target_means=[
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-            ],
-            target_stds=[
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-            ],
-            type='DeltaXYWHBBoxCoder'),
-        feat_channels=256,
-        in_channels=256,
-        loss_bbox=dict(loss_weight=1.0, type='L1Loss'),
-        loss_cls=dict(
-            alpha=0.25,
-            gamma=2.0,
-            loss_weight=1.0,
-            type='FocalLoss',
-            use_sigmoid=True),
-        num_classes=80,
-        stacked_convs=4,
-        type='RetinaHead'),
     data_preprocessor=dict(
         bgr_to_rgb=True,
         mean=[
@@ -98,6 +39,7 @@ model = dict(
             116.28,
             103.53,
         ],
+        pad_mask=True,
         pad_size_divisor=32,
         std=[
             58.395,
@@ -105,8 +47,59 @@ model = dict(
             57.375,
         ],
         type='DetDataPreprocessor'),
+    mask_head=dict(
+        cls_down_index=0,
+        feat_channels=256,
+        in_channels=256,
+        loss_cls=dict(
+            alpha=0.25,
+            gamma=2.0,
+            loss_weight=1.0,
+            type='FocalLoss',
+            use_sigmoid=True),
+        loss_mask=dict(loss_weight=3.0, type='DiceLoss', use_sigmoid=True),
+        norm_cfg=dict(num_groups=32, requires_grad=True, type='GN'),
+        num_classes=80,
+        num_grids=[
+            40,
+            36,
+            24,
+            16,
+            12,
+        ],
+        pos_scale=0.2,
+        scale_ranges=(
+            (
+                1,
+                96,
+            ),
+            (
+                48,
+                192,
+            ),
+            (
+                96,
+                384,
+            ),
+            (
+                192,
+                768,
+            ),
+            (
+                384,
+                2048,
+            ),
+        ),
+        stacked_convs=7,
+        strides=[
+            8,
+            8,
+            16,
+            32,
+            32,
+        ],
+        type='SOLOHead'),
     neck=dict(
-        add_extra_convs='on_input',
         in_channels=[
             256,
             512,
@@ -115,26 +108,17 @@ model = dict(
         ],
         num_outs=5,
         out_channels=256,
-        start_level=1,
+        start_level=0,
         type='FINEFPN'),
     test_cfg=dict(
+        filter_thr=0.05,
+        kernel='gaussian',
+        mask_thr=0.5,
         max_per_img=100,
-        min_bbox_size=0,
-        nms=dict(iou_threshold=0.5, type='nms'),
-        nms_pre=1000,
-        score_thr=0.05),
-    train_cfg=dict(
-        allowed_border=-1,
-        assigner=dict(
-            ignore_iof_thr=-1,
-            min_pos_iou=0,
-            neg_iou_thr=0.4,
-            pos_iou_thr=0.5,
-            type='MaxIoUAssigner'),
-        debug=False,
-        pos_weight=-1,
-        sampler=dict(type='PseudoSampler')),
-    type='RetinaNet')
+        nms_pre=500,
+        score_thr=0.1,
+        sigma=2.0),
+    type='SOLO')
 optim_wrapper = dict(
     accumulative_counts=4,
     optimizer=dict(lr=0.01, momentum=0.9, type='SGD', weight_decay=0.0001),
@@ -168,7 +152,7 @@ test_dataloader = dict(
                 1333,
                 800,
             ), type='Resize'),
-            dict(type='LoadAnnotations', with_bbox=True),
+            dict(type='LoadAnnotations', with_bbox=True, with_mask=True),
             dict(
                 meta_keys=(
                     'img_id',
@@ -189,7 +173,7 @@ test_evaluator = dict(
     ann_file='/media/data/coco/annotations/instances_val2017.json',
     backend_args=None,
     format_only=False,
-    metric='bbox',
+    metric='segm',
     type='CocoMetric')
 test_pipeline = [
     dict(backend_args=None, type='LoadImageFromFile'),
@@ -197,7 +181,7 @@ test_pipeline = [
         1333,
         800,
     ), type='Resize'),
-    dict(type='LoadAnnotations', with_bbox=True),
+    dict(type='LoadAnnotations', with_bbox=True, with_mask=True),
     dict(
         meta_keys=(
             'img_id',
@@ -220,7 +204,7 @@ train_dataloader = dict(
         filter_cfg=dict(filter_empty_gt=True, min_size=32),
         pipeline=[
             dict(backend_args=None, type='LoadImageFromFile'),
-            dict(type='LoadAnnotations', with_bbox=True),
+            dict(type='LoadAnnotations', with_bbox=True, with_mask=True),
             dict(keep_ratio=True, scale=(
                 1333,
                 800,
@@ -234,57 +218,13 @@ train_dataloader = dict(
     sampler=dict(shuffle=True, type='DefaultSampler'))
 train_pipeline = [
     dict(backend_args=None, type='LoadImageFromFile'),
-    dict(type='LoadAnnotations', with_bbox=True),
+    dict(type='LoadAnnotations', with_bbox=True, with_mask=True),
     dict(keep_ratio=True, scale=(
         1333,
         800,
     ), type='Resize'),
     dict(prob=0.5, type='RandomFlip'),
     dict(type='PackDetInputs'),
-]
-tta_model = dict(
-    tta_cfg=dict(max_per_img=100, nms=dict(iou_threshold=0.5, type='nms')),
-    type='DetTTAModel')
-tta_pipeline = [
-    dict(backend_args=None, type='LoadImageFromFile'),
-    dict(
-        transforms=[
-            [
-                dict(keep_ratio=True, scale=(
-                    1333,
-                    800,
-                ), type='Resize'),
-                dict(keep_ratio=True, scale=(
-                    666,
-                    400,
-                ), type='Resize'),
-                dict(keep_ratio=True, scale=(
-                    2000,
-                    1200,
-                ), type='Resize'),
-            ],
-            [
-                dict(prob=1.0, type='RandomFlip'),
-                dict(prob=0.0, type='RandomFlip'),
-            ],
-            [
-                dict(type='LoadAnnotations', with_bbox=True),
-            ],
-            [
-                dict(
-                    meta_keys=(
-                        'img_id',
-                        'img_path',
-                        'ori_shape',
-                        'img_shape',
-                        'scale_factor',
-                        'flip',
-                        'flip_direction',
-                    ),
-                    type='PackDetInputs'),
-            ],
-        ],
-        type='TestTimeAug'),
 ]
 val_cfg = dict(type='ValLoop')
 val_dataloader = dict(
@@ -300,7 +240,7 @@ val_dataloader = dict(
                 1333,
                 800,
             ), type='Resize'),
-            dict(type='LoadAnnotations', with_bbox=True),
+            dict(type='LoadAnnotations', with_bbox=True, with_mask=True),
             dict(
                 meta_keys=(
                     'img_id',
@@ -321,7 +261,7 @@ val_evaluator = dict(
     ann_file='/media/data/coco/annotations/instances_val2017.json',
     backend_args=None,
     format_only=False,
-    metric='bbox',
+    metric='segm',
     type='CocoMetric')
 vis_backends = [
     dict(type='LocalVisBackend'),
@@ -332,4 +272,4 @@ visualizer = dict(
     vis_backends=[
         dict(type='LocalVisBackend'),
     ])
-work_dir = './outputs/retinanet_r50_fine_fpn_1x_coco/'
+work_dir = './outputs/solo_r50_fine_fpn_1x_coco/'

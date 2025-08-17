@@ -5,13 +5,13 @@ data: coco.yaml
 epochs: 500
 time: null
 patience: 100
-batch: 1
+batch: 128
 imgsz: 640
 save: true
 save_period: 100
 val_period: 5
 cache: false
-device: '0'
+device: 0,1,2,3
 workers: 8
 project: runs/detect/coco/yolo10l_500e_baseline
 name: train
