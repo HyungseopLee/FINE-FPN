@@ -1,7 +1,7 @@
 auto_scale_lr = dict(base_batch_size=16, enable=False)
 backend_args = None
 custom_hooks = []
-data_root = 'data/coco/'
+data_root = '/media/data/coco/'
 dataset_type = 'CocoPanopticDataset'
 default_hooks = dict(
     checkpoint=dict(interval=5, type='CheckpointHook'),
@@ -278,7 +278,7 @@ test_dataloader = dict(
 test_evaluator = dict(
     ann_file='/media/data/coco/annotations/panoptic_val2017.json',
     backend_args=None,
-    seg_prefix='data/coco/annotations/panoptic_val2017/',
+    seg_prefix='/media/data/coco/annotations/panoptic_val2017/',
     type='CocoPanopticMetric')
 test_pipeline = [
     dict(backend_args=None, type='LoadImageFromFile'),
@@ -367,7 +367,7 @@ val_dataloader = dict(
 val_evaluator = dict(
     ann_file='/media/data/coco/annotations/panoptic_val2017.json',
     backend_args=None,
-    seg_prefix='data/coco/annotations/panoptic_val2017/',
+    seg_prefix='/media/data/coco/annotations/panoptic_val2017/',
     type='CocoPanopticMetric')
 vis_backends = [
     dict(type='LocalVisBackend'),
