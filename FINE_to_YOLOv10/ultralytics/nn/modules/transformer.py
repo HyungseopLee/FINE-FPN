@@ -608,7 +608,7 @@ class SemanticAlignTransNormer(nn.Module):
         
         # Reshape to spatial map [B, HW, C] -> [B, C, H, W]
         a3_sa = out.permute(0, 2, 1).contiguous().view(bs, c_a3, h, w)  # [B, C, H, W]
-        a3_sa = F.interpolate(a3_sa, scale_factor=self.scale_factor, mode='bilinear')
+        a3_sa = F.interpolate(a3_sa, scale_factor=self.scale_factor, mode='nearest')
         a3_sa = a3_sa * original_a3
         
         a4_up = self.upsample(original_a4)  # [B, C, H, W]

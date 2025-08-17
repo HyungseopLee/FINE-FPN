@@ -33,15 +33,15 @@ results = model.train(
     
     optimizer='SGD',
     
-    # # yolov10-M settings
-    # scale=0.9,
-    # mixup=0.1,
-    # copy_paste=0.1,
-    
-    # yolov10-L settings
+    # yolov10-M settings
     scale=0.9,
-    mixup=0.15,
-    copy_paste=0.3,
+    mixup=0.1,
+    copy_paste=0.1,
+    
+    # # yolov10-L settings
+    # scale=0.9,
+    # mixup=0.15,
+    # copy_paste=0.3,
 )
 
 
