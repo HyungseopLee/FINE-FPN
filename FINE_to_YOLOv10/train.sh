@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=v10m-ours
+#SBATCH --job-name=v10l-baseline
 
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:4 # 2 gpus
@@ -12,7 +12,7 @@
 # virtual environment activation
 # source ~/myenv/bin/activate
 
-
+conda activate torch271
 
 # baseline
 mkdir -p ./runs/detect/coco/yolo10l_500e_baseline
