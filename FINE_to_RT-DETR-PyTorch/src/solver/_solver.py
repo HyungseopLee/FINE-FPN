@@ -12,7 +12,6 @@ import atexit
 from ..misc import dist_utils
 from ..core import BaseConfig
 from fvcore.nn import FlopCountAnalysis, flop_count_table
-import ptflops
 
 def to(m: nn.Module, device: str):
     if m is None:
