@@ -99,10 +99,10 @@ class FeatureInteractionNEtowrk(nn.Module):
         low_flat = rearrange(low, 'b c h w -> (h w) b c')
         high_flat = rearrange(high, 'b c h w -> (h w) b c')
         
-        pos = self.build_2d_sincos_position_embedding(w=w, h=h, embed_dim=c_low).to(low.device)
-        pos = pos.expand(bs, -1, -1).permute(1, 0, 2)  # [HW, B, C]
-        low_flat = self.with_pos_embed(low_flat, pos)  # [HW, B, C]
-        high_flat = self.with_pos_embed(high_flat, pos)  # [HW, B, C]
+        # pos = self.build_2d_sincos_position_embedding(w=w, h=h, embed_dim=c_low).to(low.device)
+        # pos = pos.expand(bs, -1, -1).permute(1, 0, 2)  # [HW, B, C]
+        # low_flat = self.with_pos_embed(low_flat, pos)  # [HW, B, C]
+        # high_flat = self.with_pos_embed(high_flat, pos)  # [HW, B, C]
         
         # 2. Cross-level multi-head attention with linear complexity
         low_flat = low_flat.to(self.q_proj.weight.dtype)

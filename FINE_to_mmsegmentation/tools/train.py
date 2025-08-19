@@ -116,7 +116,7 @@ bash ./tools/dist_train.sh \
         test_dataloader.dataset.data_root=/media/data/cityscapes/ \
         optim_wrapper.accumulative_counts=2 \
     --work-dir ./outputs/fine_fpn_r50_4xb2-80k_cityscapes-512x1024/ \
-    2>&1 | tee ./outputs/fine_fpn_r50_4xb2-80k_cityscapes-512x1024/train.log
+    2>&1 | tee ./outputs/fine_fpn_r50_4xb2-80k_cityscapes-512x1024/train_noPosEmbed.log
 
 
 
