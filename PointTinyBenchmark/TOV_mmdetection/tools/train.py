@@ -7,7 +7,8 @@ import warnings
 
 import mmcv
 import torch
-from mmcv import Config, DictAction
+from mmcv import DictAction
+from mmengine.config import Config
 from mmcv.runner import get_dist_info, init_dist
 from mmcv.utils import get_git_hash
 
@@ -199,6 +200,5 @@ export GPU=2 && LR=0.01 && CUDA_VISIBLE_DEVICES=0,1 tools/dist_train.sh \
         optimizer.lr=${LR} \
     --work-dir ./outputs/faster_rcnn_r50_fine_fpn_1x_TinyPerson640/ \
     2>&1 | tee ./outputs/faster_rcnn_r50_fine_fpn_1x_TinyPerson640/train.log
-
 
 '''

@@ -446,8 +446,8 @@ class FINEFPNV2(BaseModule):
                 aligned_low = low
                 # print(f"fine X")
             
-            # print(f"ff.view(-1, 1, 1, 1): {ff.view(-1, 1, 1, 1)}")
-            high = high * ff.view(-1, 1, 1, 1)
+            # fusion factor
+            high = high * ff
             
             if 'scale_factor' in self.upsample_cfg:
                 laterals[i - 1] = aligned_low + F.interpolate(
