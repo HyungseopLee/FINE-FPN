@@ -154,6 +154,7 @@ class FeatureInteractionNEtowrk(nn.Module):
         return low_sa
 
 
+
 class FeatureInteractionNEtowrkV2(nn.Module):
     def __init__(self, dim, nhead, dropout=0.0, activation='gelu', is_first=False):
         '''

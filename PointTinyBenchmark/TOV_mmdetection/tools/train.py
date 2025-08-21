@@ -190,15 +190,21 @@ if __name__ == '__main__':
 
 
 '''
-
-# Faster-FPN, 2GPU
-export GPU=2 && LR=0.01 && CUDA_VISIBLE_DEVICES=0,1 tools/dist_train.sh \
+# Faster-FPN, 1GPU
+mkdir -p outputs/faster_rcnn_r50_fine_fpn_1x_TinyPerson640/
+export LR=0.005 && CUDA_VISIBLE_DEVICES=0
+bash ./tools/train.sh \
     configs2/TinyPerson/base/faster_rcnn_r50_fine_fpn_1x_TinyPerson640.py \
-    2 \
-    --cfg-options \
-        optimizer.lr=${LR} \
+    --cfg-options optimizer.lr=${LR} \
     --work-dir ./outputs/faster_rcnn_r50_fine_fpn_1x_TinyPerson640/ \
-    2>&1 | tee ./outputs/faster_rcnn_r50_fine_fpn_1x_TinyPerson640/train.log
-
-
+    2>&1 | tee ./outputs/faster_rcnn_r50_fine_fpn_1x_TinyPerson640/train_GPU1.log
+    
+    
+mkdir -p outputs/faster_rcnn_r50_fine_fpn_1x_TinyPerson640/
+export LR=0.005 && CUDA_VISIBLE_DEVICES=0
+CUDA_VISIBLE_DEVICES=0 python tools/train.py \
+    configs2/TinyPerson/base/faster_rcnn_r50_fine_fpn_1x_TinyPerson640.py \
+    --cfg-options optimizer.lr=${LR} \
+    --work-dir ./outputs/faster_rcnn_r50_fine_fpn_1x_TinyPerson640/ \
+    2>&1 | tee ./outputs/faster_rcnn_r50_fine_fpn_1x_TinyPerson640/train_GPU1.log
 '''

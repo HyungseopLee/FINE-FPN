@@ -1,9 +1,14 @@
 _base_ = [
     # '../../_base_/datasets/TinyPerson/TinyPerson_detection_640x640.py',
-    '../../../configs/_base_/models/faster_rcnn_r50_fine_fpn.py',
+    '../../../configs/_base_/models/fast_rcnn_r50_fineV2_fpn.py',
     '../../_base_/datasets/TinyPerson/TinyPerson_detection_640x512.py',
     '../../../configs/_base_/schedules/schedule_1x.py', '../../../configs/_base_/default_runtime.py'
 ]
+
+gpu_ids = [0]
+device = 'cuda:0'
+
+
 optimizer = dict(type='SGD', lr=0.04, momentum=0.9, weight_decay=0.0001)  # 8GPU
 model = dict(
     type='FasterRCNN',
@@ -18,7 +23,7 @@ model = dict(
         norm_eval=True,
         style='pytorch'),
     neck=dict(
-        type='FINEFPN',
+        type='FINEFPNV2',
         in_channels=[256, 512, 1024, 2048],
         out_channels=256,
         num_outs=5),
