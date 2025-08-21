@@ -1,6 +1,6 @@
 dataset_type = 'CocoFmtDataset'
-data_root = '/media/data/tiny_set/'
-# data_root = '/workspace/tiny_set/'
+# data_root = '/media/data/tiny_set/'
+data_root = '/workspace/tiny_set/'
 size = (640, 640)  # sub size
 overlap = (100, 100)
 img_norm_cfg = dict(
