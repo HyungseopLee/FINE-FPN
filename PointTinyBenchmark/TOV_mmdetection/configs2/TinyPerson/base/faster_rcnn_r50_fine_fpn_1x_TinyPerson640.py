@@ -88,6 +88,7 @@ model = dict(
             nms_pre=2000,
             nms_post=1000,
             max_num=1000,
+            max_per_img=1000,  # ← 여기에 추가!
             nms=dict(type='nms', iou_threshold=0.7),
             min_bbox_size=0),
         rcnn=dict(
