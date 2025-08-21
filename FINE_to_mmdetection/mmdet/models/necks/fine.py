@@ -203,13 +203,16 @@ class FeatureInteractionNEtowrkV2(nn.Module):
             self.avg_pool_high = nn.AvgPool2d(kernel_size=2, stride=2)
             self.avg_pool_low = nn.AvgPool2d(kernel_size=4, stride=4)
             
-        # Fusion factor token: image-wise learnable scalar
+        # # Fusion factor token: image-wise learnable scalar
+        # self.fusion_token = nn.Parameter(torch.zeros(1, 1, dim))
+        # self.fusion_head = nn.Sequential(
+        #     nn.Linear(dim, dim // 4),
+        #     nn.ReLU(),
+        #     nn.Linear(dim // 4, 1)
+        # )
+        
+        # Fusion factor token: image-wise learnable channel-wise scalar
         self.fusion_token = nn.Parameter(torch.zeros(1, 1, dim))
-        self.fusion_head = nn.Sequential(
-            nn.Linear(dim, dim // 4),
-            nn.ReLU(),
-            nn.Linear(dim // 4, 1)
-        )
         
     @staticmethod
     def build_2d_sincos_position_embedding(w, h, embed_dim=256, temperature=10000.):
@@ -254,10 +257,10 @@ class FeatureInteractionNEtowrkV2(nn.Module):
         low_flat = rearrange(low, 'b c h w -> (h w) b c')
         high_flat = rearrange(high, 'b c h w -> (h w) b c')
         
-        pos = self.build_2d_sincos_position_embedding(w=w, h=h, embed_dim=c_low).to(low.device)
-        pos = pos.expand(bs, -1, -1).permute(1, 0, 2)  # [HW, B, C]
-        low_flat = self.with_pos_embed(low_flat, pos)  # [HW, B, C]
-        high_flat = self.with_pos_embed(high_flat, pos)  # [HW, B, C]
+        # pos = self.build_2d_sincos_position_embedding(w=w, h=h, embed_dim=c_low).to(low.device)
+        # pos = pos.expand(bs, -1, -1).permute(1, 0, 2)  # [HW, B, C]
+        # low_flat = self.with_pos_embed(low_flat, pos)  # [HW, B, C]
+        # high_flat = self.with_pos_embed(high_flat, pos)  # [HW, B, C]
         
         # Add fusion factor token to high-level sequence
         fusion_token = self.fusion_token.expand(1, bs, -1)
@@ -285,7 +288,10 @@ class FeatureInteractionNEtowrkV2(nn.Module):
         out = out.permute(1, 0, 2)
         
         # 3. Fusion factor
-        fusion_factor = ((torch.tanh(self.fusion_head(out[:, 0, :])) + 1) / 2).view(bs)  # [B]
+        ## exp1: scalar (B, 1)
+        # fusion_factor = ((torch.tanh(self.fusion_head(out[:, 0, :])) + 1) / 2).view(bs)  # [B]
+        ## exp2: channel-wise scalar (B, d)
+        fusion_factor = ((torch.tanh(out[:, 0, :]) + 1) / 2) # [B, d]
         out = out[:, 1:, :]
         
         # FFN
@@ -302,4 +308,8 @@ class FeatureInteractionNEtowrkV2(nn.Module):
         low_sa = low_sa * original_low
         
         # Semantically Aligned low-level feature
-        return low_sa, fusion_factor
+        
+        # # scalar fusion factor
+        # return low_sa, fusion_factor.view(-1, 1, 1, 1)
+        # channel-wise fusion factor
+        return low_sa, fusion_factor[:, :, None, None]
