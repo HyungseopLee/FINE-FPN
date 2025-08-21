@@ -24,7 +24,7 @@ export GPU=2 && LR=0.01 && CUDA_VISIBLE_DEVICES=0,1 PORT=10000 tools/dist_train.
   --work-dir ../TOV_mmdetection_cache/work_dir/TinyPerson/Base/retinanet_r50_fpns4_1x_TinyPerson640/old640x512_lr${LR}_1x_clipg_${GPU}g/  \
   --cfg-options optimizer.lr=${LR}
 
-# exp3.1 RepPoint w/o GN neck, backbone norm no grad => easy to nan
+# exp3.1 RepPoint w/o GN neck, backbone norm no grad => easy tod nan
 export GPU=2 && LR=0.01 && CONFIG="reppoints_moment_r50_fpn_1x_TinyPerson640" && CUDA_VISIBLE_DEVICES=0,1 PORT=10000 \
   tools/dist_train.sh configs2/TinyPerson/base/${CONFIG}.py $GPU \
   --work-dir ../TOV_mmdetection_cache/work_dir/TinyPerson/Base/${CONFIG}/old640x512_lr${LR}_1x_${GPU}g/ \

@@ -183,7 +183,8 @@ class FeatureInteractionNEtowrkV2(nn.Module):
         self.out_proj = nn.Linear(dim, dim)
         
         # bounded gradient
-        self.attn_norm = nn.RMSNorm(self.head_dim)
+        # self.attn_norm = nn.RMSNorm(self.head_dim)
+        self.attn_norm = nn.LayerNorm(self.head_dim)
         
         # FFN
         self.linear1 = nn.Linear(dim, dim * 4)
