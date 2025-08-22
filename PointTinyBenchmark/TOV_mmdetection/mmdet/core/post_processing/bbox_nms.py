@@ -64,6 +64,8 @@ def multiclass_nms(multi_bboxes,
     if not torch.onnx.is_in_onnx_export():
         # NonZero not supported  in TensorRT
         inds = valid_mask.nonzero(as_tuple=False).squeeze(1)
+        # bboxes, scores, labels = bboxes[inds], scores[inds], labels[inds]
+        inds = inds.to(bboxes.device)   # GPU로 올려주기
         bboxes, scores, labels = bboxes[inds], scores[inds], labels[inds]
     else:
         # TensorRT NMS plugin has invalid output filled with -1
