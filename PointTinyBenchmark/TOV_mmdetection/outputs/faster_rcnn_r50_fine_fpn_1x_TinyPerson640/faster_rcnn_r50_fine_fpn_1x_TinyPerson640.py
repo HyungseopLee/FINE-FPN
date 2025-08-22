@@ -6,8 +6,8 @@ custom_hooks = [
 data = dict(
     samples_per_gpu=1,
     test=dict(
-        ann_file='/media/data/tiny_set/mini_annotations/tiny_set_test_all.json',
-        img_prefix='/media/data/tiny_set/test/',
+        ann_file='/workspace/tiny_set/mini_annotations/tiny_set_test_all.json',
+        img_prefix='/workspace/tiny_set/test/',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(
@@ -52,8 +52,8 @@ data = dict(
         type='CocoFmtDataset'),
     train=dict(
         ann_file=
-        '/media/data/tiny_set/mini_annotations/tiny_set_train_sw640_sh512_all_erase.json',
-        img_prefix='/media/data/tiny_set/erase_with_uncertain_dataset/train/',
+        '/workspace/tiny_set/mini_annotations/tiny_set_train_sw640_sh512_all_erase.json',
+        img_prefix='/workspace/tiny_set/erase_with_uncertain_dataset/train/',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(type='LoadAnnotations', with_bbox=True),
@@ -87,8 +87,8 @@ data = dict(
         ],
         type='CocoFmtDataset'),
     val=dict(
-        ann_file='/media/data/tiny_set/mini_annotations/tiny_set_test_all.json',
-        img_prefix='/media/data/tiny_set/test/',
+        ann_file='/workspace/tiny_set/mini_annotations/tiny_set_test_all.json',
+        img_prefix='/workspace/tiny_set/test/',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(
@@ -132,7 +132,7 @@ data = dict(
         ],
         type='CocoFmtDataset'),
     workers_per_gpu=1)
-data_root = '/media/data/tiny_set/'
+data_root = '/workspace/tiny_set/'
 dataset_type = 'CocoFmtDataset'
 device = 'cuda:0'
 dist_params = dict(backend='nccl')
@@ -289,6 +289,7 @@ model = dict(
             score_thr=0.05),
         rpn=dict(
             max_num=1000,
+            max_per_img=1000,
             min_bbox_size=0,
             nms=dict(iou_threshold=0.7, type='nms'),
             nms_across_levels=False,
@@ -330,6 +331,7 @@ model = dict(
                 type='RandomSampler')),
         rpn_proposal=dict(
             max_num=1000,
+            max_per_img=1000,
             min_bbox_size=0,
             nms=dict(iou_threshold=0.7, type='nms'),
             nms_across_levels=False,
