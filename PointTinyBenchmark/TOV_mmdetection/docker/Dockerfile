@@ -1,6 +1,6 @@
 # -----------------------------
 # RTX 3090 전용 Dockerfile (Python 3.7 유지)
-# PyTorch 2.1 + CUDA 11.8 + MMDetection + MMCV
+# CUDA 11.8 + MMDetection + MMCV
 # -----------------------------
 
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04

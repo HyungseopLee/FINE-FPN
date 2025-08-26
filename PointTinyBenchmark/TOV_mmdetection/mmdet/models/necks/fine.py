@@ -213,6 +213,16 @@ class FeatureInteractionNEtowrkV2(nn.Module):
             nn.Linear(dim // 4, 1)
         )
         
+        # Depthwise-conv
+        self.dwconv = nn.Conv2d(
+            in_channels=dim, 
+            out_channels=dim, 
+            kernel_size=3, 
+            padding=1, 
+            groups=dim,  # depthwise
+            bias=False
+        )
+        
     @staticmethod
     def build_2d_sincos_position_embedding(w, h, embed_dim=256, temperature=10000.):
         """
@@ -286,9 +296,16 @@ class FeatureInteractionNEtowrkV2(nn.Module):
         out = self.out_proj(attn_output)
         out = out.permute(1, 0, 2)
         
-        # 3. Fusion factor
-        fusion_factor = ((torch.tanh(self.fusion_head(out[:, 0, :])) + 1) / 2).view(bs)  # [B]
+        fusion_factor = out[:, 0, :]
         out = out[:, 1:, :]
+        
+        # 3. Fusion factor
+        # scalar
+        fusion_factor = ((torch.tanh(self.fusion_head(fusion_factor)) + 1) / 2).view(bs)  # [B]
+        # fusion_factor = (torch.sigmoid(self.fusion_head(fusion_factor))).view(bs)  # [B]
+        # # channel-wise
+        # fusion_factor = (torch.tanh(fusion_factor) + 1) / 2
+        
         
         # FFN
         out = self.norm1(out)
@@ -301,7 +318,13 @@ class FeatureInteractionNEtowrkV2(nn.Module):
         # 4. Spatial Bottleneck Design: Up()
         low_sa = out.permute(0, 2, 1).contiguous().view(bs, c_low, h, w)  # [B, C, H, W]
         low_sa = F.interpolate(low_sa, size=original_low.shape[2:], mode='bilinear', align_corners=False)
-        low_sa = low_sa * original_low
+        low_sa = self.dwconv(low_sa) * original_low
+        
+        # # 5. Depth-Wise Convolution for anti-aliasing for Tiny Object Detection
+        # dw_low_sa = self.dwconv(low_sa)
         
         # Semantically Aligned low-level feature
+        # scalar
         return low_sa, fusion_factor
+        # # chn-wise
+        # return dw_low_sa, fusion_factor.view(bs, c_low, 1, 1)

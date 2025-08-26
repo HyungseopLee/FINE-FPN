@@ -191,21 +191,31 @@ if __name__ == '__main__':
 
 
 '''
-# Faster-FPN, 1GPU
-mkdir -p outputs/faster_rcnn_r50_fine_fpn_1x_TinyPerson640/
+# Ours - Faster RCNN
+mkdir -p outputs/faster_rcnn_r50_fineV2_fpn_1x_TinyPerson640/
 export LR=0.005 && CUDA_VISIBLE_DEVICES=0
 bash ./tools/train.sh \
-    configs2/TinyPerson/base/faster_rcnn_r50_fine_fpn_1x_TinyPerson640.py \
+    configs2/TinyPerson/base/faster_rcnn_r50_fineV2_fpn_1x_TinyPerson640.py \
     --cfg-options optimizer.lr=${LR} \
-    --work-dir ./outputs/faster_rcnn_r50_fine_fpn_1x_TinyPerson640/ \
-    2>&1 | tee ./outputs/faster_rcnn_r50_fine_fpn_1x_TinyPerson640/train_GPU1.log
+    --work-dir ./outputs/faster_rcnn_r50_fineV2_fpn_1x_TinyPerson640/ \
+    2>&1 | tee ./outputs/faster_rcnn_r50_fineV2_fpn_1x_TinyPerson640/train_1-ff_ff_tanh_DWConvBefore.log
     
-    
-mkdir -p outputs/faster_rcnn_r50_fine_fpn_1x_TinyPerson640/
+# Ours - RetinaNet
+mkdir -p outputs/retinanet_r50_fineV2_fpn_1x_TinyPerson640/
 export LR=0.005 && CUDA_VISIBLE_DEVICES=0
-CUDA_VISIBLE_DEVICES=0 python tools/train.py \
-    configs2/TinyPerson/base/faster_rcnn_r50_fine_fpn_1x_TinyPerson640.py \
+bash ./tools/train.sh \
+    configs2/TinyPerson/base/retinanet_r50_fineV2_fpn_1x_TinyPerson640.py \
     --cfg-options optimizer.lr=${LR} \
-    --work-dir ./outputs/faster_rcnn_r50_fine_fpn_1x_TinyPerson640/ \
-    2>&1 | tee ./outputs/faster_rcnn_r50_fine_fpn_1x_TinyPerson640/train_GPU1.log
+    --work-dir ./outputs/retinanet_r50_fineV2_fpn_1x_TinyPerson640/ \
+    2>&1 | tee ./outputs/retinanet_r50_fineV2_fpn_1x_TinyPerson640/train_scalar_sigmoid_DWConvBefore.log
+
+# SNI    
+mkdir -p outputs/faster_rcnn_r50_SNI_fpn_1x_TinyPerson640/
+export LR=0.005 && CUDA_VISIBLE_DEVICES=0
+bash ./tools/train.sh \
+    configs2/TinyPerson/base/faster_rcnn_r50_SNI_fpn_1x_TinyPerson640.py \
+    --cfg-options optimizer.lr=${LR} \
+    --work-dir ./outputs/faster_rcnn_r50_SNI_fpn_1x_TinyPerson640/ \
+    2>&1 | tee ./outputs/faster_rcnn_r50_SNI_fpn_1x_TinyPerson640/train.log
+    
 '''

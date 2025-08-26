@@ -13,10 +13,11 @@ from .rfp import RFP
 from .yolo_neck import YOLOV3Neck
 from .fine import FeatureInteractionNEtowrk, FeatureInteractionNEtowrkV2
 from .fine_fpn import FINEFPNV2
+from .sni import SNIFPN
 
 
 __all__ = [
     'FPN', 'BFP', 'ChannelMapper', 'HRFPN', 'NASFPN', 'FPN_CARAFE', 'PAFPN',
     'NASFCOS_FPN', 'RFP', 'YOLOV3Neck', 'FPG', 'DilatedEncoder', 'CTResNetNeck',
-    'FeatureInteractionNEtowrk', 'FeatureInteractionNEtowrkV2', 'FINEFPNV2'
+    'FeatureInteractionNEtowrk', 'FeatureInteractionNEtowrkV2', 'FINEFPNV2', 'SNIFPN'
 ]

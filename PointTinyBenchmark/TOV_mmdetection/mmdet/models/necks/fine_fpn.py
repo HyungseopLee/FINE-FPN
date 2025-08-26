@@ -208,17 +208,15 @@ class FINEFPNV2(BaseModule):
                 aligned_low = low
                 # print(f"fine X")
             
-            # fusion factor
-            high = high * ff
-            
+            # fusion with fusion factor
             if 'scale_factor' in self.upsample_cfg:
-                laterals[i - 1] = aligned_low + F.interpolate(
-                    high, **self.upsample_cfg)
+                laterals[i - 1] = (1-ff) * aligned_low + F.interpolate(
+                    high, **self.upsample_cfg) * ff
             else:
                 prev_shape = aligned_low.shape[2:]
                 
-                laterals[i - 1] = aligned_low + F.interpolate(
-                    high, size=prev_shape, **self.upsample_cfg)
+                laterals[i - 1] = (1-ff) * aligned_low + F.interpolate(
+                    high, size=prev_shape, **self.upsample_cfg) * ff
 
         # build outputs
         # part 1: from original levels
